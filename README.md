@@ -14,16 +14,13 @@ Big Project about Book Management with Java OOP
 
 ### 1. Pre-requisite for Windows
 
-   1. [Install the Postgresql](#1-install-the-postgresql)
+   1. [Install the Postgresql](#1-install-the-postgresql-download)
    2. [Adding necessary program to path](#2-adding-necessary-program-to-path)
    3. [Creating a database](#3-creating-a-database)
    4. [Importing the database](#4-importing-the-database)
-
-   ---
-
-   1. [Install maven](#1-install-maven)
-   2. [Install GraalVM native-image](#2-install-graalvm) (Java SDK replacement)
-   3. [Install Pre-requisite for GraalVM native-image (Production)](#3-install-pre-requisite-for-graalvm-native-image-to-build-the-production-build)
+   5. [Install maven](#1-install-maven)
+   6. [Install GraalVM native-image](#2-install-graalvm) (Java SDK replacement)
+   7. [Install Pre-requisite for GraalVM native-image (Production)](#3-install-pre-requisite-for-graalvm-native-image-to-build-the-production-build)
 
 ### 2. Setup Project
 
@@ -45,7 +42,7 @@ Big Project about Book Management with Java OOP
 
 ## Postgresql installation for Windows
 
-### 1. Install the Postgresql
+### 1. [Install the Postgresql (download)](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads)
 
 1.1 After press install, and next.
 
@@ -72,13 +69,15 @@ Default install path is:
 C:\Program Files\PostgreSQL\16\bin
 ```
 
-open system enviroment variable on windows
-![alt text](assets\enviroment-variable.png)
+Open system enviroment variable on Windows.
+
+<img src="assets\enviroment-variable-1.png" height="250">
 
 <img src="assets\enviroment-variable-2.png" height="400">
 
-Double click on the Path in the system section
-![alt text](assets\system-path.png)
+- Double click on the Path in the system section
+
+<img src="assets\system-path.png" height="200">
 
 - Click on new
 - Paste the path
@@ -98,13 +97,16 @@ psql -V
 # Output : psql (PostgreSQL) 16.4
 ```
 
-#### 3.2. If the previous command is return psql version then continue with next part
+#### 3.2. If the previous command is return like above then continue with next part
+
+- Create a database
 
 ```pwsh
 createdb -U postgres book-management
 ```
 
-enter your password from [#1.4](#1-install-the-postgresql)
+enter your password from [#1.4](#1-install-the-postgresql-download)
+
 > We using the default superuser "postgres" here
 
 #### 3.3 Verify dababase is created
@@ -115,14 +117,14 @@ psql -U postgres
 # then in the console
 postgres=#
 
-# type \l
+# type \l (not the number 1)
 
 postgres=# \l
 
 
 ```
 
-> \q to quit the console
+> \q to quit the console or Ctrl + C
 
 - Example output
 
@@ -130,7 +132,10 @@ postgres=# \l
 
 ### 4. Importing the database
 
-- Open the command prompt or powershell
+- Open the Terminal in the project folder (root)
+- The book-management.sql is in the root of the project (using relative path to import the database)
+
+- If `book-management.sql` is in the root of the project then run this command
 
 ```pwsh
 psql -U postgres -f .\book-management.sql book-management
@@ -138,15 +143,14 @@ psql -U postgres -f .\book-management.sql book-management
 
 `---------^username----^file path----------- ^database name`
 
-the book-management.sql is in the root of the project (using relative path to import the database)
-
 - Verify the database is imported
 
 ```pwsh
 psql -U postgres -d book-management
 
 # then in the console
-SELECT author FROM book LIMIT 5; # to see the data
+
+SELECT author FROM book LIMIT 5;      # to see the data
 ```
 
 ### 1. Install maven
@@ -157,7 +161,7 @@ SELECT author FROM book LIMIT 5; # to see the data
   - Example: `C:\apache-maven-3.9.9` (make sure there is a folder `bin` in the `apache-maven-3.9.9` folder)
 - Add the maven path to the system environment variable
   - Open the environment variable
-  - Click on the `Path` in the user section
+  - Double Click on the `Path` in the user section
   - Click on new
   - Paste the path `C:\apache-maven-3.9.9\bin`
   - Click OK
@@ -177,7 +181,7 @@ mvn -v
   - Example: `C:\Program Files\Java\graalvm-jdk-22.0.2+9.1\bin` (make sure there is a folder `bin` in the `graalvm-jdk-22.0.2+9.1` folder)
 - Add the GraalVM path to the system environment variable
   - Open the environment variable
-  - Click on the `Path` in the user section
+  - Double Click on the `Path` in the user section
   - Click on new
   - Paste the path `C:\Program Files\Java\graalvm-jdk-22.0.2+9.1\bin`
   - Click OK
