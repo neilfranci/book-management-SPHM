@@ -47,7 +47,7 @@ Big Project about Book Management with Java OOP
 
 1.3 Uncheck Stack Builder
 
-![alt text](../assets/psql-install-1.png)
+![alt text](assets/psql-install-1.png)
 
 1.4 press next, until you meet password for superuser
 type your own password
@@ -67,18 +67,18 @@ C:\Program Files\PostgreSQL\16\bin
 ```
 
 open system enviroment variable on windows
-![alt text](../assets\enviroment-variable.png)
+![alt text](assets\enviroment-variable.png)
 
-<img src="../assets\enviroment-variable-2.png" height="400">
+<img src="assets\enviroment-variable-2.png" height="400">
 
 Double click on the Path in the system section
-![alt text](../assets\system-path.png)
+![alt text](assets\system-path.png)
 
 - Click on new
 - Paste the path
 - CLick OK
 
-<img src="../assets/add-path.png" height="400">
+<img src="assets/add-path.png" height="400">
 
 ### 3. Creating a database
 
@@ -120,7 +120,7 @@ postgres=# \l
 
 - Example output
 
-<img src="../assets/psql-l.png">
+<img src="assets/psql-l.png">
 
 ### 4. Importing the database
 
