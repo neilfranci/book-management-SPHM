@@ -4,6 +4,12 @@ Big Project about Book Management with Java OOP
 
 - bgsix: Is the team name: Big Group Six (nhom 6)
 
+<div align="center">
+  <span>English</span> |
+  <a href="https://github.com/neilfranci/book-management-SJPM/blob/main/translation/README_vi_VN.md">Vietnamese</a>
+</div>
+<br/>
+
 ## Table of Contents
 
 ### 1. Pre-requisite for Windows
