@@ -3,6 +3,7 @@
 Dự án lớn về Quản lý Sách với Java OOP
 
 - bgsix: Là tên nhóm: Big Group Six (nhóm 6)
+- SJPM: Spring JavaFX Postgresql Maven (công nghệ sử dụng)
 
 <div align="center">
   <a href="https://github.com/neilfranci/book-management-SJPM">English</a> |

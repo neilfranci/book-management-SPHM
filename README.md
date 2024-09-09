@@ -3,6 +3,7 @@
 Big Project about Book Management with Java OOP
 
 - bgsix: Is the team name: Big Group Six (nhom 6)
+- SJPM: Spring JavaFX Postgresql Maven (the technology stack)
 
 <div align="center">
   <span>English</span> |
