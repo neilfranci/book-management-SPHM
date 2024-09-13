@@ -133,7 +133,7 @@ postgres=# \l
 
 ### 4. Importing the database
 
-- Open the Terminal in the project folder (root)
+- Open the Terminal in the project folder (root) [follow this](#setup-project)
 - The book-management.sql is in the root of the project (using relative path to import the database)
 
 - If `book-management.sql` is in the root of the project then run this command
@@ -214,6 +214,12 @@ git clone https://github.com/neilfranci/book-management-SJPM.git
 2.1 VSCode
 
 cd to the project folder
+
+```bash
+cd book-management-SJPM
+```
+
+then open the project in vscode with this command
 
 ```bash
 code .

@@ -131,7 +131,7 @@ postgres=# \l
 
 ### 4. Nhập cơ sở dữ liệu
 
-- Mở Terminal trong thư mục dự án (root)
+- Mở Terminal trong thư mục dự án (root)  [Theo hướng dẫn này](#thiết-lập-dự-án)
 - Tệp book-management.sql nằm ở thư mục gốc của dự án (sử dụng đường dẫn tương đối để nhập cơ sở dữ liệu).
 
 - Nếu có file `book-management.sql` ở root thì chạy lệnh sau:
@@ -212,6 +212,12 @@ git clone https://github.com/neilfranci/book-management-SJPM.git
 2.1 VSCode
 
 cd đến thư mục dự án
+
+```bash
+cd book-management-SJPM
+```
+
+rồi thực hiện lệnh sau để mở VSCode:
 
 ```bash
 code .
