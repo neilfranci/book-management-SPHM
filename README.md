@@ -279,3 +279,19 @@ mvn -pl server -Pnative native:compile -DskipTests
 
 - then run the executable file in the target folder
 `.\server\target\server` (the native image is a single file) in this case the file is `server.exe`
+
+---
+
+## FAQ
+
+### 1. Cannot drop the currently open database, database "book-management" already exists
+
+Answer: Just drop the database
+
+```pwsh
+dropdb -U postgres book-management
+```
+
+### 2. DTO? What is that?
+
+Answer: Data Transfer Object (DTO) is a design pattern used to transfer data between data access objects and value objects. The data is transferred in the form of data transfer objects. DATABASE Class > Repository Class > Service Class > Controller Class > DTO Class > Sendalbe Data to Client

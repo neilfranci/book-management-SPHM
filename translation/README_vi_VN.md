@@ -279,3 +279,19 @@ mvn -pl server -Pnative native:compile -DskipTests
 
  chạy tệp thực thi trong thư mục target
 `.\server\target\server` (native image là một tệp duy nhất), trong trường hợp này, tệp là `server.exe`.
+
+---
+
+### FAQ
+
+#### 1. Cannot drop the currently open database, database "book-management" already exists
+
+Answer: Chỉ cần xóa cơ sở dữ liệu
+
+```pwsh
+dropdb -U postgres book-management
+```
+
+### 2. DTO? Đó là gì?
+
+Answer:  Data Transfer Object (DTO) là một mẫu thiết kế được sử dụng để chuyển dữ liệu giữa các đối tượng truy cập dữ liệu và các đối tượng giá trị. Dữ liệu được chuyển dưới dạng các đối tượng truyền dữ liệu. Lớp DATABASE > Lớp Repository > Lớp Service > Lớp Controller > Lớp DTO > Dữ liệu gửi đến Client
