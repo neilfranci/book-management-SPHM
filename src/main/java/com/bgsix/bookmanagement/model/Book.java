@@ -1,8 +1,5 @@
 package com.bgsix.bookmanagement.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,6 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 public class Book {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "BOOK_ID")
 	private Long bookId;
 
@@ -43,7 +41,4 @@ public class Book {
 
 	@Column(name = "PUBLICATION_YEAR")
 	private Integer publicationYear;
-
-	@OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
-	private List<BookGenre> bookGenres = new ArrayList<BookGenre>();
 }

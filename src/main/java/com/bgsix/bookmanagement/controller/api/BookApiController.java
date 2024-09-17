@@ -1,5 +1,7 @@
-package com.bgsix.bookmanagement.controller;
+package com.bgsix.bookmanagement.controller.api;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,12 +21,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/book")
-public class BookController {
+public class BookApiController {
 	private final BookService bookService;
 
-	private static final Logger logger = LoggerFactory.getLogger(BookController.class);
+	private static final Logger logger = LoggerFactory.getLogger(BookApiController.class);
 
-	public BookController(BookService bookService) {
+	public BookApiController(BookService bookService) {
 		this.bookService = bookService;
 	}
 
@@ -64,7 +66,9 @@ public class BookController {
 			@Parameter(description = "Genres to filter by (separated by comma , )") @RequestParam("q") String genres,
 			@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
 
-		BookResponse bookResponse = bookService.getBooksByGenres(genres, page - 1, size);
+		Pageable pageable = PageRequest.of(page - 1, size);
+
+		BookResponse bookResponse = bookService.getBooksByGenre(genres, pageable);
 
 		if (bookResponse.getBooks().isEmpty()) {
 			return ResponseEntity.notFound().build();
@@ -113,6 +117,22 @@ public class BookController {
 		logger.info("Getting books by rating: {}", rating);
 
 		BookResponse bookResponse = bookService.getBooksByRating(rating, page - 1, size);
+
+		if (bookResponse.getBooks().isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+
+		return ResponseEntity.ok(bookResponse);
+	}
+
+	@Operation(summary = "Get top rated books", description = "Get top rated books", tags = { "book" })
+	@GetMapping("/top-rated")
+	public ResponseEntity<BookResponse> getTopRatedBooks(@RequestParam(defaultValue = "1") int page,
+			@RequestParam(defaultValue = "20") int size) {
+
+		logger.info("Getting top rated books");
+
+		BookResponse bookResponse = bookService.getTopRateBooks(page - 1, size);
 
 		if (bookResponse.getBooks().isEmpty()) {
 			return ResponseEntity.notFound().build();
