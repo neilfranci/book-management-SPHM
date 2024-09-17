@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -14,36 +13,26 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.bgsix.bookmanagement.controller.BookController;
+import com.bgsix.bookmanagement.controller.api.BookApiController;
 import com.bgsix.bookmanagement.dto.BookDTO;
 import com.bgsix.bookmanagement.dto.BookResponse;
 import com.bgsix.bookmanagement.model.Book;
-import com.bgsix.bookmanagement.model.BookGenre;
-import com.bgsix.bookmanagement.model.Genre;
-import com.bgsix.bookmanagement.repository.BookGenreRepository;
 import com.bgsix.bookmanagement.repository.BookRepository;
 
 @Service
 public class BookService {
 	private final BookRepository bookRepository;
 
-	private final BookGenreRepository bookGenreRepository;
+	private static final Logger logger = LoggerFactory.getLogger(BookApiController.class);
 
-	private static final Logger logger = LoggerFactory.getLogger(BookController.class);
-
-	public BookService(BookRepository bookRepository, BookGenreRepository bookGenreRepository) {
+	public BookService(BookRepository bookRepository) {
 		this.bookRepository = bookRepository;
-		this.bookGenreRepository = bookGenreRepository;
-	}
-
-	public List<Book> getAllBooks() {
-		return bookRepository.findAll();
 	}
 
 	public BookDTO getBookById(Long id) {
-		Optional<Book> book = bookRepository.findById(id);
+		Book book = bookRepository.findBookById(id);
 
-		BookDTO bookDTO = new BookDTO(book.get(), Collections.emptyList());
+		BookDTO bookDTO = new BookDTO(book, null);
 
 		return bookDTO;
 	}
@@ -64,8 +53,8 @@ public class BookService {
 		return getBooks(booksPage);
 	}
 
-	public BookResponse getBooksByGenres(String genres, int page, int size) {
-		long startTime = System.currentTimeMillis();
+	public BookResponse getBooksByGenre(String genres, Pageable pageable) {
+		// long startTime = System.currentTimeMillis();
 
 		// lowercase the genres and split them by comma
 		List<String> genreList = Arrays.asList(genres.toLowerCase().split(","));
@@ -74,36 +63,32 @@ public class BookService {
 
 		long genreCount = genreList.size();
 
-		Pageable pageable = PageRequest.of(page, size);
+		// Find books by genres
+		Page<Book> booksPage = bookRepository.findByGenre(genreList, genreCount, pageable);
 
-		Page<Book> booksPage = bookRepository.findByGenres(genreList, genreCount, pageable);
+		// Extract book ids to find genres
+		List<Long> bookIds = booksPage.stream().map(Book::getBookId).collect(Collectors.toList());
 
-		List<BookGenre> bookGenresInPage = bookGenreRepository.findByBookIn(booksPage.getContent());
+		// Fetch genres for the list of book IDs
+		List<Object[]> genresResult = bookRepository.findGenresForBooks(bookIds);
 
-		logger.info("Found {} genres for {} books", bookGenresInPage.size(), booksPage.getSize());
+		// Map genres to the corresponding book
+		Map<Long, List<String>> genresMap = genresResult.stream()
+				.collect(Collectors.toMap(result -> ((Number) result[0]).longValue(),
+						result -> (List<String>) Arrays.asList((String[]) result[1])));
 
-		// Group genres by book ID
-		Map<Long, List<Genre>> genresByBookId = bookGenresInPage.stream()
-				.collect(Collectors.groupingBy(bookGenre -> bookGenre.getBook().getBookId(),
-						Collectors.mapping(BookGenre::getGenre, Collectors.toList())));
-
-		// Convert books to BookDTOs
-		List<BookDTO> bookDTOs = booksPage.getContent().stream().map(book -> {
-			// Get genres for the current book
-			List<String> bookGenres = genresByBookId.getOrDefault(book.getBookId(), Collections.emptyList()).stream()
-					.map(Genre::getName).collect(Collectors.toList());
-			// Create a new BookDTO
-			return new BookDTO(book, bookGenres);
-		}).collect(Collectors.toList());
+		// Convert Book entities to BookDTO
+		List<BookDTO> bookDTOs = booksPage.stream().map(book -> new BookDTO(book, genresMap.get(book.getBookId())))
+				.collect(Collectors.toList());
 
 		BookResponse bookResponse = new BookResponse();
 		bookResponse.setBooks(bookDTOs);
 		bookResponse.setTotalPages(booksPage.getTotalPages());
 		bookResponse.setTotalElements(booksPage.getTotalElements());
 
-		long endTime = System.currentTimeMillis();
-		long executionTime = endTime - startTime;
-		logger.info("Execution time: {} ms", executionTime);
+		// long endTime = System.currentTimeMillis();
+		// long executionTime = endTime - startTime;
+		// logger.info("Execution time: {} ms", executionTime);
 
 		return bookResponse;
 	}
@@ -123,6 +108,12 @@ public class BookService {
 	public BookResponse getBooksByRating(Float rating, int page, int size) {
 		Pageable pageable = PageRequest.of(page, size);
 		Page<Book> booksPage = bookRepository.findByRatingGreaterThanEqual(rating, pageable);
+		return getBooks(booksPage);
+	}
+
+	public BookResponse getTopRateBooks(int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		Page<Book> booksPage = bookRepository.findTopRate(pageable);
 		return getBooks(booksPage);
 	}
 

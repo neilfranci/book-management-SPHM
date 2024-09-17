@@ -27,6 +27,6 @@ public class Genre {
 	private Long genreId;
 	private String name;
 
-	@OneToMany(mappedBy = "genre", cascade = CascadeType.ALL)
-	private List<BookGenre> bookGenres = new ArrayList<BookGenre>();
+	// @OneToMany(mappedBy = "genre", cascade = CascadeType.ALL)
+	// private List<BookGenre> bookGenres = new ArrayList<BookGenre>();
 }
