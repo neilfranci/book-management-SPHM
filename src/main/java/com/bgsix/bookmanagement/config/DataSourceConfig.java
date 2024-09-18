@@ -18,14 +18,14 @@ public class DataSourceConfig {
 
 		// // Fix issue with the path with spring boot and graalvm native image
 		// if (!projectPath.contains("bookmanagement")) {
-		// 	projectPath = projectPath + "\\bookmanagement\\";
+		// projectPath = projectPath + "\\bookmanagement\\";
 		// }
 		// System.out.println("Current resource path: " + projectPath);
 
 		// Load environment variables from the .env file
 		Dotenv dotenv = Dotenv.configure().ignoreIfMalformed().ignoreIfMissing().load();
-		// Dotenv dotenv = Dotenv.configure().directory(projectPath).ignoreIfMalformed().ignoreIfMissing().load();
-
+		// Dotenv dotenv =
+		// Dotenv.configure().directory(projectPath).ignoreIfMalformed().ignoreIfMissing().load();
 
 		// Print the loaded environment variables
 		System.out.println("DB_URL: " + dotenv.get("DB_URL"));

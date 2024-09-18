@@ -1,9 +1,9 @@
 # big-project-group-6
 
-Dự án lớn về Quản lý Sách với Java OOP
+Dự án lớn về Quản lý Sách với Java OOP (Mục đích học tập)
 
 - bgsix: Là tên nhóm: Big Group Six (nhóm 6)
-- SJPM: Spring JavaFX Postgresql Maven (công nghệ sử dụng)
+- SPHM: Spring Postgresql Htmx Maven (công nghệ sử dụng)
 
 <div align="center">
   <a href="https://github.com/neilfranci/book-management-SJPM">English</a> |
@@ -28,16 +28,11 @@ Dự án lớn về Quản lý Sách với Java OOP
 1. [Clone dự án](#1-clone-dự-án)
 2. [Mở dự án trong IDE yêu thích của bạn](#2-mở-dự-án-trong-ide-yêu-thích-của-bạn)
 
-### 3. [Chạy Client](#3-chạy-client)
+### 3. [Chạy Dự án](#3-chạy-dự-án)
 
-1. [Chạy client (Development)](#31-chạy-client-development)
-2. [Chạy client (Production)](#32-chạy-client-production)
-
-### 4. [Chạy Server](#4-chạy-server)
-
-1. [Chỉnh sửa tệp `.env` (server)](#41-chỉnh-sửa-tệp-env-server)
-2. [Chạy server (Development)](#42-chạy-server-development)
-3. [Xây dựng native image (Production)](#43-xây-dựng-native-image-production)
+1. [Chỉnh sửa tệp `.env.template` trong đường dẫn này](#31-chỉnh-sửa-tệp-env-server)
+2. [Chạy server (Development)](#32-chạy-server-development)
+3. [Xây dựng native image (Production)](#33-xây-dựng-native-image-production)
 
 ---
 
@@ -51,7 +46,7 @@ Dự án lớn về Quản lý Sách với Java OOP
 
 1.3 Bỏ chọn "Stack Builder".
 
-![alt text](../assets/psql-install-1.png)
+![alt text](assets/psql-install-1.png)
 
 1.4 Nhấn "Next" cho đến khi gặp phần nhập mật khẩu cho superuser. Nhập mật khẩu của bạn.
 
@@ -231,54 +226,30 @@ Sau đó đợi extension cài đặt xong
 mvn clean install
 ```
 
-### 3. Chạy Client
+### 3. Chạy Project
 
-#### 3.1 Chạy client (Development)
-
-```bash
-mvn -pl client javafx:run
-```
-
-#### 3.2 Chạy client (Production)
-
-```bash
-mvn -pl client javafx:jlink
-```
-
-Sau đó chạy tệp thực thi trong thư mục target
-`.\client\target\client\bin\Client`
-
-Bản build production nằm trong thư mục `.\client\target\client`
-và cũng có tệp zip trong thư mục `.\client\target`.
-
-### 4. Chạy Server
-
-#### 4.1 Chỉnh sửa tệp `.env` (server)
-
-```bash
-server\.env.template
-```
+#### 3.1 Cấu hình biến môi trường (`.env` file)
 
 - Tạo một tệp mới `.env` ở cùng đường dẫn và sao chép nội dung từ `.env.template` sang `.env`.
 
 - Thay thế giá trị bằng giá trị của bạn.
 
-#### 4.2 Chạy server (Development)
+#### 3.2 Chạy Project (Development)
 
 ```bash
-mvn -pl server spring-boot:run
+mvn spring-boot:run
 ```
 
-#### 4.3 Xây dựng native image (Production)
+#### 3.3 Build native image (Production) (Không khả dụng bây giờ)
 
 ```bash
-mvn -pl server -Pnative native:compile -DskipTests
+mvn clean package -Pnative
 ```
 
 - Sau đó
 
  chạy tệp thực thi trong thư mục target
-`.\server\target\server` (native image là một tệp duy nhất), trong trường hợp này, tệp là `server.exe`.
+`.\target` (native image là một tệp duy nhất), trong trường hợp này, tệp là `bookmanagement.exe`.
 
 ---
 

@@ -1,9 +1,9 @@
 # big-project-group-6
 
-Big Project about Book Management with Java OOP
+Big Project about Book Management with Java OOP (Learining purpose)
 
 - bgsix: Is the team name: Big Group Six (nhom 6)
-- SJPM: Spring JavaFX Postgresql Maven (the technology stack)
+- SPHM: Spring Postgresql Htmx Maven (the technology stack)
 
 <div align="center">
   <span>English</span> |
@@ -28,16 +28,11 @@ Big Project about Book Management with Java OOP
 1. [Clone the project](#1-clone-the-project)
 2. [Open the project in your favorite IDE](#2-open-the-project-in-your-favorite-ide)
 
-### 3. [Run the Client](#3-run-the-client)
+### 3. [Run the Project](#3-run-the-project)
 
-1. [Running the client (Development)](#31-running-the-client-development)
-2. [Running the client (Production)](#32-running-the-client-production)
-
-### 4. [Run the Server](#4-run-the-server)
-
-1. [Open the .env.template file in this path](#41-open-the-envtemplate-file-in-this-path)
-2. [Running the server (Development)](#42-running-the-server-development)
-3. [Building the native image (Production)](#43-building-the-native-image-production)
+1. [Open the .env.template file in this path](#31-configure-the-environment-variables-env-file)
+2. [Running the server (Development)](#32-running-the-project-development)
+3. [Building the native image (Production)](#33-building-the-native-image-production-not-working-right-now)
 
 ---
 
@@ -233,52 +228,28 @@ then wait for the extension to install
 mvn clean install
 ```
 
-### 3. Run the Client
+### 3. Run the Project
 
-#### 3.1 running the client (Development)
+#### 3.1 Configure the environment variables (`.env` file)
 
-```bash
-mvn -pl client javafx:run
-```
-
-#### 3.2 running the client (Production)
-
-```bash
-mvn -pl client javafx:jlink
-```
-
-then run the executable file in the target folder
-`.\client\target\client\bin\Client`
-
-the production build is in the `.\client\target\client` folder
-and also the zip file in the `.\client\target` folder
-
-### 4. Run the Server
-
-#### 4.1 open the `.env.template` file in this path
-
-```bash
-server\.env.template
-```
-
-- create a new file `.env` in the same path and copy the content from `.env.template` to `.env`
+- create a new file `.env` in the root and copy the content from `.env.template` to `.env`
 
 - replace the value with your own value
 
-#### 4.2 running the server (Development)
+#### 3.2 Running the project (Development)
 
 ```bash
-mvn -pl server spring-boot:run
+mvn spring-boot:run
 ```
 
-#### 4.3 building the native image (Production)
+#### 3.3 building the native image (Production) (NOT WORKING RIGHT NOW)
 
 ```bash
-mvn -pl server -Pnative native:compile -DskipTests
+mvn clean package -Pnative
 ```
 
 - then run the executable file in the target folder
-`.\server\target\server` (the native image is a single file) in this case the file is `server.exe`
+`.\taget` (the native image is a single file) in this case the file is `bookmanagement.exe`
 
 ---
 
