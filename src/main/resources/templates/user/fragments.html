@@ -1,0 +1,22 @@
+<!-- Login Success Fragment -->
+<div id="success" th:fragment="login-success">
+  <div class="alert alert-success fixed-bottom" role="alert">
+    Login successful! Welcome back.
+  </div>
+</div>
+
+<!-- Login Failed Fragment -->
+<div id="failed" th:fragment="login-failed">
+  <div class="alert alert-danger fixed-bottom" role="alert">
+    Login failed! Please check your credentials and try again.
+  </div>
+</div>
+
+<style>
+  .fixed-bottom {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 1000;
+  }
+</style>

@@ -12,6 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookResponse {
+
 	private List<BookDTO> books;
 	private int totalPages;
 	private long totalElements;

@@ -15,13 +15,13 @@
       href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/global.css" />
-    <link rel="stylesheet" href="css/searchPage.css" />
+    <link rel="stylesheet" th:href="@{/css/global.css}" />
+    <link rel="stylesheet" th:href="@{/css/searchPage.css}" />
   </head>
 
-  <body>
+  <body class="space-mono-regular">
     <nav id="header">
-      <ul class="space-mono-regular">
+      <ul>
         <li>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -45,7 +45,7 @@
         <li>
           <button
             id="account-btn"
-            hx-get="/searchPage/accout"
+            hx-get="/searchPage/account"
             hx-trigger="click"
             hx-target="#content"
           >
@@ -76,46 +76,73 @@
     <div id="search">
       <p>Search Books</p>
 
-      <div>
-        <input type="text" id="searchInput" placeholder="Search book ..." />
-        <!-- Search Button -->
-        <button
-          id="searchBtn"
-          class="bg6-btn"
-          hx-get="/searchPage/search?search={searchInput.value}"
-          hx-trigger="click"
-          hx-target="#content"
-          hx-include="[id='searchInput']"
-        >
-          Search
-        </button>
-        <!-- Filter Button -->
-        <div class="dropdown">
-          <!-- <button
-          hx-get="/genre/getGenres"
-          hx-trigger="click"
-          hx-target="#genreList"
-          hx-swap="innerHTML"
-          >
-          </button> -->
+      <form
+        id="searchForm"
+        hx-get="/book/search-request"
+        hx-target="#bookRow"
+        hx-trigger="submit"
+        hx-include="#searchInput, #searchBy, .genre-checkbox:checked"
+      >
+        <input
+          type="text"
+          id="searchInput"
+          name="searchInput"
+          placeholder="Search ..."
+          value="hunger"
+        />
+        <button id="searchBtn" class="bg6-btn" type="submit">Search</button>
+
+        <!-- Search By Dropdown -->
+        <!-- <div class="dropdown">
           <button
-            class="bg6-btn"
+            class="bg6-btn dropdown-toggle"
             type="button"
-            id="searchFilter"
+            id="searchByBtn"
             data-bs-toggle="dropdown"
           >
             Search by
           </button>
           <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item" href="#" data-search-by="Title">Title</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-search-by="Author"
+                >Author</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" data-search-by="ISBN">ISBN</a>
+            </li>
+          </ul>
+        </div> -->
+
+        <!-- <input type="hidden" id="searchBy" name="searchBy" value="title" />
+        <div class="dropdown">
+          <button
+            class="bg6-btn dropdown-toggle"
+            type="button"
+            id="filterBtn"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Filter by Genre
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="filterBtn">
             <li th:each="genre : ${genres}">
               <label class="dropdown-item">
-                <input type="checkbox" />
+                <input
+                  type="checkbox"
+                  class="genre-checkbox"
+                  name="genre"
+                  th:value="${genre.genreName}"
+                />
                 <span th:text="${genre.genreName}"></span>
               </label>
             </li>
           </ul>
-        </div>
-      </div>
+        </div> -->
+      </form>
 
       <div class="btn-group" role="group">
         <button class="bg6-btn me-2">Recently Added</button>
@@ -155,14 +182,12 @@
             <th scope="col" style="width: 10%">Format</th>
             <th scope="col" style="width: 20%">Genres</th>
             <th scope="col" style="width: 10%">Rating</th>
-            <th scope="col" style="width: 15%">Actions</th>
+            <th scope="col" style="width: 15%">Details</th>
           </tr>
         </thead>
 
-        <!-- Table Body with dynamic content -->
-        <tbody>
-          <tr th:each="book : ${books}">
-            <!-- Image -->
+        <tbody id="bookRow">
+          <tr th:each="book : ${books}" th:fragment="bookRow">
             <td>
               <img
                 th:src="${book.coverImg}"
@@ -170,20 +195,26 @@
                 class="img-fluid rounded"
               />
             </td>
-            <!-- Title -->
-            <td th:text="${book.title}">Title</td>
-            <!-- Author -->
+            <td
+              th:text="${book.title}"
+              style="font-size: 14px; font-family: sans-serif"
+            >
+              Title
+            </td>
             <td th:text="${book.author}">Author</td>
-            <!-- Format -->
             <td th:text="${book.bookFormat}">Format</td>
-            <!-- Genres -->
-            <td th:text="${book.genres}">Genres</td>
-            <!-- Rating -->
-            <td th:text="${book.rating}">Rating</td>
-            <!-- Actions (View Details, Borrow) -->
+
+            <td
+              th:if="${!#lists.isEmpty(book.genres)}"
+              th:text="${book.genres.size() > 1 ? book.genres[0] + ', ' + book.genres[1] : book.genres[0]}"
+            >
+              Genres
+            </td>
+
+            <td th:if="${#lists.isEmpty(book.genres)}">No Genres</td>
+            <td th:text="${book.rating + '/5'}">Rating</td>
             <td>
               <button id="btn-viewDetails" class="bg6-btn">View Details</button>
-              <button id="btn-borrow" class="bg6-btn">Borrow</button>
             </td>
           </tr>
         </tbody>
@@ -192,5 +223,5 @@
   </body>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="js/searchPage.js"></script>
+  <script th:src="@{/js/searchPage.js}"></script>
 </html>

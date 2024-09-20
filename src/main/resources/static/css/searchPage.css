@@ -99,7 +99,7 @@ body::before {
     font-size: 1.5rem;
 }
 
-#search div:nth-child(2) {
+#search #searchForm {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -149,16 +149,16 @@ body::before {
     background-color: #424242;
     color: white;
     margin-bottom: 10px;
-    width: 110px;
-    font-size: 12px;
+    width: 140px;
+    font-size: 14px;
 }
 
 #btn-borrow {
     background-color: #40bab0;
     border: 1px solid #00463f;
     color: black;
-    width: 110px;
-    font-size: 12px;
+    width: 140px;
+    font-size: 14px;
 }
 
 #bookTable.table {

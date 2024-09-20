@@ -1,5 +1,6 @@
 package com.bgsix.bookmanagement.controller.api;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,9 @@ import com.bgsix.bookmanagement.service.BookService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,11 +55,16 @@ public class BookApiController {
 
 		logger.info("Getting books with title: {}", title);
 
-		BookResponse bookResponse = bookService.getBooksByTitle(title, page - 1, size);
+		Pageable pageable = PageRequest.of(page - 1, size);
 
-		if (bookResponse.getBooks().isEmpty()) {
+		Page<BookDTO> bookDTOs = bookService.getBooksByTitle(title, pageable);
+
+		if (bookDTOs.getContent().isEmpty()) {
 			return ResponseEntity.notFound().build();
 		}
+
+		BookResponse bookResponse = new BookResponse(bookDTOs.getContent(), bookDTOs.getTotalPages(),
+				bookDTOs.getTotalElements());
 
 		return ResponseEntity.ok(bookResponse);
 	}
@@ -68,11 +77,16 @@ public class BookApiController {
 
 		Pageable pageable = PageRequest.of(page - 1, size);
 
-		BookResponse bookResponse = bookService.getBooksByGenre(genres, pageable);
+		List<String> genreList = Arrays.asList(genres.toLowerCase().split(","));
 
-		if (bookResponse.getBooks().isEmpty()) {
+		Page<BookDTO> bookDTOs = bookService.getBooksByGenre(genreList, pageable);
+
+		if (bookDTOs.getContent().isEmpty()) {
 			return ResponseEntity.notFound().build();
 		}
+
+		BookResponse bookResponse = new BookResponse(bookDTOs.getContent(), bookDTOs.getTotalPages(),
+				bookDTOs.getTotalElements());
 
 		return ResponseEntity.ok(bookResponse);
 	}
@@ -84,11 +98,15 @@ public class BookApiController {
 
 		logger.info("Getting books by author: {}", author);
 
-		BookResponse bookResponse = bookService.getBooksByAuthor(author, page - 1, size);
+		Pageable pageable = PageRequest.of(page - 1, size);
+		Page<BookDTO> bookDTOs = bookService.getBooksByAuthor(author, pageable);
 
-		if (bookResponse.getBooks().isEmpty()) {
+		if (bookDTOs.getContent().isEmpty()) {
 			return ResponseEntity.notFound().build();
 		}
+
+		BookResponse bookResponse = new BookResponse(bookDTOs.getContent(), bookDTOs.getTotalPages(),
+				bookDTOs.getTotalElements());
 
 		return ResponseEntity.ok(bookResponse);
 	}
@@ -100,12 +118,16 @@ public class BookApiController {
 
 		logger.info("Getting books by ISBN: {}", isbn);
 
-		BookResponse bookResponse = bookService.getBooksByIsbn(isbn, page - 1, size);
+		Pageable pageable = PageRequest.of(page - 1, size);
 
-		if (bookResponse.getBooks().isEmpty()) {
+		Page<BookDTO> bookDTOs = bookService.getBooksByIsbn(isbn, pageable);
+
+		if (bookDTOs.getContent().isEmpty()) {
 			return ResponseEntity.notFound().build();
 		}
 
+		BookResponse bookResponse = new BookResponse(bookDTOs.getContent(), bookDTOs.getTotalPages(),
+				bookDTOs.getTotalElements());
 		return ResponseEntity.ok(bookResponse);
 	}
 
@@ -116,11 +138,16 @@ public class BookApiController {
 
 		logger.info("Getting books by rating: {}", rating);
 
-		BookResponse bookResponse = bookService.getBooksByRating(rating, page - 1, size);
+		Pageable pageable = PageRequest.of(page - 1, size);
 
-		if (bookResponse.getBooks().isEmpty()) {
+		Page<BookDTO> bookDTOs = bookService.getBooksByRating(rating, pageable);
+
+		if (bookDTOs.getContent().isEmpty()) {
 			return ResponseEntity.notFound().build();
 		}
+
+		BookResponse bookResponse = new BookResponse(bookDTOs.getContent(), bookDTOs.getTotalPages(),
+				bookDTOs.getTotalElements());
 
 		return ResponseEntity.ok(bookResponse);
 	}
@@ -132,11 +159,16 @@ public class BookApiController {
 
 		logger.info("Getting top rated books");
 
-		BookResponse bookResponse = bookService.getTopRateBooks(page - 1, size);
+		Pageable pageable = PageRequest.of(page - 1, size);
 
-		if (bookResponse.getBooks().isEmpty()) {
+		Page<BookDTO> bookDTOs = bookService.getTopRateBooks(pageable);
+
+		if (bookDTOs.getContent().isEmpty()) {
 			return ResponseEntity.notFound().build();
 		}
+
+		BookResponse bookResponse = new BookResponse(bookDTOs.getContent(), bookDTOs.getTotalPages(),
+				bookDTOs.getTotalElements());
 
 		return ResponseEntity.ok(bookResponse);
 	}
