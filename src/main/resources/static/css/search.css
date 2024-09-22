@@ -153,15 +153,11 @@ body::before {
     font-size: 14px;
 }
 
-#btn-borrow {
-    background-color: #40bab0;
-    border: 1px solid #00463f;
-    color: black;
-    width: 140px;
-    font-size: 14px;
-}
-
 #bookTable.table {
     --bs-table-bg: #202d3c;
     --bs-table-color: #ddffff;
+}
+
+.modal-content {
+    background-color: #e8ca9e;
 }

@@ -16,10 +16,10 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" th:href="@{/css/global.css}" />
-    <link rel="stylesheet" th:href="@{/css/searchPage.css}" />
+    <link rel="stylesheet" th:href="@{/css/search.css}" />
   </head>
 
-  <body class="space-mono-regular">
+  <body hx-boost="true" class="space-mono-regular">
     <nav id="header">
       <ul>
         <li>
@@ -187,38 +187,18 @@
         </thead>
 
         <tbody id="bookRow">
-          <tr th:each="book : ${books}" th:fragment="bookRow">
-            <td>
-              <img
-                th:src="${book.coverImg}"
-                th:alt="${book.title}"
-                class="img-fluid rounded"
-              />
-            </td>
-            <td
-              th:text="${book.title}"
-              style="font-size: 14px; font-family: sans-serif"
-            >
-              Title
-            </td>
-            <td th:text="${book.author}">Author</td>
-            <td th:text="${book.bookFormat}">Format</td>
-
-            <td
-              th:if="${!#lists.isEmpty(book.genres)}"
-              th:text="${book.genres.size() > 1 ? book.genres[0] + ', ' + book.genres[1] : book.genres[0]}"
-            >
-              Genres
-            </td>
-
-            <td th:if="${#lists.isEmpty(book.genres)}">No Genres</td>
-            <td th:text="${book.rating + '/5'}">Rating</td>
-            <td>
-              <button id="btn-viewDetails" class="bg6-btn">View Details</button>
-            </td>
-          </tr>
+          <div th:replace="~{fragments/search :: bookRow}"></div>
         </tbody>
       </table>
+      <!-- Modal for displaying book details -->
+      <div id="bookDetailsModal" class="modal fade" tabindex="-1" role="dialog">
+        <div
+          class="modal-dialog modal-xl modal-dialog-centered"
+          role="document"
+        >
+          <div class="modal-content"></div>
+        </div>
+      </div>
     </div>
   </body>
 

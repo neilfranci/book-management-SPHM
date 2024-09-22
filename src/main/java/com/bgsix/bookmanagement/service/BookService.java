@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import com.bgsix.bookmanagement.controller.api.BookApiController;
 import com.bgsix.bookmanagement.dto.BookDTO;
-import com.bgsix.bookmanagement.dto.BookResponse;
 import com.bgsix.bookmanagement.model.Book;
 import com.bgsix.bookmanagement.repository.BookRepository;
 
@@ -31,16 +30,16 @@ public class BookService {
 	public BookDTO getBookById(Long id) {
 		Book book = bookRepository.findBookById(id);
 
-		BookDTO bookDTO = new BookDTO(book, null);
+		String[] genres = bookRepository.findGenresForBookId(id);
 
-		return bookDTO;
+		return new BookDTO(book, Arrays.asList(genres));
 	}
 
 	// Convert a Page<Book> to a Page<BookDTO>
 	private Page<BookDTO> convertToBookDTOPage(Page<Book> booksPage, Pageable pageable) {
 		List<Long> bookIds = booksPage.stream().map(Book::getBookId).collect(Collectors.toList());
 
-		List<Object[]> genresResult = bookRepository.findGenresForBooks(bookIds);
+		List<Object[]> genresResult = bookRepository.findGenresForBookIds(bookIds);
 
 		Map<Long, List<String>> genresMap = genresResult.stream()
 				.collect(Collectors.toMap(result -> ((Number) result[0]).longValue(),

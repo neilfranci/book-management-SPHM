@@ -1,0 +1,103 @@
+<div th:fragment="bookDetailFragment" class="modal-content">
+  <div class="modal-body">
+    <div class="d-flex">
+      <img
+        th:src="${book.coverImg}"
+        class="img-fluid rounded shadow-sm me-3"
+        alt="Book Cover"
+      />
+
+      <div>
+        <h5 class="modal-title" th:text="${book.title}">Book Title</h5>
+        <p>
+          <strong>Author:</strong>
+          <span th:text="${book.author}">Author Name</span>
+        </p>
+        <p>
+          <strong>Format:</strong>
+          <span th:text="${book.bookFormat}">Format</span>
+        </p>
+        <p>
+          <strong>Genres:</strong>
+          <span
+            th:if="${!#lists.isEmpty(book.genres)}"
+            th:each="genre : ${book.genres}"
+            th:text="${genre}"
+          >
+            Genre
+          </span>
+          <span
+            th:if="${#lists.isEmpty(book.genres) || book.genres[0] == null}"
+          >
+            No Genres
+          </span>
+        </p>
+
+        <p>
+          <strong>Rating:</strong>
+          <span th:text="${book.rating + '/5'}">Rating</span>
+        </p>
+        <!-- <p>
+          <strong>Published:</strong>
+          <span th:text="${book.publishDate}">Publication Date</span>
+        </p> -->
+        <p>
+          <strong>ISBN:</strong>
+          <span th:text="${book.isbn}">ISBN Number</span>
+        </p>
+        <p>
+          <strong> Description: </strong>
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+      Close
+    </button>
+    <button type="button" class="btn btn-primary">Borrow / Purchase</button>
+  </div>
+</div>
+
+<tr th:fragment="noBookFound">
+  <td colspan="7" style="color: #ddffff">No Books Found</td>
+</tr>
+
+<tr th:each="book : ${books}" th:fragment="bookRow">
+  <td>
+    <img
+      th:src="${book.coverImg}"
+      th:alt="${book.title}"
+      class="img-fluid rounded"
+    />
+  </td>
+  <td th:text="${book.title}" style="font-size: 14px; font-family: sans-serif">
+    Title
+  </td>
+  <td th:text="${book.author}">Author</td>
+  <td th:text="${book.bookFormat}">Format</td>
+
+  <td
+    th:if="${!#lists.isEmpty(book.genres)}"
+    th:text="${book.genres[0]} + ', ' + ${book.genres[1]}"
+  >
+    Genres
+  </td>
+
+  <td th:if="${#lists.isEmpty(book.genres)}">No Genres</td>
+
+  <td th:text="${book.rating + '/5'}">Rating</td>
+  <td>
+    <button
+      class="bg6-btn"
+      th:hx-get="${'/book/details/' + book.bookId}"
+      hx-target="#bookDetailsModal .modal-content"
+      hx-trigger="click"
+      hx-swap="outerHTML"
+      data-bs-toggle="modal"
+      data-bs-target="#bookDetailsModal"
+    >
+      View Details
+    </button>
+  </td>
+</tr>

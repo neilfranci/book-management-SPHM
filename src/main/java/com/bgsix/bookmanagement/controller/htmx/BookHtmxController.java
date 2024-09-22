@@ -2,17 +2,18 @@ package com.bgsix.bookmanagement.controller.htmx;
 
 import java.util.List;
 
+import org.slf4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bgsix.bookmanagement.dto.BookDTO;
-import com.bgsix.bookmanagement.dto.BookResponse;
 import com.bgsix.bookmanagement.dto.genre.TopGenreDTO;
 import com.bgsix.bookmanagement.service.BookService;
 import com.bgsix.bookmanagement.service.GenreService;
@@ -24,13 +25,15 @@ public class BookHtmxController {
     private GenreService genreService;
     private BookService bookService;
 
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(BookHtmxController.class);
+
     public BookHtmxController(GenreService genreService, BookService bookService) {
         this.genreService = genreService;
         this.bookService = bookService;
     }
 
     @GetMapping("/search")
-    public String memberSearchPage(Model model) {
+    public String searcPage(Model model) {
         // Load Genre options
         List<TopGenreDTO> genres = genreService.getTopGenres();
 
@@ -61,10 +64,20 @@ public class BookHtmxController {
         model.addAttribute("books", bookDTOs.getContent());
 
         if (bookDTOs.getContent().isEmpty()) {
-            return "search/fragments :: noBookFound";
+            return "fragments/search :: noBookFound";
         }
         // Return the fragment with book rows
-        return "search/fragments :: bookRow";
+        return "fragments/search :: bookRow";
+    }
+
+    @GetMapping("/details/{id}")
+    public String getBookDetails(@PathVariable Long id, Model model) {
+        // Fetch the book from the database (replace this with your service)
+        BookDTO bookDTO = bookService.getBookById(id);
+
+        model.addAttribute("book", bookDTO);
+
+        return "fragments/search :: bookDetailFragment";
     }
 
 }
