@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 public class DataSourceConfig {
 
 	@Bean
-	public DataSource dataSource() {
+	DataSource dataSource() {
 
 		// String projectPath = System.getProperty("user.dir", ".");
 

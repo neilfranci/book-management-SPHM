@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bgsix.bookmanagement.dto.genre.TopGenreDTO;
+import com.bgsix.bookmanagement.dto.TopGenreDTO;
 import com.bgsix.bookmanagement.service.GenreService;
 
 import io.swagger.v3.oas.annotations.Operation;

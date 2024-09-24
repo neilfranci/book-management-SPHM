@@ -2,7 +2,6 @@ package com.bgsix.bookmanagement.controller.htmx;
 
 import java.util.List;
 
-import org.slf4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,20 +13,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bgsix.bookmanagement.dto.BookDTO;
-import com.bgsix.bookmanagement.dto.genre.TopGenreDTO;
+import com.bgsix.bookmanagement.dto.TopGenreDTO;
 import com.bgsix.bookmanagement.service.BookService;
 import com.bgsix.bookmanagement.service.GenreService;
 
 @Controller
 @RequestMapping("/book")
-public class BookHtmxController {
+public class BookController {
 
     private GenreService genreService;
     private BookService bookService;
 
-    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(BookHtmxController.class);
 
-    public BookHtmxController(GenreService genreService, BookService bookService) {
+    public BookController(GenreService genreService, BookService bookService) {
         this.genreService = genreService;
         this.bookService = bookService;
     }

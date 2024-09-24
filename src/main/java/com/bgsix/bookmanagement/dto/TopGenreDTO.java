@@ -1,4 +1,4 @@
-package com.bgsix.bookmanagement.dto.genre;
+package com.bgsix.bookmanagement.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
