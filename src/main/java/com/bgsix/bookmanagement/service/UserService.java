@@ -1,9 +1,10 @@
 package com.bgsix.bookmanagement.service;
 
-// MemberService.java
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
 	@Autowired
 	private UserRepository userRepository;
@@ -64,5 +65,19 @@ public class UserService {
 
 	public User getCurrentUser() {
 		return (User) userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		// Find user by email (or username) from the database
+		User user = userRepository.findByEmail(email)
+				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+		// Convert User to Spring Security's UserDetails
+		return org.springframework.security.core.userdetails.User
+				.withUsername(user.getEmail())
+				.password(user.getPasswordHash())
+				.roles(user.getRole())
+				.build();
 	}
 }
