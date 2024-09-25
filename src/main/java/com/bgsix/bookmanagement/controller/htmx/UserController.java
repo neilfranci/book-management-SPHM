@@ -23,10 +23,6 @@ public class UserController {
 
 	@GetMapping("/details")
     public String getUserDetails(@RequestParam(defaultValue = "0", name = "frag") boolean useFragment, Model model) {
-        // Assuming you have a method to fetch the current user's details
-
-        logger.info("Use Fragment: " + useFragment);
-
         User user = userService.getCurrentUser();
         
         // Adding user and borrowed books data to the model
