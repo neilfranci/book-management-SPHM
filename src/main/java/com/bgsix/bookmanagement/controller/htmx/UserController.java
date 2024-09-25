@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
 import com.bgsix.bookmanagement.model.User;
+import com.bgsix.bookmanagement.service.BorrowService;
 import com.bgsix.bookmanagement.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,9 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
+    @Autowired
+    private BorrowService borrowService;
+
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
 	@GetMapping("/details")
@@ -27,7 +31,7 @@ public class UserController {
         
         // Adding user and borrowed books data to the model
         model.addAttribute("user", user);
-        // model.addAttribute("borrowedBooks", user.getBorrowedBooks());
+        model.addAttribute("borrowedBooks", borrowService.getBorrowedBooks());
 
         if (useFragment) {
             return "fragments/user-details";

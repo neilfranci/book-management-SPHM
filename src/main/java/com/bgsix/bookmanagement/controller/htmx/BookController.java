@@ -2,19 +2,18 @@ package com.bgsix.bookmanagement.controller.htmx;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import com.bgsix.bookmanagement.dto.BookDTO;
 import com.bgsix.bookmanagement.dto.TopGenreDTO;
+import com.bgsix.bookmanagement.model.Borrow;
 import com.bgsix.bookmanagement.service.BookService;
+import com.bgsix.bookmanagement.service.BorrowService;
 import com.bgsix.bookmanagement.service.GenreService;
 
 @Controller
@@ -23,11 +22,12 @@ public class BookController {
 
     private GenreService genreService;
     private BookService bookService;
+    private BorrowService borrowService;
 
-
-    public BookController(GenreService genreService, BookService bookService) {
+    public BookController(GenreService genreService, BookService bookService, BorrowService borrowService) {
         this.genreService = genreService;
         this.bookService = bookService;
+        this.borrowService = borrowService;
     }
 
     @GetMapping("/search")
@@ -44,7 +44,7 @@ public class BookController {
         model.addAttribute("totalElements", books.getTotalElements());
         model.addAttribute("genres", genres);
 
-        return "search/index"; // Loads the index.html template
+        return "search/index";
     }
 
     @GetMapping("/search-request")
@@ -64,18 +64,38 @@ public class BookController {
         if (bookDTOs.getContent().isEmpty()) {
             return "fragments/search :: noBookFound";
         }
-        // Return the fragment with book rows
         return "fragments/search :: bookRow";
     }
 
     @GetMapping("/details/{id}")
     public String getBookDetails(@PathVariable Long id, Model model) {
-        // Fetch the book from the database (replace this with your service)
         BookDTO bookDTO = bookService.getBookById(id);
 
         model.addAttribute("book", bookDTO);
 
         return "fragments/search :: bookDetailFragment";
+    }
+
+    @PostMapping("/borrow/{bookId}")
+    public String borrowBook(@PathVariable Long bookId, Model model) {
+        borrowService.borrowBook(bookId);
+
+        model.addAttribute("message", "Successfully borrowed the book!");
+        return "fragments/borrow :: successBorrowFragment";
+    }
+
+    @PutMapping("/borrow/return/{borrowId}")
+    @ResponseBody
+    public ResponseEntity<Void> returnBook(@PathVariable Long borrowId) {
+        Borrow borrow = borrowService.returnBook(borrowId);
+
+        if (borrow.isReturned()) {
+            // If successful, return HTTP 200 OK
+            return ResponseEntity.ok().build();
+        } else {
+            // If there was an issue, return HTTP 404 Not Found or other status
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
 }

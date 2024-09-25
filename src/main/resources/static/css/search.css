@@ -160,8 +160,30 @@ body::before {
 }
 
 .modal-content {
-    background-color: #e8ca9e;
+    --bs-modal-bg: #202d3c;
+    --bs-modal-color: #ddffff;
 }
+
+
+/* Book Details */
+.book-title {
+    font-size: 1.6rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.book-author {
+    font-size: 1.2rem;
+    color: #8a9aaa;
+    margin-bottom: 1rem;
+}
+
+.book-rating {
+    font-size: 1.2rem;
+    color: #ffc107;
+    margin-bottom: 1rem;
+}
+
 
 /* User Details */
 

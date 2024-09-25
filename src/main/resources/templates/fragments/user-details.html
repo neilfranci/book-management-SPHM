@@ -55,27 +55,29 @@
         <th>Action</th>
       </tr>
     </thead>
-    <!-- <tbody>
-		<tr th:each="book : ${borrowedBooks}">
-		  <td th:text="${book.title}">The Great Gatsby</td>
-		  <td th:text="${book.author}">F. Scott Fitzgerald</td>
-		  <td th:text="${book.borrowDate}">2023-06-15</td>
-		  <td th:text="${book.returnDate ?: 'Not returned'}">Not returned</td>
-		  <td>
-			<a
-			  href="#"
-			  class="button button-outline"
-			  th:if="${book.returnDate == null}"
-			  th:text="${book.returnDate == null ? 'Return' : 'Returned'}"
-			>
-			</a>
-		  </td>
-		</tr>
-	  </tbody> -->
+    <tbody>
+      <tr th:each="book : ${borrowedBooks}">
+        <td th:text="${book.title}">The Great Gatsby</td>
+        <td th:text="${book.author}">F. Scott Fitzgerald</td>
+        <td th:text="${book.borrowDate}">YEAR-M-DD</td>
+        <td th:text="${book.returnDate}">YEAR-M-DD</td>
+        <td>
+          <button
+            class="bg6-btn"
+            th:if="${#bools.isFalse(book.returned)}"
+            th:hx-put="${'/book/borrow/return/' + book.borrowId}"
+            hx-target="closest tr"
+            hx-swap="outerHTML"
+          >
+            > Return
+          </button>
+          <p style="margin: 10px 0" th:if="${book.returned}">Returned</p>
+        </td>
+      </tr>
+    </tbody>
   </table>
 
   <div class="d-flex justify-content-between">
     <button class="bg6-btn">Edit Profile</button>
-    <button class="bg6-btn">Borrow New Book</button>
   </div>
 </div>
