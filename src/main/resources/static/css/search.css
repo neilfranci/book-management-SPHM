@@ -25,6 +25,7 @@ body::before {
     z-index: -1;
 }
 
+
 .bg6-btn {
     background-color: #222d3a;
     color: #ddffff;
@@ -129,9 +130,9 @@ body::before {
 
 #content {
     margin: 0 20px;
+    /* padding: 20px; */
+    background-color: #202d3c;
 }
-
-
 
 #header-book {
     background-color: #202d3c;
@@ -160,4 +161,67 @@ body::before {
 
 .modal-content {
     background-color: #e8ca9e;
+}
+
+/* User Details */
+
+.container.user-detail {
+    background-color: #202d3c;
+    color: #ddffff;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    color: white;
+}
+
+.avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.user-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.user-info p {
+    margin: 10px 0;
+}
+
+.user-info span {
+    color: #ddffff;
+}
+
+.status-badge {
+    background-color: #15803d;
+    color: #bbf7d0;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9em;
+}
+
+.user-detail-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+
+.user-detail-table th,
+td {
+    text-align: left;
+    padding: 12px;
+    border-bottom: 1px solid #334155;
+}
+
+.user-detail-table th {
+    background-color: #1e293b;
 }

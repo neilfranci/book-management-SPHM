@@ -15,6 +15,8 @@ public class Member extends User {
 
 	public Member() {
 		this.role = "MEMBER";
+		this.gender = "Other";
+		this.status = "Active";
 		this.dateJoined = LocalDate.now();
 	}
 }

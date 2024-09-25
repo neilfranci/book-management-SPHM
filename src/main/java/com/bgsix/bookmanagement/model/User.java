@@ -16,24 +16,24 @@ public abstract class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long userId;
+	Long userId;
 
-	private String name;
+	String name;
 
 	// Male, Female, Other
-	private String gender;
+	String gender;
 
-	private String email;
+	String email;
 
-	private String passwordHash;
+	String passwordHash;
 
 	// Admin, Member
 	String role;
 
 	// Active, Inactive, Suspended
-	private String membershipStatus;
+	String status;
 
-	private LocalDate dateOfBirth;
+	LocalDate dateOfBirth;
 
 	LocalDate dateJoined;
 }
