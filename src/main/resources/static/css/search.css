@@ -12,6 +12,7 @@ body {
     background-position: center;
     background-attachment: fixed;
     position: relative;
+    padding-top: 60px;
 }
 
 body::before {
@@ -159,13 +160,13 @@ body::before {
     --bs-table-color: #ddffff;
 }
 
+/* Book Details */
+
 .modal-content {
     --bs-modal-bg: #202d3c;
     --bs-modal-color: #ddffff;
 }
 
-
-/* Book Details */
 .book-title {
     font-size: 1.6rem;
     font-weight: bold;
@@ -231,19 +232,22 @@ body::before {
     font-size: 0.9em;
 }
 
-.user-detail-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 30px;
+#user-detail-table.table {
+    --bs-table-bg: #202d3c;
+    --bs-table-color: #ddffff;
+
 }
 
-.user-detail-table th,
-td {
+#user-detail-table.table-striped {
+    --bs-table-striped-color: #ddffff;
+    --bs-table-striped-bg: #343f4d;
+}
+
+#user-detail-table td {
     text-align: left;
-    padding: 12px;
-    border-bottom: 1px solid #334155;
+    border-bottom: solid 1px rgba(255, 255, 255, 0.3);
 }
 
-.user-detail-table th {
+#user-detail-table th {
     background-color: #1e293b;
 }

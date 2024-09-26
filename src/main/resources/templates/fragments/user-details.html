@@ -45,33 +45,33 @@
   <hr style="background-color: white" />
 
   <h2>Borrowed Books</h2>
-  <table class="user-detail-table">
+  <table id="user-detail-table" class="table table-striped align-middle">
     <thead>
       <tr>
-        <th>Title</th>
-        <th>Author</th>
+        <th style="width: 40%">Title</th>
+        <th style="width: 20%">Author</th>
         <th>Borrow Date</th>
         <th>Return Date</th>
         <th>Action</th>
       </tr>
     </thead>
     <tbody>
-      <tr th:each="book : ${borrowedBooks}">
-        <td th:text="${book.title}">The Great Gatsby</td>
-        <td th:text="${book.author}">F. Scott Fitzgerald</td>
-        <td th:text="${book.borrowDate}">YEAR-M-DD</td>
-        <td th:text="${book.returnDate}">YEAR-M-DD</td>
+      <tr th:each="borrow : ${borrowedBooks}">
+        <td th:text="${borrow.title}">The Great Gatsby</td>
+        <td th:text="${borrow.author}">F. Scott Fitzgerald</td>
+        <td th:text="${borrow.borrowDate}">YEAR-M-DD</td>
+        <td th:text="${borrow.returnDate}">YEAR-M-DD</td>
         <td>
           <button
             class="bg6-btn"
-            th:if="${#bools.isFalse(book.returned)}"
-            th:hx-put="${'/book/borrow/return/' + book.borrowId}"
+            th:if="${#bools.isFalse(borrow.returned)}"
+            th:hx-put="${'/book/borrow/return/' + borrow.borrowId}"
             hx-target="closest tr"
             hx-swap="outerHTML"
           >
             > Return
           </button>
-          <p style="margin: 10px 0" th:if="${book.returned}">Returned</p>
+          <p style="margin: 10px 0" th:if="${borrow.returned}">Returned</p>
         </td>
       </tr>
     </tbody>

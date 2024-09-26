@@ -3,15 +3,13 @@ package com.bgsix.bookmanagement.controller.htmx;
 import java.util.List;
 
 import org.springframework.data.domain.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.bgsix.bookmanagement.dto.BookDTO;
+import com.bgsix.bookmanagement.dto.BorrowedBookDTO;
 import com.bgsix.bookmanagement.dto.TopGenreDTO;
-import com.bgsix.bookmanagement.model.Borrow;
 import com.bgsix.bookmanagement.service.BookService;
 import com.bgsix.bookmanagement.service.BorrowService;
 import com.bgsix.bookmanagement.service.GenreService;
@@ -44,7 +42,7 @@ public class BookController {
         model.addAttribute("totalElements", books.getTotalElements());
         model.addAttribute("genres", genres);
 
-        return "search/index";
+        return "book/search";
     }
 
     @GetMapping("/search-request")
@@ -85,17 +83,12 @@ public class BookController {
     }
 
     @PutMapping("/borrow/return/{borrowId}")
-    @ResponseBody
-    public ResponseEntity<Void> returnBook(@PathVariable Long borrowId) {
-        Borrow borrow = borrowService.returnBook(borrowId);
+    public String returnBook(@PathVariable Long borrowId, Model model) {
 
-        if (borrow.isReturned()) {
-            // If successful, return HTTP 200 OK
-            return ResponseEntity.ok().build();
-        } else {
-            // If there was an issue, return HTTP 404 Not Found or other status
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        BorrowedBookDTO borrowedBookDTO = borrowService.returnBook(borrowId);
+
+        model.addAttribute("borrow", borrowedBookDTO);
+        return "fragments/borrow :: borrowBookRow";
     }
 
 }

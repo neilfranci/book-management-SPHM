@@ -24,14 +24,31 @@ public class BorrowService {
     @Autowired
     private UserService userService;
 
-    public Borrow returnBook(Long borrowId) {
+    public BorrowedBookDTO returnBook(Long borrowId) {
+
+        Object result = borrowRepository.findBorrowedBookWithBorrowId(borrowId);
+
         Borrow borrow = borrowRepository.findByBorrowId(borrowId);
+
+
+        Object[] row = (Object[]) result;
+       
+        Long userId = ((Integer) row[1]).longValue();
         
+        LocalDate borrowDate = ((Date) row[3]).toLocalDate();
+        LocalDate returnDate = (row[4] != null ? ((Date) row[4]).toLocalDate() : null);
+        String title = (String) row[5];
+        String author = (String) row[6];
+
+        BorrowedBookDTO borrowedBookDTO = new BorrowedBookDTO(borrowId, userId, true, borrowDate, returnDate, title, author);
+
         borrow.setReturned(true);
 
-        borrowRepository.save(borrow);
+        borrowRepository.save(
+            borrow
+        );
 
-        return borrow;
+        return borrowedBookDTO;
       
     }
 
