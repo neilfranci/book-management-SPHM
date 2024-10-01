@@ -78,13 +78,16 @@
   <td th:text="${book.bookFormat}">Format</td>
 
   <td
-    th:if="${!#lists.isEmpty(book.genres)}"
-    th:text="${book.genres[0]} + ', ' + ${book.genres[1]}"
+    style="font-size: 14px; padding: 0 20px"
+    th:if="${book.genres != null and not #lists.isEmpty(book.genres)}"
+    th:text="${#strings.listJoin(book.genres, ', ')}"
   >
     Genres
   </td>
 
-  <td th:if="${#lists.isEmpty(book.genres)}">No Genres</td>
+  <td th:if="${#lists.isEmpty(book.genres) || book.genres == null}">
+    No Genres
+  </td>
 
   <td th:text="${book.rating + '/5'}">Rating</td>
   <td>

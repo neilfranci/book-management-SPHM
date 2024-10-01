@@ -53,6 +53,7 @@ public class BookService {
 
 	public Page<BookDTO> getBooksByTitle(String title, Pageable pageable) {
 		Page<Book> booksPage = bookRepository.findByTitleContainingIgnoreCase(title, pageable);
+
 		return convertToBookDTOPage(booksPage, pageable);
 	}
 
@@ -183,11 +184,15 @@ public class BookService {
 	// return new PageImpl<>(paginatedBooks, pageable, books.size());
 	// }
 
-	// public Book saveBook(Book book) {
-	// return bookRepository.save(book);
-	// }
+	public Book addBook(Book book) {
+		return bookRepository.save(book);
+	}
 
-	// public void deleteBook(Long id) {
-	// bookRepository.deleteById(id);
-	// }
+	public Book saveBook(Book book) {
+		return bookRepository.save(book);
+	}
+
+	public void deleteBook(Long id) {
+		bookRepository.deleteById(id);
+	}
 }

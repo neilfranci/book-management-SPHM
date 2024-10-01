@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.bgsix.bookmanagement.dto.SignInForm;
 import com.bgsix.bookmanagement.dto.SignUpForm;
+import com.bgsix.bookmanagement.dto.UserForm;
 import com.bgsix.bookmanagement.model.Member;
 import com.bgsix.bookmanagement.model.User;
 import com.bgsix.bookmanagement.repository.UserRepository;
@@ -64,7 +65,8 @@ public class UserService implements UserDetailsService {
 	}
 
 	public User getCurrentUser() {
-		return (User) userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()).get();
+		return (User) userRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName())
+				.get();
 	}
 
 	@Override
@@ -74,10 +76,28 @@ public class UserService implements UserDetailsService {
 				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
 		// Convert User to Spring Security's UserDetails
-		return org.springframework.security.core.userdetails.User
-				.withUsername(user.getEmail())
-				.password(user.getPasswordHash())
-				.roles(user.getRole())
-				.build();
+		return org.springframework.security.core.userdetails.User.withUsername(user.getEmail())
+				.password(user.getPasswordHash()).roles(user.getRole()).build();
+	}
+
+	public List<User> getAllUsers() {
+		return userRepository.findAll();
+	}
+
+	public User getUserById(Long userId) {
+		return userRepository.findById(userId).orElse(null);
+	}
+
+	public void updateUser(Long userId, UserForm userForm) {
+		User user = userRepository.findById(userId).orElse(null);
+		if (user != null) {
+			user.setName(userForm.getName());
+			user.setEmail(userForm.getEmail());
+			user.setGender(userForm.getGender());
+			user.setRole(userForm.getRole());
+			user.setStatus(userForm.getStatus());
+			user.setDateOfBirth(userForm.getDateOfBirth());
+			userRepository.save(user);
+		}
 	}
 }

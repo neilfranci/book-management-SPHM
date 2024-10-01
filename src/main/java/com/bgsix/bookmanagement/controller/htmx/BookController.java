@@ -7,12 +7,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import com.bgsix.bookmanagement.dto.AddBookForm;
 import com.bgsix.bookmanagement.dto.BookDTO;
 import com.bgsix.bookmanagement.dto.BorrowedBookDTO;
 import com.bgsix.bookmanagement.dto.TopGenreDTO;
+import com.bgsix.bookmanagement.model.Book;
+import com.bgsix.bookmanagement.model.User;
 import com.bgsix.bookmanagement.service.BookService;
 import com.bgsix.bookmanagement.service.BorrowService;
 import com.bgsix.bookmanagement.service.GenreService;
+import com.bgsix.bookmanagement.service.UserService;
 
 @Controller
 @RequestMapping("/book")
@@ -21,11 +25,14 @@ public class BookController {
     private GenreService genreService;
     private BookService bookService;
     private BorrowService borrowService;
+    private UserService userService;
 
-    public BookController(GenreService genreService, BookService bookService, BorrowService borrowService) {
+    public BookController(GenreService genreService, BookService bookService, BorrowService borrowService,
+            UserService userService) {
         this.genreService = genreService;
         this.bookService = bookService;
         this.borrowService = borrowService;
+        this.userService = userService;
     }
 
     @GetMapping("/search")
@@ -41,6 +48,10 @@ public class BookController {
         model.addAttribute("totalPages", books.getTotalPages());
         model.addAttribute("totalElements", books.getTotalElements());
         model.addAttribute("genres", genres);
+
+        // Get User Role
+        User user = userService.getCurrentUser();
+        model.addAttribute("userRole", user.getRole());
 
         return "book/search";
     }
@@ -91,4 +102,23 @@ public class BookController {
         return "fragments/borrow :: borrowBookRow";
     }
 
+    // Admin routes
+    @GetMapping("/add")
+    public String getMethodName(Model model) {
+        model.addAttribute("addBookForm", new AddBookForm());
+        return "book/add-book";
+    }
+
+    @PostMapping("/add")
+    public String addBook(@ModelAttribute AddBookForm addBookForm, Model model) {
+
+        System.out.println(addBookForm.toString());
+
+        Book bookToSave = new Book(addBookForm.getAuthor(), addBookForm.getTitle(), addBookForm.getIsbn(),
+                addBookForm.getBookFormat(), addBookForm.getPages(), addBookForm.getPrice(), addBookForm.getCoverImg());
+
+        bookService.addBook(bookToSave);
+
+        return "redirect:/book/add?success";
+    }
 }

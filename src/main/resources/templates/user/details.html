@@ -21,67 +21,23 @@
       href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"
+      integrity="sha512-dPXYcDub/aeb08c63jRq/k6GaKccl256JQy/AnOq7CAnEZ9FzSL9wSbcZkMp4R26vBsMLFYH4kQ67/bbV8XaCQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
   </head>
   <body>
-    <nav id="header">
-      <ul>
-        <li>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="40"
-            height="40"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#80ffb9"
-            stroke-width="1"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
-            <path
-              d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"
-            />
-          </svg>
-          <span id="header-title" class="space-mono-bold">Library</span>
-          <span style="color: white">(Member)</span>
-        </li>
-        <li>
-          <button
-            id="account-btn"
-            hx-get="/user/details"
-            hx-target="main"
-            hx-swap="outerHTML"
-            hx-push-url="/user/details"
-          >
-            <svg
-              width="32px"
-              height="32px"
-              fill="#ddffff"
-              viewBox="0 0 36 36"
-              preserveAspectRatio="xMidYMid meet"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-            >
-              <path
-                d="M18,17a7,7,0,1,0-7-7A7,7,0,0,0,18,17ZM18,5a5,5,0,1,1-5,5A5,5,0,0,1,18,5Z"
-                class="clr-i-outline clr-i-outline-path-1"
-              />
-              <path
-                d="M30.47,24.37a17.16,17.16,0,0,0-24.93,0A2,2,0,0,0,5,25.74V31a2,2,0,0,0,2,2H29a2,2,0,0,0,2-2V25.74A2,2,0,0,0,30.47,24.37ZM29,31H7V25.73a15.17,15.17,0,0,1,22,0h0Z"
-                class="clr-i-outline clr-i-outline-path-2"
-              />
-            </svg>
-            Account
-          </button>
-          <a
-            th:href="@{/logout}"
-            class="btn btn-outline-light"
-            data-hx-boost="false"
-            >Logout</a
-          >
-        </li>
-      </ul>
-    </nav>
-    <div th:replace="~{fragments/user-details}"></div>
+    <nav th:replace="~{fragments/nav}"></nav>
+    <div
+      th:if="${user.getRole()} == Member"
+      th:insert="~{fragments/member-borrow-book}"
+    ></div>
+    <div
+      th:if="${user.getRole()} == Admin"
+      th:insert="~{fragments/admin-users-list}"
+    ></div>
   </body>
 </html>

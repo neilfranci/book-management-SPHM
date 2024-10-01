@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Library Admin - Manage Members</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style></style>
+  </head>
+  <body>
+    <div class="container user-detail">
+      <button
+        hx-get="/book/search"
+        hx-target="body"
+        hx-swap="outerHTML"
+        hx-push-url="/book/search"
+        class="bg6-btn"
+      >
+        ← Return to Home Page
+      </button>
+
+      <div class="header">
+        <img class="avatar" src="https://placehold.co/80x80" alt="" />
+        <div>
+          <h2 th:text="${user.name}" style="padding-top: 15px">Emma Wilson</h2>
+          <p>Library <span th:text="${user.role}">MEMBER</span></p>
+        </div>
+      </div>
+
+      <div class="user-info">
+        <div>
+          <p>
+            <span>Name:</span> <span th:text="${user.name}">Emma Wilson</span>
+          </p>
+          <p>
+            <span>Member Since:</span>
+            <span th:text="${user.dateJoined}">March 10, 2022</span>
+          </p>
+          <p>
+            <span>Date of Birth:</span>
+            <span th:text="${user.dateOfBirth ?: 'Not Exist'}">Not Exist</span>
+          </p>
+        </div>
+        <div>
+          <p>
+            <span>Email:</span>
+            <span th:text="${user.email}">emma.wilson@example.com</span>
+          </p>
+          <p>
+            <span>Gender:</span> <span th:text="${user.gender}">OTHER</span>
+          </p>
+          <p>
+            <span>Account Status:</span>
+            <span class="status-badge" th:text="${user.status}">Active</span>
+          </p>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="mb-4">Manage Members</h3>
+        <div class="d-flex justify-content-between mb-3">
+          <input
+            type="text"
+            class="form-control w-25"
+            placeholder="Search members..."
+            data-th:attr="hx-get='/member/search?query=' + this.value, hx-target='#user-detail-table', hx-trigger='input'"
+          />
+          <button
+            class="bg6-btn"
+            data-bs-toggle="modal"
+            data-bs-target="#editModal"
+            disabled
+          >
+            Add New Member
+          </button>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-dark table-hover">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Member Since</th>
+                <th>Date of Birth</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="user-detail-table">
+              <tr th:each="member : ${members}">
+                <td th:text="${member.name}">John Doe</td>
+                <td th:text="${member.email}">john@example.com</td>
+                <td th:text="${member.dateJoined}">2023-05-15</td>
+                <td th:text="${member.dateOfBirth} ?: 'Not Exist'">
+                  2023-05-15
+                </td>
+                <td th:text="${member.role}">Role</td>
+                <td>
+                  <span
+                    class="badge"
+                    th:classappend="${member.status == 'Active' ? 'bg-success' : (member.status == 'Pending' ? 'bg-warning text-dark' : 'bg-danger')}"
+                    th:text="${member.status}"
+                    >Active</span
+                  >
+                </td>
+                <td>
+                  <button
+                    class="btn btn-sm btn-outline-light me-2"
+                    th:hx-get="${'/user/' + member.userId}"
+                    hx-target="#editModal .modal-content"
+                    hx-swap="outerHTML"
+                    hx-trigger="click"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editModal"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    class="btn btn-sm btn-danger"
+                    disabled
+                    hx-swap="outerHTML"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1">
+      <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content bg-dark text-light"></div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

@@ -4,9 +4,7 @@ import java.util.List;
 
 import com.bgsix.bookmanagement.model.Book;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter

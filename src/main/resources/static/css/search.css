@@ -37,10 +37,11 @@ body::before {
 }
 
 .bg6-btn:hover {
-    background-color: #202d3c;
+    background-color: #2b5381;
     border-radius: 5px;
     border: 1px solid #568dc3;
     color: #ddffff;
+    cursor: pointer;
 }
 
 .bg6-btn:active {
@@ -77,17 +78,6 @@ body::before {
     color: #80ffb9;
     font-size: 1.5rem;
 }
-
-#account-btn {
-    background-color: #222d3a;
-    color: #ddffff;
-    height: 44px;
-    width: 135px;
-    border-radius: 5px;
-    border: 1px solid #568dc3;
-    cursor: pointer;
-}
-
 
 #search {
     height: 150px;

@@ -21,6 +21,11 @@ public class AuthController {
 	@Autowired
 	private UserService userService;
 
+	@GetMapping("")
+	public String getBooks(Model model) {
+		return "redirect:/book/search";
+	}
+
 	@GetMapping("/login")
 	public String showLoginForm(Model model) {
 		model.addAttribute("signInForm", new SignInForm());

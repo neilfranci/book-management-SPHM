@@ -40,4 +40,20 @@ public class Book {
 
 	@Column(name = "PUBLICATION_YEAR")
 	private Integer publicationYear;
+
+	public Book(String author, String title, String isbn, String bookFormat, Integer pages, Double price,
+			String coverImg) {
+		this.author = author;
+		this.title = title;
+		this.isbn = isbn;
+		this.bookFormat = bookFormat;
+		this.pages = pages;
+		this.price = price;
+		this.coverImg = coverImg;
+
+		this.likedPercent = 90;
+		this.numRatings = 100;
+		this.rating = 4.5f;
+		this.publicationYear = 0;
+	}
 }

@@ -1,0 +1,100 @@
+<div class="modal-content bg-dark text-light">
+  <div class="modal-header">
+    <h5 class="modal-title" id="editModalLabel">Edit Member</h5>
+    <button
+      type="button"
+      class="btn-close btn-close-white"
+      data-bs-dismiss="modal"
+      aria-label="Close"
+    ></button>
+  </div>
+  <div class="modal-body">
+    <form
+      th:action="@{'/user/update/' + ${user.userId}}"
+      th:object="${user}"
+      method="post"
+    >
+      <div class="mb-3">
+        <label for="editName" class="form-label">Name</label>
+        <input
+          type="text"
+          class="form-control bg-secondary text-light"
+          id="editName"
+          name="name"
+          th:value="*{name}"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="editEmail" class="form-label">Email</label>
+        <input
+          type="email"
+          class="form-control bg-secondary text-light"
+          id="editEmail"
+          name="email"
+          th:value="*{email}"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="editGender" class="form-label">Gender</label>
+        <select
+          class="form-select bg-secondary text-light"
+          id="editGender"
+          name="gender"
+        >
+          <option value="Male" th:selected="*{gender} == 'Male'">Male</option>
+          <option value="Female" th:selected="*{gender} == 'Female'">
+            Female
+          </option>
+          <option value="Other" th:selected="*{gender} == 'Other'">
+            Other
+          </option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="editRole" class="form-label">Role</label>
+        <select
+          class="form-select bg-secondary text-light"
+          id="editRole"
+          name="role"
+        >
+          <option value="Member" th:selected="*{role} == 'Member'">
+            Member
+          </option>
+          <option value="Admin" th:selected="*{role} == 'Admin'">Admin</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="editDateOfBirth" class="form-label">Date of Birth</label>
+        <input
+          type="date"
+          class="form-control bg-secondary text-light"
+          id="editDateOfBirth"
+          name="dateOfBirth"
+          th:value="*{dateOfBirth}"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="editStatus" class="form-label">Status</label>
+        <select
+          class="form-select bg-secondary text-light"
+          id="editStatus"
+          name="status"
+        >
+          <option value="Active" th:selected="*{status} == 'Active'">
+            Active
+          </option>
+          <option value="Pending" th:selected="*{status} == 'Pending'">
+            Pending
+          </option>
+          <option value="Inactive" th:selected="*{status} == 'Inactive'">
+            Inactive
+          </option>
+        </select>
+      </div>
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+        Close
+      </button>
+      <button type="submit" class="btn btn-primary">Save changes</button>
+    </form>
+  </div>
+</div>
