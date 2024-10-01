@@ -70,16 +70,24 @@ public class UserController {
     }
 
     @PostMapping("/update/{userId}")
-    public String updateUser(@PathVariable Long userId, @ModelAttribute UserForm userForm, Model model) {
+    public String updateUser(@PathVariable Long userId, @ModelAttribute UserForm userForm, Model model,
+            HttpServletRequest request, HttpServletResponse response) {
+        String oldUserRole = userService.getCurrentUser().getRole();
+        Long oldUserId = userService.getCurrentUser().getUserId();
+
         userService.updateUser(userId, userForm);
 
-        User user = userService.getCurrentUser();
+        if (oldUserId.equals(userId) && !oldUserRole.equals(userForm.getRole())) {
+            logger.info("Changing user role from {} to {}", oldUserRole, userForm.getRole());
 
-        if (user.getUserId().equals(userId)) {
             SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
             logoutHandler.logout(request, response, SecurityContextHolder.getContext().getAuthentication());
 
             return "redirect:/login?logout";
+        }
+
+        if (oldUserId.equals(userId)) {
+            return "redirect:/user/details";
         }
 
         return "redirect:/user/details";
