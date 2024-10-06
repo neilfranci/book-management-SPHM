@@ -1,0 +1,132 @@
+<div class="modal-content bg-dark text-light">
+  <div class="modal-header">
+    <h5 class="modal-title" id="editModalLabel">Edit Book</h5>
+    <button
+      type="button"
+      class="btn-close btn-close-white"
+      data-bs-dismiss="modal"
+      aria-label="Close"
+    ></button>
+  </div>
+  <div class="modal-body">
+    <div class="alert alert-success" th:if="${message}">
+      <span th:text="${message}"></span>
+    </div>
+
+    <form
+      id="editBookForm"
+      th:hx-post="${'/book/update/' + book.bookId}"
+      hx-target="#bookDetailsModal .modal-content"
+      hx-swap="outerHTML"
+      method="post"
+      th:object="${book}"
+    >
+      <div class="row g-4">
+        <div class="col-md-4">
+          <label for="title" class="form-label">Title*</label>
+          <input
+            type="text"
+            class="form-control"
+            name="title"
+            th:value="*{title}"
+            placeholder="Enter book title"
+          />
+        </div>
+        <div class="col-md-4">
+          <label for="author" class="form-label">Author*</label>
+          <input
+            type="text"
+            class="form-control"
+            name="author"
+            th:value="*{author}"
+            placeholder="Enter author name"
+          />
+        </div>
+        <div class="col-md-4">
+          <label for="isbn" class="form-label">ISBN*</label>
+          <input
+            type="text"
+            class="form-control"
+            name="isbn"
+            th:value="*{isbn}"
+            placeholder="Enter ISBN"
+          />
+        </div>
+        <div class="col-md-4">
+          <label for="language" class="form-label">Language</label>
+          <input
+            type="text"
+            class="form-control"
+            name="language"
+            th:value="*{language}"
+            placeholder="Enter language"
+          />
+        </div>
+        <div class="col-md-4">
+          <label for="book_format" class="form-label">Book Format</label>
+          <input
+            type="text"
+            class="form-control"
+            name="bookFormat"
+            th:value="*{bookFormat}"
+            placeholder="E.g., Hardcover, Paperback, E-book"
+          />
+        </div>
+        <div class="col-md-4">
+          <label for="pages" class="form-label">Pages</label>
+          <input
+            type="number"
+            class="form-control"
+            name="pages"
+            th:value="*{pages}"
+            min="0"
+            placeholder="Enter number of pages"
+          />
+        </div>
+        <div class="col-md-4">
+          <label for="price" class="form-label">Price</label>
+          <input
+            type="number"
+            class="form-control"
+            name="price"
+            th:value="*{price}"
+            step="0.01"
+            min="0"
+            placeholder="Enter price"
+          />
+        </div>
+        <div class="col-md-4">
+          <label for="cover_img" class="form-label">Cover Image URL</label>
+          <input
+            type="url"
+            class="form-control"
+            name="coverImg"
+            th:value="*{coverImg}"
+            placeholder="Enter cover image URL"
+          />
+        </div>
+        <div class="col-md-4">
+          <label for="cover_img" class="form-label">Publication Year</label>
+          <input
+            type="number"
+            min="1000"
+            max="2024"
+            class="form-control"
+            name="publicationYear"
+            th:value="*{publicationYear}"
+            placeholder="Enter publication year"
+          />
+        </div>
+      </div>
+
+      <div class="modal-footer mt-3">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+
+        <div id="formMessage" class="alert d-none mt-3"></div>
+      </div>
+    </form>
+  </div>
+</div>

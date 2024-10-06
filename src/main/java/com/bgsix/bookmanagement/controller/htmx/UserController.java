@@ -27,12 +27,6 @@ public class UserController {
     @Autowired
     private BorrowService borrowService;
 
-    @Autowired
-    private HttpServletRequest request;
-
-    @Autowired
-    private HttpServletResponse response;
-
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @GetMapping("/details")

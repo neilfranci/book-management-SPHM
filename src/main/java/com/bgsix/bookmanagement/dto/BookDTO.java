@@ -1,5 +1,6 @@
 package com.bgsix.bookmanagement.dto;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.bgsix.bookmanagement.model.Book;
@@ -16,6 +17,6 @@ public class BookDTO extends Book {
 		super(book.getBookId(), book.getTitle(), book.getLanguage(), book.getAuthor(), book.getRating(), book.getIsbn(),
 				book.getBookFormat(), book.getPages(), book.getNumRatings(), book.getLikedPercent(), book.getPrice(),
 				book.getCoverImg(), book.getPublicationYear());
-		this.genres = genres;
+		this.genres = genres != null ? genres : Collections.emptyList();
 	}
 }

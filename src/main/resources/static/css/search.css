@@ -26,6 +26,11 @@ body::before {
     z-index: -1;
 }
 
+.modal-body img {
+    height: 500px;
+    max-width: 300px;
+    object-fit: contain;
+}
 
 .bg6-btn {
     background-color: #222d3a;
@@ -171,8 +176,16 @@ body::before {
 
 .book-rating {
     font-size: 1.2rem;
-    color: #ffc107;
+
     margin-bottom: 1rem;
+}
+
+.book-rating span:first-child {
+    color: #f0d000;
+}
+
+.book-rating i {
+    color: #f0d000;
 }
 
 

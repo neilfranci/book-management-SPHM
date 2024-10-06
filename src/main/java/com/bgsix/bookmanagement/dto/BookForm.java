@@ -2,10 +2,9 @@ package com.bgsix.bookmanagement.dto;
 
 import lombok.*;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-public class AddBookForm {
+public class BookForm {
 	String title;
 	String author;
 	String isbn;
@@ -18,7 +17,7 @@ public class AddBookForm {
 
 	@Override
 	public String toString() {
-		return "AddBookForm [title=" + title + ", author=" + author + ", isbn=" + isbn + ", language=" + language
+		return "BookForm [title=" + title + ", author=" + author + ", isbn=" + isbn + ", language=" + language
 				+ ", bookFormat=" + bookFormat + ", pages=" + pages + ", price=" + price + ", coverImg=" + coverImg
 				+ ", publicationYear=" + publicationYear + "]";
 	}

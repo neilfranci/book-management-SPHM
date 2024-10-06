@@ -1,14 +1,13 @@
 package com.bgsix.bookmanagement.controller.htmx;
 
 import java.util.List;
-
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import com.bgsix.bookmanagement.dto.AddBookForm;
 import com.bgsix.bookmanagement.dto.BookDTO;
+import com.bgsix.bookmanagement.dto.BookForm;
 import com.bgsix.bookmanagement.dto.BorrowedBookDTO;
 import com.bgsix.bookmanagement.dto.TopGenreDTO;
 import com.bgsix.bookmanagement.model.Book;
@@ -27,6 +26,8 @@ public class BookController {
     private BorrowService borrowService;
     private UserService userService;
 
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(BookController.class);
+
     public BookController(GenreService genreService, BookService bookService, BorrowService borrowService,
             UserService userService) {
         this.genreService = genreService;
@@ -38,7 +39,7 @@ public class BookController {
     @GetMapping("/search")
     public String searcPage(Model model) {
         // Load Genre options
-        List<TopGenreDTO> genres = genreService.getTopGenres();
+        // List<TopGenreDTO> genres = genreService.getTopGenres();
 
         Pageable pageable = PageRequest.of(0, 20);
 
@@ -47,7 +48,7 @@ public class BookController {
         model.addAttribute("books", books.getContent());
         model.addAttribute("totalPages", books.getTotalPages());
         model.addAttribute("totalElements", books.getTotalElements());
-        model.addAttribute("genres", genres);
+        // model.addAttribute("genres", genres);
 
         // Get User Role
         User user = userService.getCurrentUser();
@@ -82,7 +83,7 @@ public class BookController {
 
         model.addAttribute("book", bookDTO);
 
-        return "fragments/search :: bookDetailFragment";
+        return "fragments/book-detail";
     }
 
     @PostMapping("/borrow/{bookId}")
@@ -105,12 +106,12 @@ public class BookController {
     // Admin routes
     @GetMapping("/add")
     public String getMethodName(Model model) {
-        model.addAttribute("addBookForm", new AddBookForm());
+        model.addAttribute("addBookForm", new BookForm());
         return "book/add-book";
     }
 
     @PostMapping("/add")
-    public String addBook(@ModelAttribute AddBookForm addBookForm, Model model) {
+    public String addBook(@ModelAttribute BookForm addBookForm, Model model) {
 
         System.out.println(addBookForm.toString());
 
@@ -120,5 +121,23 @@ public class BookController {
         bookService.addBook(bookToSave);
 
         return "redirect:/book/add?success";
+    }
+
+    @PostMapping("/update/{bookId}")
+    public String updateBook(@PathVariable Long bookId, @ModelAttribute BookForm bookForm, Model model) {
+        bookService.updateBook(bookId, bookForm);
+
+        // Add a success message to the model
+        model.addAttribute("book", bookService.getBookById(bookId)); // Reload the updated book
+        model.addAttribute("message", "Book updated successfully!");
+
+        return "fragments/edit-book";
+    }
+
+    @GetMapping("/edit/{bookId}")
+    public String editBook(@PathVariable Long bookId, Model model) {
+        Book book = bookService.getBookById(bookId);
+        model.addAttribute("book", book);
+        return "fragments/edit-book";
     }
 }
