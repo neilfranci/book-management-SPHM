@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Library Member</title>
+    <link rel="stylesheet" th:href="@{/css/detail.css}" />
+  </head>
+  <body>
+    <div class="container user-detail">
+      <div class="d-flex justify-content-between">
+        <button
+          hx-get="/book/search"
+          hx-target="body"
+          hx-swap="outerHTML"
+          hx-push-url="/book/search"
+          class="bg6-btn"
+        >
+          ← Return to Home Page
+        </button>
+        <button class="bg6-btn">Edit Profile</button>
+      </div>
+      <div class="header">
+        <img class="avatar" src="https://placehold.co/80x80" alt="" />
+        <div>
+          <h2 th:text="${user.name}" style="padding-top: 15px"></h2>
+
+          <p>Library <span th:text="${user.role}"></span></p>
+        </div>
+      </div>
+
+      <div class="user-info">
+        <div>
+          <p><span>Name:</span> <span th:text="${user.name}"></span></p>
+          <p>
+            <span>Member Since:</span>
+            <span th:text="${user.dateJoined}"></span>
+          </p>
+          <p>
+            <span>Date of Birth:</span>
+            <span th:text="${user.dateOfBirth ?: 'Not Exist'}"></span>
+          </p>
+        </div>
+        <div>
+          <p>
+            <span>Email:</span>
+            <span th:text="${user.email}">emma.wilson@example.com</span>
+          </p>
+          <p>
+            <span>Gender:</span> <span th:text="${user.gender}">OTHER</span>
+          </p>
+          <p>
+            <span>Account Status:</span>
+            <span class="status-badge" th:text="${user.status}">Active</span>
+          </p>
+        </div>
+      </div>
+
+      <hr style="background-color: white" />
+
+      <div>
+        <h3>Books</h3>
+        <div class="container">
+          <ul class="nav nav-tabs">
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                data-bs-toggle="tab"
+                data-bs-target="#tab1"
+                href="#"
+                >Borrow</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                data-bs-toggle="tab"
+                data-bs-target="#tab2"
+                href="#"
+                >Requests</a
+              >
+            </li>
+          </ul>
+
+          <div class="tab-content">
+            <div class="tab-pane fade" id="tab1">
+              <table
+                id="user-detail-table"
+                class="table table-striped align-middle"
+              >
+                <thead>
+                  <tr>
+                    <th style="width: 40%">Title</th>
+                    <th style="width: 20%">Author</th>
+                    <th>Borrow Date</th>
+                    <th>Return Date</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="borrow : ${borrowedBooks}">
+                    <td th:text="${borrow.title}">The Great Gatsby</td>
+                    <td th:text="${borrow.author}">F. Scott Fitzgerald</td>
+                    <td th:text="${borrow.borrowDate}">YEAR-M-DD</td>
+                    <td th:text="${borrow.returnDate}">YEAR-M-DD</td>
+                    <td>
+                      <button
+                        class="bg6-btn"
+                        th:if="${#bools.isFalse(borrow.returned)}"
+                        th:hx-put="${'/book/borrow/return/' + borrow.borrowId}"
+                        hx-target="closest tr"
+                        hx-swap="outerHTML"
+                      >
+                        > Return
+                      </button>
+                      <p style="margin: 10px 0" th:if="${borrow.returned}">
+                        Returned
+                      </p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="tab-pane fade show active" id="tab2">
+              <table
+                id="user-detail-table"
+                class="table table-striped align-middle"
+              >
+                <thead>
+                  <tr>
+                    <th style="width: 10%">Book ID</th>
+                    <th style="width: 10%">User ID</th>
+                    <th style="width: 20%">Librarian ID</th>
+                    <th style="width: 20%">Request Date</th>
+                    <th style="width: 20%">Request Status</th>
+                    <th style="width: 20%">Approval Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="req : ${requests}">
+                    <td th:text="${req.bookId}"></td>
+                    <td th:text="${req.userId}"></td>
+                    <td th:text="${req.librarianId ?: 'Not Assigned'}"></td>
+                    <td th:text="${req.requestDate}"></td>
+                    <td>
+                      <span
+                        class="badge"
+                        th:classappend="${req.requestStatus != 'Pending' ? 'bg-success' : (req.requestStatus == 'Pending' ? 'bg-warning text-dark' : 'bg-danger')}"
+                        th:text="${req.requestStatus}"
+                      ></span>
+                    </td>
+                    <td th:text="${req.approvalDate ?: 'Not Approved'}"></td>
+                    <!--/* <td>
+                    <button
+                      class="bg6-btn asdasd"
+                      th:if="${#bools.isFalse(borrow.returned)}"
+                      th:hx-put="${'/book/borrow/return/' + borrow.borrowId}"
+                      hx-target="closest tr"
+                      hx-swap="outerHTML"
+                    >
+                      > Return
+                    </button>
+                    <p style="margin: 10px 0" th:if="${borrow.returned}">
+                      Returned
+                    </p>
+                  </td> */-->
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

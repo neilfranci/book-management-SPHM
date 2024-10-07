@@ -102,7 +102,7 @@ public class BookController {
     public String requestBorrowBook(@PathVariable Long bookId, Model model) {
         requestService.createRequest(bookId);
 
-        model.addAttribute("message", "Successfully request the book!");
+        model.addAttribute("message", "Successfully request the book! Now we are waiting for the admin to approve. :/");
         return "fragments/request :: requestMessage";
     }
 

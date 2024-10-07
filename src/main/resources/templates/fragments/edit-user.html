@@ -18,7 +18,7 @@
         <label for="editName" class="form-label">Name</label>
         <input
           type="text"
-          class="form-control bg-secondary text-light"
+          class="form-control"
           id="editName"
           name="name"
           th:value="*{name}"
@@ -28,7 +28,7 @@
         <label for="editEmail" class="form-label">Email</label>
         <input
           type="email"
-          class="form-control bg-secondary text-light"
+          class="form-control"
           id="editEmail"
           name="email"
           th:value="*{email}"
@@ -36,11 +36,7 @@
       </div>
       <div class="mb-3">
         <label for="editGender" class="form-label">Gender</label>
-        <select
-          class="form-select bg-secondary text-light"
-          id="editGender"
-          name="gender"
-        >
+        <select class="form-select" id="editGender" name="gender">
           <option value="Male" th:selected="*{gender} == 'Male'">Male</option>
           <option value="Female" th:selected="*{gender} == 'Female'">
             Female
@@ -52,11 +48,7 @@
       </div>
       <div class="mb-3">
         <label for="editRole" class="form-label">Role</label>
-        <select
-          class="form-select bg-secondary text-light"
-          id="editRole"
-          name="role"
-        >
+        <select class="form-select" id="editRole" name="role">
           <option value="Member" th:selected="*{role} == 'Member'">
             Member
           </option>
@@ -67,7 +59,7 @@
         <label for="editDateOfBirth" class="form-label">Date of Birth</label>
         <input
           type="date"
-          class="form-control bg-secondary text-light"
+          class="form-control"
           id="editDateOfBirth"
           name="dateOfBirth"
           th:value="*{dateOfBirth}"
@@ -75,11 +67,7 @@
       </div>
       <div class="mb-3">
         <label for="editStatus" class="form-label">Status</label>
-        <select
-          class="form-select bg-secondary text-light"
-          id="editStatus"
-          name="status"
-        >
+        <select class="form-select" id="editStatus" name="status">
           <option value="Active" th:selected="*{status} == 'Active'">
             Active
           </option>

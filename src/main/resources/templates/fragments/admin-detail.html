@@ -3,12 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Library Admin - Manage Members</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <style></style>
+    <title>Library Admin</title>
+    <link rel="stylesheet" th:href="@{/css/detail.css}" />
   </head>
   <body>
     <div class="container user-detail">
@@ -68,6 +64,7 @@
             placeholder="Search members..."
             data-th:attr="hx-get='/member/search?query=' + this.value, hx-target='#user-detail-table', hx-trigger='input'"
           />
+          <!--/*
           <button
             class="bg6-btn"
             data-bs-toggle="modal"
@@ -76,33 +73,37 @@
           >
             Add New Member
           </button>
+          */-->
         </div>
-        <div class="container">
+        <div>
           <ul class="nav nav-tabs">
             <li class="nav-item">
-              <a
+              <button
                 class="nav-link"
                 data-bs-toggle="tab"
                 data-bs-target="#tab1"
-                href="#"
-                >Members</a
               >
+                Members
+              </button>
             </li>
             <li class="nav-item">
-              <a
+              <button
                 class="nav-link active"
                 data-bs-toggle="tab"
                 data-bs-target="#tab2"
-                href="#"
-                >Requests</a
               >
+                Requests
+              </button>
             </li>
           </ul>
 
           <div class="tab-content">
             <div class="tab-pane fade" id="tab1">
               <div class="table-responsive">
-                <table class="table table-dark table-hover">
+                <table
+                  id="user-detail-table"
+                  class="table table-striped align-middle"
+                >
                   <thead>
                     <tr>
                       <th>Name</th>
@@ -163,13 +164,12 @@
               >
                 <thead>
                   <tr>
-                    <th style="width: 10%">Book ID</th>
-                    <th style="width: 10%">User ID</th>
-                    <th style="width: 10%">Librarian ID</th>
-                    <th style="width: 10%">Request Date</th>
-                    <th style="width: 20%">Request Status</th>
+                    <th>Book ID</th>
+                    <th>User ID</th>
+                    <th>Librarian ID</th>
+                    <th>Request Date</th>
                     <th style="width: 20%">Approval Date</th>
-                    <th style="width: 20%">Action</th>
+                    <th style="width: 20%">Status/Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -178,7 +178,6 @@
                     <td th:text="${req.userId}"></td>
                     <td th:text="${req.librarianId ?: 'Not Assigned'}"></td>
                     <td th:text="${req.requestDate}"></td>
-                    <td th:text="${req.requestStatus}"></td>
                     <td th:text="${req.approvalDate ?: 'Not Approved'}"></td>
                     <td>
                       <button
@@ -191,11 +190,12 @@
                         Approve
                       </button>
 
-                      <p
-                        style="margin: 10px 0"
+                      <span
+                        class="badge"
+                        th:classappend="${req.requestStatus != 'Pending' ? 'bg-success' : (req.requestStatus == 'Pending' ? 'bg-warning text-dark' : 'bg-danger')}"
                         th:if="${req.requestStatus != 'Pending'}"
                         th:text="${req.requestStatus}"
-                      ></p>
+                      ></span>
                     </td>
                   </tr>
                 </tbody>
@@ -206,13 +206,11 @@
       </div>
     </div>
 
-    <!-- Edit User Modal -->
+    <!--/* Edit User Modal */-->
     <div class="modal fade" id="editModal" tabindex="-1">
-      <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-dark text-light"></div>
       </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

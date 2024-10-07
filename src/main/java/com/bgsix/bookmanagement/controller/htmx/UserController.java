@@ -49,9 +49,9 @@ public class UserController {
 
         if (useFragment) {
             if (user.getRole().equals("Admin")) {
-                return "fragments/admin-users-list";
+                return "fragments/admin-detail";
             } else {
-                return "fragments/member-borrow-book";
+                return "fragments/member-detail";
             }
 
         } else {
