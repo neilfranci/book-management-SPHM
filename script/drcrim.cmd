@@ -25,7 +25,7 @@ if %ERRORLEVEL% neq 0 (
     exit /b %ERRORLEVEL%
 )
 
-psql -U postgres -f .\book-management-v7.sql -d book-management
+psql -U postgres -f .\book-management-v8.sql -d book-management
 if %ERRORLEVEL% neq 0 (
     echo Failed to execute the SQL file
     exit /b %ERRORLEVEL%

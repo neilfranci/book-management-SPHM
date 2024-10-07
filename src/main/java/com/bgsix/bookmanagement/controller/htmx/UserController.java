@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import com.bgsix.bookmanagement.dto.UserForm;
 import com.bgsix.bookmanagement.model.User;
 import com.bgsix.bookmanagement.service.BorrowService;
+import com.bgsix.bookmanagement.service.RequestService;
 import com.bgsix.bookmanagement.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,6 +28,9 @@ public class UserController {
     @Autowired
     private BorrowService borrowService;
 
+    @Autowired
+    private RequestService requestService;
+
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @GetMapping("/details")
@@ -35,6 +39,7 @@ public class UserController {
 
         model.addAttribute("user", user);
         model.addAttribute("userRole", user.getRole());
+        model.addAttribute("requests", requestService.getRequests());
 
         if (user.getRole().equals("Admin")) {
             model.addAttribute("members", userService.getAllUsers());

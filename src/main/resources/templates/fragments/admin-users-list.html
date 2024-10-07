@@ -77,59 +77,131 @@
             Add New Member
           </button>
         </div>
-        <div class="table-responsive">
-          <table class="table table-dark table-hover">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Member Since</th>
-                <th>Date of Birth</th>
-                <th>Role</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="user-detail-table">
-              <tr th:each="member : ${members}">
-                <td th:text="${member.name}">John Doe</td>
-                <td th:text="${member.email}">john@example.com</td>
-                <td th:text="${member.dateJoined}">2023-05-15</td>
-                <td th:text="${member.dateOfBirth} ?: 'Not Exist'">
-                  2023-05-15
-                </td>
-                <td th:text="${member.role}">Role</td>
-                <td>
-                  <span
-                    class="badge"
-                    th:classappend="${member.status == 'Active' ? 'bg-success' : (member.status == 'Pending' ? 'bg-warning text-dark' : 'bg-danger')}"
-                    th:text="${member.status}"
-                    >Active</span
-                  >
-                </td>
-                <td>
-                  <button
-                    class="btn btn-sm btn-outline-light me-2"
-                    th:hx-get="${'/user/' + member.userId}"
-                    hx-target="#editModal .modal-content"
-                    hx-swap="outerHTML"
-                    hx-trigger="click"
-                    data-bs-toggle="modal"
-                    data-bs-target="#editModal"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    class="btn btn-sm btn-danger"
-                    disabled
-                    hx-swap="outerHTML"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="container">
+          <ul class="nav nav-tabs">
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                data-bs-toggle="tab"
+                data-bs-target="#tab1"
+                href="#"
+                >Members</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                data-bs-toggle="tab"
+                data-bs-target="#tab2"
+                href="#"
+                >Requests</a
+              >
+            </li>
+          </ul>
+
+          <div class="tab-content">
+            <div class="tab-pane fade" id="tab1">
+              <div class="table-responsive">
+                <table class="table table-dark table-hover">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Member Since</th>
+                      <th>Date of Birth</th>
+                      <th>Role</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="user-detail-table">
+                    <tr th:each="member : ${members}">
+                      <td th:text="${member.name}">John Doe</td>
+                      <td th:text="${member.email}">john@example.com</td>
+                      <td th:text="${member.dateJoined}">2023-05-15</td>
+                      <td th:text="${member.dateOfBirth} ?: 'Not Exist'">
+                        2023-05-15
+                      </td>
+                      <td th:text="${member.role}">Role</td>
+                      <td>
+                        <span
+                          class="badge"
+                          th:classappend="${member.status == 'Active' ? 'bg-success' : (member.status == 'Pending' ? 'bg-warning text-dark' : 'bg-danger')}"
+                          th:text="${member.status}"
+                          >Active</span
+                        >
+                      </td>
+                      <td>
+                        <button
+                          class="btn btn-sm btn-outline-light me-2"
+                          th:hx-get="${'/user/' + member.userId}"
+                          hx-target="#editModal .modal-content"
+                          hx-swap="outerHTML"
+                          hx-trigger="click"
+                          data-bs-toggle="modal"
+                          data-bs-target="#editModal"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          class="btn btn-sm btn-danger"
+                          disabled
+                          hx-swap="outerHTML"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="tab-pane fade show active" id="tab2">
+              <table
+                id="user-detail-table"
+                class="table table-striped align-middle"
+              >
+                <thead>
+                  <tr>
+                    <th style="width: 10%">Book ID</th>
+                    <th style="width: 10%">User ID</th>
+                    <th style="width: 10%">Librarian ID</th>
+                    <th style="width: 10%">Request Date</th>
+                    <th style="width: 20%">Request Status</th>
+                    <th style="width: 20%">Approval Date</th>
+                    <th style="width: 20%">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="req : ${requests}">
+                    <td th:text="${req.bookId}"></td>
+                    <td th:text="${req.userId}"></td>
+                    <td th:text="${req.librarianId ?: 'Not Assigned'}"></td>
+                    <td th:text="${req.requestDate}"></td>
+                    <td th:text="${req.requestStatus}"></td>
+                    <td th:text="${req.approvalDate ?: 'Not Approved'}"></td>
+                    <td>
+                      <button
+                        class="bg6-btn"
+                        th:if="${req.requestStatus == 'Pending'}"
+                        th:hx-put="${'/book/request-approve/' + req.requestId}"
+                        hx-target="closest tr"
+                        hx-swap="outerHTML"
+                      >
+                        Approve
+                      </button>
+
+                      <p
+                        style="margin: 10px 0"
+                        th:if="${req.requestStatus != 'Pending'}"
+                        th:text="${req.requestStatus}"
+                      ></p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>

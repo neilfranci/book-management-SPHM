@@ -1,0 +1,34 @@
+<div th:fragment="requestMessage" class="modal-content">
+  <div class="modal-body">
+    <p th:text="${message}">Requested the book!</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+  </div>
+</div>
+
+<tr th:fragment="requestRow">
+  <td th:text="${req.bookId}"></td>
+  <td th:text="${req.userId}"></td>
+  <td th:text="${req.librarianId ?: 'Not Assigned'}"></td>
+  <td th:text="${req.requestDate}"></td>
+  <td th:text="${req.requestStatus}"></td>
+  <td th:text="${req.approvalDate ?: 'Not Approved'}"></td>
+  <td>
+    <button
+      class="bg6-btn"
+      th:if="${req.requestStatus == 'Pending'}"
+      th:hx-put="${'/book/request-approve/' + req.requestId}"
+      hx-target="closest tr"
+      hx-swap="outerHTML"
+    >
+      Approve
+    </button>
+
+    <p
+      style="margin: 10px 0"
+      th:if="${req.requestStatus != 'Pending'}"
+      th:text="${req.requestStatus}"
+    ></p>
+  </td>
+</tr>

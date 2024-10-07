@@ -48,38 +48,111 @@
     <hr style="background-color: white" />
 
     <div>
-      <h3>Borrowed Books</h3>
-      <table id="user-detail-table" class="table table-striped align-middle">
-        <thead>
-          <tr>
-            <th style="width: 40%">Title</th>
-            <th style="width: 20%">Author</th>
-            <th>Borrow Date</th>
-            <th>Return Date</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr th:each="borrow : ${borrowedBooks}">
-            <td th:text="${borrow.title}">The Great Gatsby</td>
-            <td th:text="${borrow.author}">F. Scott Fitzgerald</td>
-            <td th:text="${borrow.borrowDate}">YEAR-M-DD</td>
-            <td th:text="${borrow.returnDate}">YEAR-M-DD</td>
-            <td>
-              <button
-                class="bg6-btn"
-                th:if="${#bools.isFalse(borrow.returned)}"
-                th:hx-put="${'/book/borrow/return/' + borrow.borrowId}"
-                hx-target="closest tr"
-                hx-swap="outerHTML"
-              >
-                > Return
-              </button>
-              <p style="margin: 10px 0" th:if="${borrow.returned}">Returned</p>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <h3>Books</h3>
+      <div class="container">
+        <ul class="nav nav-tabs">
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              data-bs-toggle="tab"
+              data-bs-target="#tab1"
+              href="#"
+              >Borrow</a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link active"
+              data-bs-toggle="tab"
+              data-bs-target="#tab2"
+              href="#"
+              >Requests</a
+            >
+          </li>
+        </ul>
+
+        <div class="tab-content">
+          <div class="tab-pane fade" id="tab1">
+            <table
+              id="user-detail-table"
+              class="table table-striped align-middle"
+            >
+              <thead>
+                <tr>
+                  <th style="width: 40%">Title</th>
+                  <th style="width: 20%">Author</th>
+                  <th>Borrow Date</th>
+                  <th>Return Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="borrow : ${borrowedBooks}">
+                  <td th:text="${borrow.title}">The Great Gatsby</td>
+                  <td th:text="${borrow.author}">F. Scott Fitzgerald</td>
+                  <td th:text="${borrow.borrowDate}">YEAR-M-DD</td>
+                  <td th:text="${borrow.returnDate}">YEAR-M-DD</td>
+                  <td>
+                    <button
+                      class="bg6-btn"
+                      th:if="${#bools.isFalse(borrow.returned)}"
+                      th:hx-put="${'/book/borrow/return/' + borrow.borrowId}"
+                      hx-target="closest tr"
+                      hx-swap="outerHTML"
+                    >
+                      > Return
+                    </button>
+                    <p style="margin: 10px 0" th:if="${borrow.returned}">
+                      Returned
+                    </p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="tab-pane fade show active" id="tab2">
+            <table
+              id="user-detail-table"
+              class="table table-striped align-middle"
+            >
+              <thead>
+                <tr>
+                  <th style="width: 10%">Book ID</th>
+                  <th style="width: 10%">User ID</th>
+                  <th style="width: 20%">Librarian ID</th>
+                  <th style="width: 20%">Request Date</th>
+                  <th style="width: 20%">Request Status</th>
+                  <th style="width: 20%">Approval Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="req : ${requests}">
+                  <td th:text="${req.bookId}"></td>
+                  <td th:text="${req.userId}"></td>
+                  <td th:text="${req.librarianId ?: 'Not Assigned'}"></td>
+                  <td th:text="${req.requestDate}"></td>
+                  <td th:text="${req.requestStatus}"></td>
+                  <td th:text="${req.approvalDate ?: 'Not Approved'}"></td>
+                  <!-- <td>
+                    <button
+                      class="bg6-btn"
+                      th:if="${#bools.isFalse(borrow.returned)}"
+                      th:hx-put="${'/book/borrow/return/' + borrow.borrowId}"
+                      hx-target="closest tr"
+                      hx-swap="outerHTML"
+                    >
+                      > Return
+                    </button>
+                    <p style="margin: 10px 0" th:if="${borrow.returned}">
+                      Returned
+                    </p>
+                  </td> -->
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="d-flex justify-content-between">

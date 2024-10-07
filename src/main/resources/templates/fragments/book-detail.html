@@ -69,12 +69,12 @@
       Edit
     </button>
     <button
-      th:hx-post="${'/book/borrow/' + book.bookId}"
+      th:hx-post="${'/book/request-borrow/' + book.bookId}"
       hx-target="#bookDetailsModal .modal-content"
       hx-swap="innerHTML"
       class="btn btn-primary"
     >
-      Borrow
+      Request to Borrow
     </button>
   </div>
 </div>

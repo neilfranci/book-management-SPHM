@@ -1,6 +1,8 @@
 package com.bgsix.bookmanagement.controller.htmx;
 
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +17,7 @@ import com.bgsix.bookmanagement.model.User;
 import com.bgsix.bookmanagement.service.BookService;
 import com.bgsix.bookmanagement.service.BorrowService;
 import com.bgsix.bookmanagement.service.GenreService;
+import com.bgsix.bookmanagement.service.RequestService;
 import com.bgsix.bookmanagement.service.UserService;
 
 @Controller
@@ -22,19 +25,28 @@ import com.bgsix.bookmanagement.service.UserService;
 public class BookController {
 
     private GenreService genreService;
+    @Autowired
     private BookService bookService;
+
+    @Autowired
     private BorrowService borrowService;
+
+    @Autowired
     private UserService userService;
+
+    @Autowired
+    private RequestService requestService;
 
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(BookController.class);
 
-    public BookController(GenreService genreService, BookService bookService, BorrowService borrowService,
-            UserService userService) {
-        this.genreService = genreService;
-        this.bookService = bookService;
-        this.borrowService = borrowService;
-        this.userService = userService;
-    }
+    // public BookController(GenreService genreService, BookService bookService,
+    // BorrowService borrowService,
+    // UserService userService) {
+    // this.genreService = genreService;
+    // this.bookService = bookService;
+    // this.borrowService = borrowService;
+    // this.userService = userService;
+    // }
 
     @GetMapping("/search")
     public String searcPage(Model model) {
@@ -86,12 +98,23 @@ public class BookController {
         return "fragments/book-detail";
     }
 
-    @PostMapping("/borrow/{bookId}")
-    public String borrowBook(@PathVariable Long bookId, Model model) {
-        borrowService.borrowBook(bookId);
+    @PostMapping("/request-borrow/{bookId}")
+    public String requestBorrowBook(@PathVariable Long bookId, Model model) {
+        requestService.createRequest(bookId);
 
-        model.addAttribute("message", "Successfully borrowed the book!");
-        return "fragments/borrow :: successBorrowFragment";
+        model.addAttribute("message", "Successfully request the book!");
+        return "fragments/request :: requestMessage";
+    }
+
+    @PutMapping("/request-approve/{requestId}")
+    public String approveRequest(@PathVariable Long requestId, Model model) {
+        requestService.approveRequest(requestId);
+
+        model.addAttribute("req", requestService.getRequestById(requestId));
+
+        logger.info("Request: {}", requestService.getRequestById(requestId).getRequestStatus());
+
+        return "fragments/request :: requestRow";
     }
 
     @PutMapping("/borrow/return/{borrowId}")
