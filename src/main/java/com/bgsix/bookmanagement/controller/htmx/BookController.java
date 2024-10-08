@@ -1,6 +1,7 @@
 package com.bgsix.bookmanagement.controller.htmx;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -100,9 +101,17 @@ public class BookController {
 
     @PostMapping("/request-borrow/{bookId}")
     public String requestBorrowBook(@PathVariable Long bookId, Model model) {
-        requestService.createRequest(bookId);
+        Map<Integer, String> result = requestService.createRequest(bookId);
 
-        model.addAttribute("message", "Successfully request the book! Now we are waiting for the admin to approve. :/");
+        if (result.get(0) != null) {
+            model.addAttribute("message", result.get(0));
+            return "fragments/request :: requestMessage";
+        } else if (result.get(1) != null) {
+            model.addAttribute("message", result.get(1));
+            return "fragments/request :: requestMessage";
+
+        }
+
         return "fragments/request :: requestMessage";
     }
 
@@ -138,8 +147,17 @@ public class BookController {
 
         System.out.println(addBookForm.toString());
 
-        Book bookToSave = new Book(addBookForm.getAuthor(), addBookForm.getTitle(), addBookForm.getIsbn(),
-                addBookForm.getBookFormat(), addBookForm.getPages(), addBookForm.getPrice(), addBookForm.getCoverImg());
+        Book bookToSave = new Book();
+        bookToSave.setAuthor(addBookForm.getAuthor());
+        bookToSave.setTitle(addBookForm.getTitle());
+        bookToSave.setIsbn(addBookForm.getIsbn());
+        bookToSave.setLanguage(addBookForm.getLanguage());
+        bookToSave.setBookFormat(addBookForm.getBookFormat());
+        bookToSave.setPages(addBookForm.getPages());
+        bookToSave.setPrice(addBookForm.getPrice());
+        bookToSave.setCoverImg(addBookForm.getCoverImg());
+        bookToSave.setPublicationYear(addBookForm.getPublicationYear());
+        bookToSave.setQuantity(addBookForm.getQuantity());
 
         bookService.addBook(bookToSave);
 

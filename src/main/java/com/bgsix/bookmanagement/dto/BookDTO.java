@@ -14,9 +14,21 @@ public class BookDTO extends Book {
 	private List<String> genres;
 
 	public BookDTO(Book book, List<String> genres) {
-		super(book.getBookId(), book.getTitle(), book.getLanguage(), book.getAuthor(), book.getRating(), book.getIsbn(),
-				book.getBookFormat(), book.getPages(), book.getNumRatings(), book.getLikedPercent(), book.getPrice(),
-				book.getCoverImg(), book.getPublicationYear());
+		this.setBookId(book.getBookId());
+		this.setTitle(book.getTitle());
+		this.setAuthor(book.getAuthor());
+		this.setIsbn(book.getIsbn());
+		this.setLanguage(book.getLanguage());
+		this.setBookFormat(book.getBookFormat());
+		this.setRating(book.getRating());
+		this.setLikedPercent(book.getLikedPercent());
+		this.setNumRatings(book.getNumRatings());
+		this.setPages(book.getPages());
+		this.setPrice(book.getPrice());
+		this.setCoverImg(book.getCoverImg());
+		this.setPublicationYear(book.getPublicationYear());
+		this.setQuantity(book.getQuantity());
+
 		this.genres = genres != null ? genres : Collections.emptyList();
 	}
 }

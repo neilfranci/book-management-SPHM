@@ -30,7 +30,7 @@
     No Genres
   </td>
 
-  <td th:text="${book.rating + '/5'}">Rating</td>
+  <td th:text="${book.rating ?: '0' + '/5'}">Rating</td>
   <td>
     <button
       class="bg6-btn"

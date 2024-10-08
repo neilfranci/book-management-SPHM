@@ -11,12 +11,18 @@
         <p class="book-title" th:text="${book.title}">Book Title</p>
         <p class="book-author" th:text="${'by ' + book.author}">by Author</p>
         <p class="book-rating">
-          <span th:text="${book.rating + '/5'}">Rating</span>
+          <span th:text="${(book.rating != null ? book.rating : '0') + '/5'}"
+            >Rating</span
+          >
           <i class="bi bi-star-fill"></i>
-          <span th:text="${ '(' + book.numRatings + ')'}"
+          <span
+            th:text="'(' + (${book.numRatings} != null ? ${book.numRatings} : '0') + ')'"
             >Number of Ratings</span
           >
-          <span th:text="${'(' + book.likedPercent  + '%)'}">Rating</span>
+          <span
+            th:text="'(' + (${book.likedPercent} != null ? ${book.likedPercent} : '0') + '%)'"
+            >Liked Percentage</span
+          >
         </p>
 
         <p>
@@ -51,9 +57,10 @@
             >Published Year</span
           >
           <span th:if="${book.publicationYear == 0}">Not Available</span>
-          <!-- <p>
-          <strong> Description: </strong>
-        </p> -->
+        </p>
+        <p>
+          <strong>Quantity:</strong>
+          <span th:text="${book.quantity}">Number of Books</span>
         </p>
       </div>
     </div>

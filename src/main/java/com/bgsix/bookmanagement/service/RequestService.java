@@ -2,6 +2,7 @@ package com.bgsix.bookmanagement.service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,23 +32,48 @@ public class RequestService {
 	private UserService userService;
 
 	// REQUEST METHODS
-	public void createRequest(Long bookId) {
+	public Map<Integer, String> createRequest(Long bookId) {
+
+		String message = "";
+
+		User user = userService.getCurrentUser();
+
 		Optional<Book> book = bookRepository.findById(bookId);
-		Long userId = userService.getCurrentUser().getUserId();
 
-		// Check if both the book
-		if (book.isPresent()) {
-
-			BookRequest request = new BookRequest();
-			request.setBookId(bookId);
-			request.setUserId(userId);
-			request.setRequestDate(LocalDate.now());
-
-			requestRepository.save(request);
-
-		} else {
-			throw new RuntimeException("The book does not exist to request.");
+		if (!book.isPresent()) {
+			message = "The book does not exist.";
+			return Map.of(0, message);
 		}
+
+		if (book.get().getQuantity() == 0) {
+			message = "The book is out of stock.";
+			return Map.of(0, message);
+		}
+
+		if (requestRepository.findByBookIdAndUserIdAndRequestStatus(user.getUserId(), bookId, "Pending") != null) {
+			message = "You have already requested this book.";
+			return Map.of(0, message);
+		}
+
+		if (borrowRepository.findByBookIdAndUserIdAndReturned(bookId, user.getUserId(), false) != null) {
+			message = "You have already borrowed this book. Please return it first.";
+			return Map.of(0, message);
+		}
+
+		BookRequest request = new BookRequest();
+		request.setBookId(bookId);
+		request.setUserId(user.getUserId());
+		request.setRequestDate(LocalDate.now());
+		request.setRequestStatus("Pending");
+
+		requestRepository.save(request);
+
+		book.get().setQuantity(book.get().getQuantity() - 1);
+		bookRepository.save(book.get());
+
+		message = "Successfully request the book! Now we are waiting for the admin to approve. :/";
+
+		return Map.of(1, message);
 	}
 
 	// Testing
