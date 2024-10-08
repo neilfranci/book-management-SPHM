@@ -92,7 +92,7 @@ public class RequestService {
 			borrow.setBookId(req.getBookId());
 			borrow.setUserId(req.getUserId());
 			borrow.setBorrowDate(LocalDate.now());
-			borrow.setReturnDate(LocalDate.now().plusDays(14)); // Testing purposes
+			borrow.setDueDate(LocalDate.now().plusDays(14)); // Testing purposes
 
 			borrowRepository.save(borrow);
 			requestRepository.save(req);

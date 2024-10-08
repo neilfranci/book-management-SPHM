@@ -1,4 +1,4 @@
-package com.bgsix.bookmanagement.controller.htmx;
+package com.bgsix.bookmanagement.controller.view;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

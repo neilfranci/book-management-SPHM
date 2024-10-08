@@ -8,11 +8,11 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 public class BorrowedBookDTO {
-    Long borrowId;
-    Long userId;
-    boolean returned;
-    LocalDate borrowDate;
-    LocalDate returnDate;
-    String title;
-    String author;
+	Long borrowId;
+	Long userId;
+	boolean returned;
+	LocalDate borrowDate;
+	LocalDate dueDate;
+	String title;
+	String author;
 }

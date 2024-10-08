@@ -48,15 +48,14 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 			""", nativeQuery = true)
 	List<Object[]> findGenresForBookIds(@Param("bookIds") List<Long> bookIds);
 
-
 	// TODO: Fix later
 	// @Query(value = """
-	// 		SELECT array_agg(DISTINCT G.NAME)::TEXT[] AS genres
-	// 		FROM BOOK B
-	// 		JOIN BOOK_GENRE BG ON B.BOOK_ID = BG.BOOK_ID
-	// 		JOIN GENRE G ON BG.GENRE_ID = G.GENRE_ID
-	// 		WHERE B.BOOK_ID = :bookId
-	// 		""", nativeQuery = true)
+	// SELECT array_agg(DISTINCT G.NAME)::TEXT[] AS genres
+	// FROM BOOK B
+	// JOIN BOOK_GENRE BG ON B.BOOK_ID = BG.BOOK_ID
+	// JOIN GENRE G ON BG.GENRE_ID = G.GENRE_ID
+	// WHERE B.BOOK_ID = :bookId
+	// """, nativeQuery = true)
 	// List<String> findGenresForBookId(@Param("bookId") Long bookId);
 
 	Page<Book> findByAuthorContainingIgnoreCase(String author, Pageable pageable);

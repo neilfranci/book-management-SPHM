@@ -17,6 +17,6 @@ public class Borrow {
 	Long userId;
 	boolean returned = false;
 	LocalDate borrowDate;
-	LocalDate returnDate;
+	LocalDate dueDate;
 
 }
