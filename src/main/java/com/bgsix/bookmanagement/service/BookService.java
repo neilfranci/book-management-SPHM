@@ -12,7 +12,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.bgsix.bookmanagement.controller.api.BookApiController;
+// import com.bgsix.bookmanagement.controller.api.BookApiController;
 import com.bgsix.bookmanagement.dto.BookDTO;
 import com.bgsix.bookmanagement.dto.BookForm;
 import com.bgsix.bookmanagement.model.Book;
@@ -22,19 +22,17 @@ import com.bgsix.bookmanagement.repository.BookRepository;
 public class BookService {
 	private final BookRepository bookRepository;
 
-	private static final Logger logger = LoggerFactory.getLogger(BookApiController.class);
+	private static final Logger logger = LoggerFactory.getLogger(BookService.class);
 
 	public BookService(BookRepository bookRepository) {
 		this.bookRepository = bookRepository;
 	}
 
-	
-
-	
 	public BookDTO getBookById(Long id) {
 		Book book = bookRepository.findBookById(id);
 
-		// Temporary fix to get genres for a book by ID instead of using findGenresForBookId
+		// Temporary fix to get genres for a book by ID instead of using
+		// findGenresForBookId
 		List<Object[]> genres = bookRepository.findGenresForBookIds(Arrays.asList(id));
 
 		Map<Long, List<String>> genresMap = genres.stream()
@@ -42,7 +40,7 @@ public class BookService {
 						result -> (List<String>) Arrays.asList((String[]) result[1])));
 
 		List<String> genresList = genresMap.get(id);
-		
+
 		return new BookDTO(book, genresList);
 	}
 

@@ -1,19 +1,117 @@
-<!-- a table row of book when press return -->
-<tr th:fragment="borrowBookRow">
+<tr th:fragment="borrowBookRow" th:id="'borrow-' + ${borrow.borrowId}">
   <td th:text="${borrow.title}">The Great Gatsby</td>
   <td th:text="${borrow.author}">F. Scott Fitzgerald</td>
   <td th:text="${borrow.borrowDate}">YEAR-M-DD</td>
   <td th:text="${borrow.dueDate}">YEAR-M-DD</td>
   <td>
-    <button
-      class="bg6-btn"
-      th:if="${#bools.isFalse(borrow.returned)}"
-      th:hx-put="${'/book/borrow/return/' + borrow.borrowId}"
-      hx-target="closest tr"
-      hx-swap="outerHTML"
+    <span
+      style="margin: 10px 0"
+      th:if="${borrow.status.name() == 'RETURNED'}"
+      class="status-badge"
     >
-      > Return
-    </button>
-    <p style="margin: 10px 0" th:if="${borrow.returned}">Returned</p>
+      Returned
+    </span>
   </td>
 </tr>
+
+<!-- Fine Modal Fragment -->
+<div th:fragment="returnModal" class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title" id="fineModalLabel">Fine Details</h5>
+  </div>
+  <div class="modal-body">
+    <form
+      th:hx-post="@{'/book/borrow/pay/' + ${borrow.borrowId}}"
+      hx-swap="outerHTML"
+      hx-target="#returnModal .modal-content"
+      id="fineForm"
+      method="post"
+    >
+      <div class="mb-3">
+        <label for="fineAmount" class="form-label">Fine Amount</label>
+        <div class="input-group">
+          <span class="input-group-text">$</span>
+          <input
+            type="text"
+            class="form-control"
+            id="fineAmount"
+            th:value="${borrow.fine}"
+            readonly
+          />
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="fineReason" class="form-label">Reason</label>
+        <input
+          type="text"
+          class="form-control"
+          id="fineReason"
+          value="Overdue book return"
+          readonly
+        />
+      </div>
+      <div class="mb-3">
+        <label for="fineDueDate" class="form-label">Due Date</label>
+        <input
+          type="date"
+          class="form-control"
+          id="fineDueDate"
+          th:value="${borrow.dueDate}"
+          readonly
+        />
+      </div>
+      <!--/* <div class="mb-3">
+        <label for="paymentAmount" class="form-label">Payment Amount</label>
+        <div class="input-group">
+          <span class="input-group-text">$</span>
+          <input
+            type="number"
+            class="form-control"
+            id="paymentAmount"
+            th:value="${borrow.fine}"
+            min="0.01"
+            step="0.01"
+            required
+          />
+        </div>
+      </div> */-->
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+      Close
+    </button>
+    <button type="submit" form="fineForm" class="btn btn-primary">
+      Pay Fine
+    </button>
+  </div>
+</div>
+
+<!-- Payment Completed Modal -->
+<div
+  th:fragment="paymentCompletedModal"
+  id="paymentCompletedModal"
+  class="modal-content"
+>
+  <div class="modal-header">
+    <h5 class="modal-title">Payment Completed</h5>
+  </div>
+  <div class="modal-body">
+    <p>Your payment has been successfully completed.</p>
+  </div>
+
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-secondary"
+      th:hx-get="${'/book/borrow/' + borrowId}"
+      hx-swap="outerHTML"
+      th:hx-target="'#borrow-' + ${borrowId}"
+      data-bs-toggle="modal"
+      data-bs-target="#returnModal"
+      data-bs-dismiss="modal"
+    >
+      Close
+    </button>
+  </div>
+</div>

@@ -2,11 +2,12 @@ package com.bgsix.bookmanagement.service;
 
 import java.util.*;
 import java.time.LocalDate;
-import java.sql.Date;
+import java.time.temporal.ChronoUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bgsix.bookmanagement.dto.BorrowedBookDTO;
+import com.bgsix.bookmanagement.enums.BorrowStatus;
 import com.bgsix.bookmanagement.model.Book;
 import com.bgsix.bookmanagement.model.Borrow;
 import com.bgsix.bookmanagement.repository.BookRepository;
@@ -14,6 +15,8 @@ import com.bgsix.bookmanagement.repository.BorrowRepository;
 
 @Service
 public class BorrowService {
+
+	final double fineRatePerDay = 2.0;
 
 	@Autowired
 	private BorrowRepository borrowRepository;
@@ -26,71 +29,76 @@ public class BorrowService {
 
 	public BorrowedBookDTO returnBook(Long borrowId) {
 
-		Object result = borrowRepository.findBorrowedBookWithBorrowId(borrowId);
-
 		Borrow borrow = borrowRepository.findByBorrowId(borrowId);
 
-		Object[] row = (Object[]) result;
+		Book book = bookRepository.findByBookId(borrow.getBookId());
 
-		Long userId = ((Integer) row[1]).longValue();
+		// Fine calculation
+		LocalDate today = LocalDate.now();
+		if (today.isAfter(borrow.getDueDate())) {
+			long overdueDays = ChronoUnit.DAYS.between(borrow.getDueDate(), today);
+			double fine = overdueDays * fineRatePerDay;
+			borrow.setFine(fine);
+		} else {
+			borrow.setStatus(BorrowStatus.RETURNED);
+			book.setQuantity(book.getQuantity() + 1);
+			bookRepository.save(book);
+		}
 
-		LocalDate borrowDate = ((Date) row[3]).toLocalDate();
-		LocalDate returnDate = (row[4] != null ? ((Date) row[4]).toLocalDate() : null);
-		String title = (String) row[5];
-		String author = (String) row[6];
-
-		BorrowedBookDTO borrowedBookDTO = new BorrowedBookDTO(borrowId, userId, true, borrowDate, returnDate, title,
-				author);
-
-		borrow.setReturned(true);
-
+		BorrowedBookDTO borrowedBookDTO = new BorrowedBookDTO(borrow, book.getTitle(), book.getAuthor());
+		borrowedBookDTO.setBorrowId(borrowId);
 		borrowRepository.save(borrow);
 
 		return borrowedBookDTO;
 
 	}
 
-	// public void borrowBook(Long bookId) {
-	// Optional<Book> book = bookRepository.findById(bookId);
-	// Long userId = userService.getCurrentUser().getUserId();
+	public BorrowedBookDTO getBorrowedBook(Long borrowId) {
+		Borrow borrow = borrowRepository.findByBorrowId(borrowId);
 
-	// // Check if both the book and user exist
-	// if (book.isPresent()) {
+		Book book = bookRepository.findByBookId(borrow.getBookId());
 
-	// Borrow borrow = new Borrow();
-	// borrow.setBookId(bookId);
-	// borrow.setUserId(userId);
-	// borrow.setBorrowDate(LocalDate.now());
-	// borrow.setDueDate(LocalDate.now().plusDays(14)); // Testing purposes
+		BorrowedBookDTO borrowedBookDTO = new BorrowedBookDTO(borrow, book.getTitle(), book.getAuthor());
 
-	// borrowRepository.save(borrow);
-
-	// } else {
-	// throw new RuntimeException("The book does not exist.");
-	// }
-	// }
+		return borrowedBookDTO;
+	}
 
 	public List<BorrowedBookDTO> getBorrowedBooks() {
 		Long userId = userService.getCurrentUser().getUserId();
-		List<Object[]> results = borrowRepository.findBorrowedBooksWithDetails(userId);
+		List<Borrow> borrows = borrowRepository.findByUserId(userId);
 
-		List<BorrowedBookDTO> borrowedBooks = new ArrayList<>();
-		for (Object[] row : results) {
+		List<BorrowedBookDTO> borrowedBooks = borrows.stream()
+				.sorted((borrow1, borrow2) -> borrow2.getBorrowId().compareTo(borrow1.getBorrowId())).map(borrow -> {
+					Book book = bookRepository.findByBookId(borrow.getBookId());
 
-			Long borrowId = ((Integer) row[0]).longValue();
-			Long userIdFromQuery = ((Integer) row[1]).longValue();
-			boolean returned = (boolean) row[2];
-			LocalDate borrowDate = ((Date) row[3]).toLocalDate();
-			LocalDate returnDate = (row[4] != null ? ((Date) row[4]).toLocalDate() : null);
-			String title = (String) row[5];
-			String author = (String) row[6];
+					// Fine calculation
+					LocalDate today = LocalDate.now();
+					if (today.isAfter(borrow.getDueDate())) {
+						long overdueDays = ChronoUnit.DAYS.between(borrow.getDueDate(), today);
+						double fine = overdueDays * fineRatePerDay;
+						borrow.setFine(fine);
+					} else {
+						bookRepository.save(book);
+					}
 
-			BorrowedBookDTO dto = new BorrowedBookDTO(borrowId, userIdFromQuery, returned, borrowDate, returnDate,
-					title, author);
+					borrowRepository.save(borrow);
 
-			borrowedBooks.add(dto);
-		}
+					BorrowedBookDTO borrowedBookDTO = new BorrowedBookDTO(borrow, book.getTitle(), book.getAuthor());
+					return borrowedBookDTO;
+				}).toList();
+
 		return borrowedBooks;
 	}
 
+	public BorrowedBookDTO payFine(Long borrowId) {
+		Borrow borrow = borrowRepository.findByBorrowId(borrowId);
+		Book book = bookRepository.findByBookId(borrow.getBookId());
+
+		book.setQuantity(book.getQuantity() + 1);
+		borrow.setStatus(BorrowStatus.RETURNED);
+
+		bookRepository.save(book);
+		borrowRepository.save(borrow);
+		return getBorrowedBook(borrowId);
+	}
 }

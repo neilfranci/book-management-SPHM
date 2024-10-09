@@ -98,4 +98,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 				RATING DESC
 			""", nativeQuery = true)
 	Page<Book> findTopRate(Pageable pageable);
+
+	Book findByBookId(Long bookId);
 }

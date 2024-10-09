@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bgsix.bookmanagement.enums.BorrowStatus;
 import com.bgsix.bookmanagement.model.Book;
 import com.bgsix.bookmanagement.model.BookRequest;
 import com.bgsix.bookmanagement.model.Borrow;
@@ -55,7 +56,7 @@ public class RequestService {
 			return Map.of(0, message);
 		}
 
-		if (borrowRepository.findByBookIdAndUserIdAndReturned(bookId, user.getUserId(), false) != null) {
+		if (borrowRepository.findByBookIdAndUserIdAndStatus(bookId, user.getUserId(), BorrowStatus.BORROWED) != null) {
 			message = "You have already borrowed this book. Please return it first.";
 			return Map.of(0, message);
 		}
@@ -112,7 +113,12 @@ public class RequestService {
 	}
 
 	public List<BookRequest> getRequests() {
-		return requestRepository.findAll();
+		List<BookRequest> requests = requestRepository.findAll();
+
+		// sort descending by request id
+		requests.sort((r1, r2) -> r2.getRequestId().compareTo(r1.getRequestId()));
+
+		return requests;
 	}
 
 }

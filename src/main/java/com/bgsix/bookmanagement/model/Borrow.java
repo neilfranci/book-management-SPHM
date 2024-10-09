@@ -1,6 +1,9 @@
 package com.bgsix.bookmanagement.model;
 
 import java.time.LocalDate;
+
+import com.bgsix.bookmanagement.enums.BorrowStatus;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,8 +18,9 @@ public class Borrow {
 	Long borrowId;
 	Long bookId;
 	Long userId;
-	boolean returned = false;
 	LocalDate borrowDate;
 	LocalDate dueDate;
-
+	LocalDate returnedDate;
+	Double fine = 0.0;
+	BorrowStatus status = BorrowStatus.BORROWED;
 }

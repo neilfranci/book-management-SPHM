@@ -1,5 +1,7 @@
 package com.bgsix.bookmanagement.model;
 
+import com.bgsix.bookmanagement.dto.BookForm;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -43,6 +45,24 @@ public class Book {
 	private Integer quantity;
 
 	public Book() {
+		this.likedPercent = 90;
+		this.numRatings = 100;
+		this.rating = 4.5f;
+		this.publicationYear = 2024;
+	}
+
+	public Book(BookForm bookForm) {
+		this.title = bookForm.getTitle();
+		this.language = bookForm.getLanguage();
+		this.author = bookForm.getAuthor();
+		this.isbn = bookForm.getIsbn();
+		this.bookFormat = bookForm.getBookFormat();
+		this.pages = bookForm.getPages();
+		this.price = bookForm.getPrice();
+		this.coverImg = bookForm.getCoverImg();
+		this.publicationYear = bookForm.getPublicationYear();
+		this.quantity = bookForm.getQuantity();
+
 		this.likedPercent = 90;
 		this.numRatings = 100;
 		this.rating = 4.5f;

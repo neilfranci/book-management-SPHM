@@ -1,7 +1,6 @@
 package com.bgsix.bookmanagement.service;
 
 import java.util.ArrayList;
-
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +11,6 @@ import com.bgsix.bookmanagement.repository.GenreRepository;
 public class GenreService {
 
 	private GenreRepository genreRepository;
-
 
 	public GenreService(GenreRepository genreRepository) {
 		this.genreRepository = genreRepository;

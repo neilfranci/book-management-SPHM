@@ -60,11 +60,11 @@
 
       <div>
         <h3>Books</h3>
-        <div class="container">
+        <div>
           <ul class="nav nav-tabs">
             <li class="nav-item">
               <a
-                class="nav-link"
+                class="nav-link active"
                 data-bs-toggle="tab"
                 data-bs-target="#tab1"
                 href="#"
@@ -73,7 +73,7 @@
             </li>
             <li class="nav-item">
               <a
-                class="nav-link active"
+                class="nav-link"
                 data-bs-toggle="tab"
                 data-bs-target="#tab2"
                 href="#"
@@ -83,7 +83,7 @@
           </ul>
 
           <div class="tab-content">
-            <div class="tab-pane fade" id="tab1">
+            <div class="tab-pane fade show active" id="tab1">
               <table
                 id="user-detail-table"
                 class="table table-striped align-middle"
@@ -94,11 +94,14 @@
                     <th style="width: 20%">Author</th>
                     <th>Borrow Date</th>
                     <th>Due Date</th>
-                    <th>Action</th>
+                    <th>Status/Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr th:each="borrow : ${borrowedBooks}">
+                  <tr
+                    th:each="borrow : ${borrowedBooks}"
+                    th:id="'borrow-' + ${borrow.borrowId}"
+                  >
                     <td th:text="${borrow.title}">The Great Gatsby</td>
                     <td th:text="${borrow.author}">F. Scott Fitzgerald</td>
                     <td th:text="${borrow.borrowDate}">YEAR-M-DD</td>
@@ -106,22 +109,40 @@
                     <td>
                       <button
                         class="bg6-btn"
-                        th:if="${#bools.isFalse(borrow.returned)}"
+                        th:if="${borrow.status.name() == 'BORROWED'} and ${borrow.fine == 0}"
                         th:hx-put="${'/book/borrow/return/' + borrow.borrowId}"
+                        hx-trigger="click"
                         hx-target="closest tr"
                         hx-swap="outerHTML"
                       >
                         > Return
                       </button>
-                      <p style="margin: 10px 0" th:if="${borrow.returned}">
+                      <button
+                        class="bg6-btn"
+                        th:if="${borrow.status.name() == 'BORROWED'} and ${borrow.fine != 0}"
+                        th:hx-put="${'/book/borrow/return/' + borrow.borrowId}"
+                        hx-target="#returnModal .modal-content"
+                        hx-trigger="click"
+                        hx-swap="outerHTML"
+                        data-bs-toggle="modal"
+                        data-bs-target="#returnModal"
+                      >
+                        > Return Fine
+                      </button>
+
+                      <span
+                        style="margin: 10px 0"
+                        th:if="${borrow.status.name() == 'RETURNED'}"
+                        class="status-badge"
+                      >
                         Returned
-                      </p>
+                      </span>
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <div class="tab-pane fade show active" id="tab2">
+            <div class="tab-pane fade" id="tab2">
               <table
                 id="user-detail-table"
                 class="table table-striped align-middle"
@@ -150,26 +171,18 @@
                       ></span>
                     </td>
                     <td th:text="${req.approvalDate ?: 'Not Approved'}"></td>
-                    <!--/* <td>
-                    <button
-                      class="bg6-btn asdasd"
-                      th:if="${#bools.isFalse(borrow.returned)}"
-                      th:hx-put="${'/book/borrow/return/' + borrow.borrowId}"
-                      hx-target="closest tr"
-                      hx-swap="outerHTML"
-                    >
-                      > Return
-                    </button>
-                    <p style="margin: 10px 0" th:if="${borrow.returned}">
-                      Returned
-                    </p>
-                  </td> */-->
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div id="returnModal" class="modal fade" tabindex="-1">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content"></div>
       </div>
     </div>
   </body>

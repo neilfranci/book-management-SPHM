@@ -1,4 +1,4 @@
-package com.bgsix.bookmanagement.controller.view;
+package com.bgsix.bookmanagement.controller;
 
 import java.util.List;
 import java.util.Map;
@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.*;
 import com.bgsix.bookmanagement.dto.BookDTO;
 import com.bgsix.bookmanagement.dto.BookForm;
 import com.bgsix.bookmanagement.dto.BorrowedBookDTO;
-import com.bgsix.bookmanagement.dto.TopGenreDTO;
+// import com.bgsix.bookmanagement.dto.TopGenreDTO;
 import com.bgsix.bookmanagement.model.Book;
 import com.bgsix.bookmanagement.model.User;
 import com.bgsix.bookmanagement.service.BookService;
 import com.bgsix.bookmanagement.service.BorrowService;
-import com.bgsix.bookmanagement.service.GenreService;
+// import com.bgsix.bookmanagement.service.GenreService;
 import com.bgsix.bookmanagement.service.RequestService;
 import com.bgsix.bookmanagement.service.UserService;
 
@@ -25,7 +25,7 @@ import com.bgsix.bookmanagement.service.UserService;
 @RequestMapping("/book")
 public class BookController {
 
-	private GenreService genreService;
+	// private GenreService genreService;
 	@Autowired
 	private BookService bookService;
 
@@ -39,15 +39,6 @@ public class BookController {
 	private RequestService requestService;
 
 	private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(BookController.class);
-
-	// public BookController(GenreService genreService, BookService bookService,
-	// BorrowService borrowService,
-	// UserService userService) {
-	// this.genreService = genreService;
-	// this.bookService = bookService;
-	// this.borrowService = borrowService;
-	// this.userService = userService;
-	// }
 
 	@GetMapping("/search")
 	public String searcPage(Model model) {
@@ -121,8 +112,6 @@ public class BookController {
 
 		model.addAttribute("req", requestService.getRequestById(requestId));
 
-		logger.info("Request: {}", requestService.getRequestById(requestId).getRequestStatus());
-
 		return "fragments/request :: requestRow";
 	}
 
@@ -130,6 +119,28 @@ public class BookController {
 	public String returnBook(@PathVariable Long borrowId, Model model) {
 
 		BorrowedBookDTO borrowedBookDTO = borrowService.returnBook(borrowId);
+
+		if (borrowedBookDTO.getFine() > 0) {
+			model.addAttribute("borrow", borrowedBookDTO);
+			return "fragments/borrow :: returnModal";
+		}
+
+		model.addAttribute("borrow", borrowedBookDTO);
+		return "fragments/borrow :: borrowBookRow";
+	}
+
+	@PostMapping("/borrow/pay/{borrowId}")
+	public String payFine(@PathVariable Long borrowId, Model model) {
+		borrowService.payFine(borrowId);
+
+		model.addAttribute("borrowId", borrowId);
+
+		return "fragments/borrow :: paymentCompletedModal";
+	}
+
+	@GetMapping("/borrow/{borrowId}")
+	public String getBorrowedBook(@PathVariable Long borrowId, Model model) {
+		BorrowedBookDTO borrowedBookDTO = borrowService.getBorrowedBook(borrowId);
 
 		model.addAttribute("borrow", borrowedBookDTO);
 		return "fragments/borrow :: borrowBookRow";
@@ -147,17 +158,7 @@ public class BookController {
 
 		System.out.println(addBookForm.toString());
 
-		Book bookToSave = new Book();
-		bookToSave.setAuthor(addBookForm.getAuthor());
-		bookToSave.setTitle(addBookForm.getTitle());
-		bookToSave.setIsbn(addBookForm.getIsbn());
-		bookToSave.setLanguage(addBookForm.getLanguage());
-		bookToSave.setBookFormat(addBookForm.getBookFormat());
-		bookToSave.setPages(addBookForm.getPages());
-		bookToSave.setPrice(addBookForm.getPrice());
-		bookToSave.setCoverImg(addBookForm.getCoverImg());
-		bookToSave.setPublicationYear(addBookForm.getPublicationYear());
-		bookToSave.setQuantity(addBookForm.getQuantity());
+		Book bookToSave = new Book(addBookForm);
 
 		bookService.addBook(bookToSave);
 
