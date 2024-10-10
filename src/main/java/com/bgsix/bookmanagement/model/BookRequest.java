@@ -4,6 +4,8 @@ import lombok.*;
 
 import java.time.LocalDate;
 
+import com.bgsix.bookmanagement.enums.RequestStatus;
+
 import jakarta.persistence.*;
 import jakarta.persistence.GenerationType;
 
@@ -18,10 +20,6 @@ public class BookRequest {
 	Long userId;
 	Long librarianId;
 	LocalDate requestDate;
-	String requestStatus; // Pending, Approved, Rejected
 	LocalDate approvalDate;
-
-	public BookRequest() {
-		this.requestStatus = "Pending";
-	}
+	RequestStatus requestStatus;
 }

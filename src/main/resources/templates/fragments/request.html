@@ -16,7 +16,7 @@
   <td>
     <button
       class="bg6-btn"
-      th:if="${req.requestStatus == 'Pending'}"
+      th:if="${req.requestStatus.name() == 'PENDING'}"
       th:hx-put="${'/book/request-approve/' + req.requestId}"
       hx-target="closest tr"
       hx-swap="outerHTML"
@@ -26,8 +26,8 @@
 
     <span
       class="badge"
-      th:classappend="${req.requestStatus != 'Pending' ? 'bg-success' : (req.requestStatus == 'Pending' ? 'bg-warning text-dark' : 'bg-danger')}"
-      th:if="${req.requestStatus != 'Pending'}"
+      th:classappend="${req.requestStatus.name() == 'APPROVED' ? 'bg-success' : (req.requestStatus.name() == 'PENDING' ? 'bg-warning text-dark' : 'bg-danger')}"
+      th:if="${req.requestStatus.name() != 'PENDING'}"
       th:text="${req.requestStatus}"
     ></span>
   </td>

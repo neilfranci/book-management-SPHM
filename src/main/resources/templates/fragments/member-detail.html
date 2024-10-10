@@ -166,7 +166,7 @@
                     <td>
                       <span
                         class="badge"
-                        th:classappend="${req.requestStatus != 'Pending' ? 'bg-success' : (req.requestStatus == 'Pending' ? 'bg-warning text-dark' : 'bg-danger')}"
+                        th:classappend="${req.requestStatus.name() == 'APPROVED' ? 'bg-success' : (req.requestStatus.name() == 'PENDING' ? 'bg-warning text-dark' : 'bg-danger')}"
                         th:text="${req.requestStatus}"
                       ></span>
                     </td>
@@ -180,7 +180,13 @@
       </div>
     </div>
 
-    <div id="returnModal" class="modal fade" tabindex="-1">
+    <div
+      id="returnModal"
+      class="modal fade"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+    >
       <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content"></div>
       </div>

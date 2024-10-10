@@ -84,7 +84,9 @@ public class BookController {
 	@GetMapping("/details/{id}")
 	public String getBookDetails(@PathVariable Long id, Model model) {
 		BookDTO bookDTO = bookService.getBookById(id);
-
+		User user = userService.getCurrentUser();
+		
+		model.addAttribute("userRole", user.getRole());
 		model.addAttribute("book", bookDTO);
 
 		return "fragments/book-detail";
@@ -100,7 +102,6 @@ public class BookController {
 		} else if (result.get(1) != null) {
 			model.addAttribute("message", result.get(1));
 			return "fragments/request :: requestMessage";
-
 		}
 
 		return "fragments/request :: requestMessage";

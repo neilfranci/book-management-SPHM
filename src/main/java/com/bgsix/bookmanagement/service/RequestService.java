@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bgsix.bookmanagement.enums.BorrowStatus;
+import com.bgsix.bookmanagement.enums.RequestStatus;
 import com.bgsix.bookmanagement.model.Book;
 import com.bgsix.bookmanagement.model.BookRequest;
 import com.bgsix.bookmanagement.model.Borrow;
@@ -51,7 +52,7 @@ public class RequestService {
 			return Map.of(0, message);
 		}
 
-		if (requestRepository.findByBookIdAndUserIdAndRequestStatus(user.getUserId(), bookId, "Pending") != null) {
+		if (requestRepository.findByBookIdAndUserIdAndRequestStatus(user.getUserId(), bookId, RequestStatus.PENDING) != null) {
 			message = "You have already requested this book.";
 			return Map.of(0, message);
 		}
@@ -65,14 +66,14 @@ public class RequestService {
 		request.setBookId(bookId);
 		request.setUserId(user.getUserId());
 		request.setRequestDate(LocalDate.now());
-		request.setRequestStatus("Pending");
+		request.setRequestStatus(RequestStatus.PENDING);
 
 		requestRepository.save(request);
 
 		book.get().setQuantity(book.get().getQuantity() - 1);
 		bookRepository.save(book.get());
 
-		message = "Successfully request the book! Now we are waiting for the admin to approve. :/";
+		message = "Successfully request the book!";
 
 		return Map.of(1, message);
 	}
@@ -86,7 +87,7 @@ public class RequestService {
 		if (request.isPresent()) {
 			BookRequest req = request.get();
 			req.setLibrarianId(user.getUserId());
-			req.setRequestStatus("Approved");
+			req.setRequestStatus(RequestStatus.APPROVED);
 			req.setApprovalDate(LocalDate.now());
 
 			Borrow borrow = new Borrow();
