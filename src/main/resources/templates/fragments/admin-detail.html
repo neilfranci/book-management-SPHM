@@ -55,12 +55,12 @@
       <div>
         <h3 class="mb-4">Manage Members</h3>
         <div class="d-flex justify-content-between mb-3">
-          <input
+          <!-- <input
             type="text"
             class="form-control w-25"
             placeholder="Search members..."
             data-th:attr="hx-get='/member/search?query=' + this.value, hx-target='#user-detail-table', hx-trigger='input'"
-          />
+          /> -->
           <!--/*
           <button
             class="bg6-btn"
@@ -85,11 +85,20 @@
             </li>
             <li class="nav-item">
               <button
-                class="nav-link active"
+                class="nav-link"
                 data-bs-toggle="tab"
                 data-bs-target="#tab2"
               >
                 Requests
+              </button>
+            </li>
+            <li class="nav-item">
+              <button
+                class="nav-link active"
+                data-bs-toggle="tab"
+                data-bs-target="#tab3"
+              >
+                Borrowed Books
               </button>
             </li>
           </ul>
@@ -154,7 +163,7 @@
                 </table>
               </div>
             </div>
-            <div class="tab-pane fade show active" id="tab2">
+            <div class="tab-pane fade" id="tab2">
               <table
                 id="user-detail-table"
                 class="table table-striped align-middle"
@@ -193,6 +202,56 @@
                         th:if="${req.status.name() != 'PENDING'}"
                         th:text="${req.status}"
                       ></span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="tab-pane fade show active" id="tab3">
+              <table
+                id="user-detail-table"
+                class="table table-striped align-middle"
+              >
+                <thead>
+                  <tr>
+                    <th>Borrow ID</th>
+                    <th>User ID</th>
+                    <th>Borrow Date</th>
+                    <th>Due Date</th>
+                    <th>Returned Date</th>
+                    <th>Fine</th>
+                    <th style="width: 20%">Status/Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="borrow : ${borrowedBooks}">
+                    <td th:text="${borrow.borrowId}"></td>
+                    <td th:text="${borrow.userId}"></td>
+                    <td th:text="${borrow.borrowDate}"></td>
+                    <td th:text="${borrow.dueDate}"></td>
+                    <td th:text="${borrow.returnedDate ?: 'Not Returned'}"></td>
+                    <td th:text="${borrow.fine}"></td>
+                    <td>
+                      <!-- <button
+                        class="bg6-btn"
+                        th:if="${req.status.name() == 'PENDING'}"
+                        th:hx-put="${'/book/request-approve/' + req.requestId}"
+                        hx-target="closest tr"
+                        hx-swap="outerHTML"
+                      >
+                        Edit
+                      </button> -->
+                      <span
+                        class="badge"
+                        th:classappend="${borrow.status.name() == 'RETURNED' ? 'bg-success' : (borrow.status.name() == 'OVERDUE' ? 'bg-danger' : 'bg-warning text-dark')}"
+                        th:text="${borrow.status}"
+                      ></span>
+                      <span
+                        class="badge bg-danger text-dark"
+                        th:if="${borrow.status.name() == 'BORROWED'} and ${borrow.fine} > 0"
+                      >
+                        Overdue
+                      </span>
                     </td>
                   </tr>
                 </tbody>

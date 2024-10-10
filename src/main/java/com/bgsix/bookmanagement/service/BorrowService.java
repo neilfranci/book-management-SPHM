@@ -63,8 +63,34 @@ public class BorrowService {
 		return borrowedBookDTO;
 	}
 
+
 	public List<BorrowedBookDTO> getBorrowedBooks() {
-		Long userId = userService.getCurrentUser().getUserId();
+		List<Borrow> borrows = borrowRepository.findAll();
+
+		List<BorrowedBookDTO> borrowedBooks = borrows.stream()
+				.sorted((borrow1, borrow2) -> borrow2.getBorrowId().compareTo(borrow1.getBorrowId())).map(borrow -> {
+					Book book = bookRepository.findByBookId(borrow.getBookId());
+
+					// Fine calculation
+					LocalDate today = LocalDate.now();
+					if (today.isAfter(borrow.getDueDate())) {
+						long overdueDays = ChronoUnit.DAYS.between(borrow.getDueDate(), today);
+						double fine = overdueDays * fineRatePerDay;
+						borrow.setFine(fine);
+					} else {
+						bookRepository.save(book);
+					}
+
+					borrowRepository.save(borrow);
+
+					BorrowedBookDTO borrowedBookDTO = new BorrowedBookDTO(borrow, book.getTitle(), book.getAuthor());
+					return borrowedBookDTO;
+				}).toList();
+
+		return borrowedBooks;
+	}
+
+	public List<BorrowedBookDTO> getBorrowedBooksForUser(Long userId) {
 		List<Borrow> borrows = borrowRepository.findByUserId(userId);
 
 		List<BorrowedBookDTO> borrowedBooks = borrows.stream()

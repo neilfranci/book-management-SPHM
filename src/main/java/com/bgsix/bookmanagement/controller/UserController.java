@@ -43,8 +43,11 @@ public class UserController {
 
 		if (user.getRole().equals("Admin")) {
 			model.addAttribute("members", userService.getAllUsers());
-		} else {
 			model.addAttribute("borrowedBooks", borrowService.getBorrowedBooks());
+		} else {
+			Long userId = userService.getCurrentUser().getUserId();
+
+			model.addAttribute("borrowedBooks", borrowService.getBorrowedBooksForUser(userId));
 		}
 
 		if (useFragment) {
