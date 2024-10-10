@@ -52,7 +52,7 @@ public class RequestService {
 			return Map.of(0, message);
 		}
 
-		if (requestRepository.findByBookIdAndUserIdAndRequestStatus(user.getUserId(), bookId, RequestStatus.PENDING) != null) {
+		if (requestRepository.findByBookIdAndUserIdAndStatus(bookId, user.getUserId(), RequestStatus.PENDING) != null) {
 			message = "You have already requested this book.";
 			return Map.of(0, message);
 		}
@@ -66,7 +66,7 @@ public class RequestService {
 		request.setBookId(bookId);
 		request.setUserId(user.getUserId());
 		request.setRequestDate(LocalDate.now());
-		request.setRequestStatus(RequestStatus.PENDING);
+		request.setStatus(RequestStatus.PENDING);
 
 		requestRepository.save(request);
 
@@ -87,7 +87,7 @@ public class RequestService {
 		if (request.isPresent()) {
 			BookRequest req = request.get();
 			req.setLibrarianId(user.getUserId());
-			req.setRequestStatus(RequestStatus.APPROVED);
+			req.setStatus(RequestStatus.APPROVED);
 			req.setApprovalDate(LocalDate.now());
 
 			Borrow borrow = new Borrow();

@@ -13,6 +13,5 @@ public interface RequestRepository extends JpaRepository<BookRequest, Long> {
 
 	BookRequest findByBookId(Long bookId);
 
-	BookRequest findByBookIdAndUserIdAndRequestStatus(Long userId, Long bookId, RequestStatus requestStatus);
-
+	BookRequest findByBookIdAndUserIdAndStatus(Long bookId, Long userId, RequestStatus status);
 }

@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import com.bgsix.bookmanagement.enums.RequestStatus;
 
 import jakarta.persistence.*;
-import jakarta.persistence.GenerationType;
 
 @Data
 @Entity
@@ -21,5 +20,5 @@ public class BookRequest {
 	Long librarianId;
 	LocalDate requestDate;
 	LocalDate approvalDate;
-	RequestStatus requestStatus;
+	RequestStatus status;
 }

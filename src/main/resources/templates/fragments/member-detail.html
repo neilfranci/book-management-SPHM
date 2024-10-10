@@ -166,8 +166,8 @@
                     <td>
                       <span
                         class="badge"
-                        th:classappend="${req.requestStatus.name() == 'APPROVED' ? 'bg-success' : (req.requestStatus.name() == 'PENDING' ? 'bg-warning text-dark' : 'bg-danger')}"
-                        th:text="${req.requestStatus}"
+                        th:classappend="${req.status.name() == 'APPROVED' ? 'bg-success' : (req.status.name() == 'PENDING' ? 'bg-warning text-dark' : 'bg-danger')}"
+                        th:text="${req.status}"
                       ></span>
                     </td>
                     <td th:text="${req.approvalDate ?: 'Not Approved'}"></td>
