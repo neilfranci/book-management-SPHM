@@ -17,6 +17,7 @@ public class Application {
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 		Logger.info("Swagger UI: {}", serverUrl + "/swagger-ui/index.html");
+		Logger.info("Server URL: {}", serverUrl);
 	}
 
 }

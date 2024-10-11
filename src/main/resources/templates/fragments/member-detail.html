@@ -18,47 +18,54 @@
         >
           ← Return to Home Page
         </button>
-        <button class="bg6-btn">Edit Profile</button>
+        <!-- <button class="bg6-btn">Edit Profile</button> -->
+        <i
+          role="button"
+          class="bi bi-caret-down-fill"
+          data-bs-toggle="collapse"
+          data-bs-target="#info"
+        ></i>
       </div>
-      <div class="header">
-        <img class="avatar" src="https://placehold.co/80x80" alt="" />
-        <div>
-          <h2 th:text="${user.name}" style="padding-top: 15px"></h2>
 
-          <p>Library <span th:text="${user.role}"></span></p>
+      <div class="collapse show" id="info">
+        <div class="header">
+          <img class="avatar" src="https://placehold.co/80x80" alt="" />
+          <div>
+            <h2 th:text="${user.name}" style="padding-top: 15px"></h2>
+
+            <p>Library <span th:text="${user.role}"></span></p>
+          </div>
+        </div>
+
+        <div class="user-info">
+          <div>
+            <p><span>Name:</span> <span th:text="${user.name}"></span></p>
+            <p>
+              <span>Member Since:</span>
+              <span th:text="${user.dateJoined}"></span>
+            </p>
+            <p>
+              <span>Date of Birth:</span>
+              <span th:text="${user.dateOfBirth ?: 'Not Exist'}"></span>
+            </p>
+          </div>
+          <div>
+            <p>
+              <span>Email:</span>
+              <span th:text="${user.email}">emma.wilson@example.com</span>
+            </p>
+            <p>
+              <span>Gender:</span> <span th:text="${user.gender}">OTHER</span>
+            </p>
+            <p>
+              <span>Account Status:</span>
+              <span class="status-badge" th:text="${user.status}">Active</span>
+            </p>
+          </div>
         </div>
       </div>
 
-      <div class="user-info">
-        <div>
-          <p><span>Name:</span> <span th:text="${user.name}"></span></p>
-          <p>
-            <span>Member Since:</span>
-            <span th:text="${user.dateJoined}"></span>
-          </p>
-          <p>
-            <span>Date of Birth:</span>
-            <span th:text="${user.dateOfBirth ?: 'Not Exist'}"></span>
-          </p>
-        </div>
-        <div>
-          <p>
-            <span>Email:</span>
-            <span th:text="${user.email}">emma.wilson@example.com</span>
-          </p>
-          <p>
-            <span>Gender:</span> <span th:text="${user.gender}">OTHER</span>
-          </p>
-          <p>
-            <span>Account Status:</span>
-            <span class="status-badge" th:text="${user.status}">Active</span>
-          </p>
-        </div>
-      </div>
-
-      <hr style="background-color: white" />
-
-      <div>
+      <div class="border-top mt-2 pt-2">
         <h3>Books</h3>
         <div>
           <ul class="nav nav-tabs">
