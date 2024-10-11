@@ -34,11 +34,11 @@
   <body>
     <nav th:replace="~{fragments/nav}"></nav>
     <div
-      th:if="${user.getRole()} == Member"
+      th:if="${user.getRole().name()} == Member"
       th:insert="~{fragments/member-detail}"
     ></div>
     <div
-      th:if="${user.getRole()} == Admin"
+      th:if="${user.getRole().name() == 'Admin' || user.getRole().name() == 'Librarian'}"
       th:insert="~{fragments/admin-detail}"
     ></div>
   </body>

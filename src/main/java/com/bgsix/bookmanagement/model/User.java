@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.time.LocalDate;
 
+import com.bgsix.bookmanagement.enums.UserRole;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,10 +28,8 @@ public abstract class User {
 	String email;
 
 	String passwordHash;
-
-	// Admin, Member
-	String role;
-
+	
+	UserRole role;
 	// Active, Inactive, Suspended
 	String status;
 

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
 import com.bgsix.bookmanagement.dto.UserForm;
+import com.bgsix.bookmanagement.enums.UserRole;
 import com.bgsix.bookmanagement.model.User;
 import com.bgsix.bookmanagement.service.BorrowService;
 import com.bgsix.bookmanagement.service.RequestService;
@@ -41,7 +42,7 @@ public class UserController {
 		model.addAttribute("userRole", user.getRole());
 		model.addAttribute("requests", requestService.getRequests());
 
-		if (user.getRole().equals("Admin")) {
+		if (user.getRole() == UserRole.Admin || user.getRole() == UserRole.Librarian) {
 			model.addAttribute("members", userService.getAllUsers());
 			model.addAttribute("borrowedBooks", borrowService.getBorrowedBooks());
 		} else {
@@ -51,7 +52,7 @@ public class UserController {
 		}
 
 		if (useFragment) {
-			if (user.getRole().equals("Admin")) {
+			if (user.getRole() == UserRole.Admin || user.getRole() == UserRole.Librarian) {
 				return "fragments/admin-detail";
 			} else {
 				return "fragments/member-detail";
@@ -74,12 +75,12 @@ public class UserController {
 	@PostMapping("/update/{userId}")
 	public String updateUser(@PathVariable Long userId, @ModelAttribute UserForm userForm, Model model,
 			HttpServletRequest request, HttpServletResponse response) {
-		String oldUserRole = userService.getCurrentUser().getRole();
+		UserRole oldUserRole = userService.getCurrentUser().getRole();
 		Long oldUserId = userService.getCurrentUser().getUserId();
 
 		userService.updateUser(userId, userForm);
 
-		if (oldUserId.equals(userId) && !oldUserRole.equals(userForm.getRole())) {
+		if (oldUserId.equals(userId) && oldUserRole != userForm.getRole()) {
 			logger.info("Changing user role from {} to {}", oldUserRole, userForm.getRole());
 
 			SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();

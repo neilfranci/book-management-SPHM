@@ -33,9 +33,8 @@ public class SecurityConfig {
             .authenticationProvider(authenticationProvider)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/signup", "/login", "/logout").permitAll()
-                .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
-                .requestMatchers("/book/add", "book/edit", "book/request-approve", "book/update").hasRole("Admin")
-				.requestMatchers("/user/update", "book/delete").hasRole("Admin")
+                .requestMatchers("/book/add", "/book/edit", "/book/request-approve", "/book/update", "/book/delete").hasAnyRole("Admin", "Librarian")
+				.requestMatchers("/user/update").hasRole("Admin")
                 .anyRequest().authenticated())
             .formLogin(form -> form
                 .loginPage("/login")

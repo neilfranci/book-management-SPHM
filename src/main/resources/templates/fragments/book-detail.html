@@ -68,7 +68,7 @@
   <div class="modal-footer justify-content-between">
     <button
       class="btn btn-danger"
-      th:if="${userRole == 'Admin'}"
+      th:if="${userRole.name() == 'Admin' || userRole.name() == 'Librarian'}"
       th:hx-get="${'/book/delete/' + book.bookId}"
       hx-target="#bookDetailsModal .modal-content"
       hx-swap="innerHTML"
@@ -78,7 +78,7 @@
     <div class="ms-auto">
       <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       <button
-        th:if="${userRole == 'Admin'}"
+        th:if="${userRole.name() == 'Admin' || userRole.name() == 'Librarian'}"
         th:hx-get="${'/book/edit/' + book.bookId}"
         hx-target="#bookDetailsModal .modal-content"
         hx-swap="innerHTML"
@@ -87,7 +87,7 @@
         Edit
       </button>
       <button
-        th:if="${userRole == 'Member'}"
+        th:if="${userRole.name() == 'Member'}"
         th:hx-post="${'/book/request-borrow/' + book.bookId}"
         hx-target="#bookDetailsModal .modal-content"
         hx-swap="innerHTML"
@@ -129,6 +129,14 @@
     <p>Book deleted successfully!</p>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    <button
+      hx-get="/book/search"
+      hx-target="body"
+      hx-swap="outerHTML"
+      class="btn btn-secondary"
+      data-bs-dismiss="modal"
+    >
+      Close
+    </button>
   </div>
 </div>

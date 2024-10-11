@@ -8,15 +8,12 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 
 @Entity
-@DiscriminatorValue("Member")
-public class Member extends User {
+@DiscriminatorValue("Librarian")
+public class Librarian extends User {
 
-	public void borrowBook(Book book) {
-		// Example logic for borrowing a book
-	}
 
-	public Member() {
-		this.role = UserRole.Member;
+	public Librarian() {
+		this.role = UserRole.Librarian;
 		this.gender = "Other";
 		this.status = "Active";
 		this.dateJoined = LocalDate.now();

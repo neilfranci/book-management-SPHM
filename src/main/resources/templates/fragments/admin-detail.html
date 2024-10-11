@@ -91,6 +91,7 @@
           <ul class="nav nav-tabs">
             <li class="nav-item">
               <button
+                th:if="${user.role == 'Admin'}"
                 class="nav-link"
                 data-bs-toggle="tab"
                 data-bs-target="#tab1"
@@ -119,7 +120,11 @@
           </ul>
 
           <div class="tab-content">
-            <div class="tab-pane fade" id="tab1">
+            <div
+              th:if="${user.role == 'Admin'}"
+              class="tab-pane fade"
+              id="tab1"
+            >
               <div class="table-responsive">
                 <table
                   id="user-detail-table"
@@ -168,6 +173,8 @@
                         <button
                           class="btn btn-sm btn-danger"
                           disabled
+                          th:hx-delete="${'/user/' + member.userId}"
+                          hx-target="#user-detail-table"
                           hx-swap="outerHTML"
                         >
                           Delete
@@ -258,7 +265,7 @@
                       </button> -->
                       <span
                         class="badge"
-                        th:classappend="${borrow.status.name() == 'RETURNED' ? 'bg-success' : (borrow.status.name() == 'OVERDUE' ? 'bg-danger' : 'bg-warning text-dark')}"
+                        th:classappend="${borrow.status.name() == 'RETURNED' ? 'bg-success' : 'bg-warning text-dark'}"
                         th:text="${borrow.status}"
                       ></span>
                       <span

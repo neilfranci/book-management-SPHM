@@ -74,10 +74,10 @@ public class UserService implements UserDetailsService {
 		// Find user by email (or username) from the database
 		User user = userRepository.findByEmail(email)
 				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
+		System.out.println("User: " + user.getRole().name());
 		// Convert User to Spring Security's UserDetails
 		return org.springframework.security.core.userdetails.User.withUsername(user.getEmail())
-				.password(user.getPasswordHash()).roles(user.getRole()).build();
+				.password(user.getPasswordHash()).roles(user.getRole().name()).build();
 	}
 
 	public List<User> getAllUsers() {
