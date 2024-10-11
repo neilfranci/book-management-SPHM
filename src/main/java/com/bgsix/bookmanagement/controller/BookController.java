@@ -89,7 +89,7 @@ public class BookController {
 		model.addAttribute("userRole", user.getRole());
 		model.addAttribute("book", bookDTO);
 
-		return "fragments/book-detail";
+		return "fragments/book-detail :: detailModal";
 	}
 
 	@PostMapping("/request-borrow/{bookId}")
@@ -182,5 +182,19 @@ public class BookController {
 		Book book = bookService.getBookById(bookId);
 		model.addAttribute("book", book);
 		return "fragments/edit-book";
+	}
+
+	@GetMapping("/delete/{bookId}")
+	public String getDeleteModal(@PathVariable Long bookId, Model model) {
+		Book book = bookService.getBookById(bookId);
+		model.addAttribute("book", book);
+		return "fragments/book-detail :: confirmDeleteModal";
+	}
+
+
+	@PostMapping("/delete/{bookId}")
+	public String deleteBook(@PathVariable Long bookId, Model model) {
+		bookService.deleteBook(bookId);
+		return "fragments/book-detail :: deleteSuccessModal";
 	}
 }

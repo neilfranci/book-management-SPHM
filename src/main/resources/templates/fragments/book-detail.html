@@ -1,4 +1,4 @@
-<div class="modal-content">
+<div th:fragment="detailModal" class="modal-content">
   <div class="modal-body">
     <div class="d-flex">
       <img
@@ -65,25 +65,70 @@
       </div>
     </div>
   </div>
+  <div class="modal-footer justify-content-between">
+    <button
+      class="btn btn-danger"
+      th:if="${userRole == 'Admin'}"
+      th:hx-get="${'/book/delete/' + book.bookId}"
+      hx-target="#bookDetailsModal .modal-content"
+      hx-swap="innerHTML"
+    >
+      Delete
+    </button>
+    <div class="ms-auto">
+      <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      <button
+        th:if="${userRole == 'Admin'}"
+        th:hx-get="${'/book/edit/' + book.bookId}"
+        hx-target="#bookDetailsModal .modal-content"
+        hx-swap="innerHTML"
+        class="btn btn-primary"
+      >
+        Edit
+      </button>
+      <button
+        th:if="${userRole == 'Member'}"
+        th:hx-post="${'/book/request-borrow/' + book.bookId}"
+        hx-target="#bookDetailsModal .modal-content"
+        hx-swap="innerHTML"
+        class="btn btn-primary"
+      >
+        Request to Borrow
+      </button>
+    </div>
+  </div>
+</div>
+
+<div th:fragment="confirmDeleteModal">
+  <div class="modal-header">
+    <h5 class="modal-title">Confirm Delete</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+  </div>
+  <div
+    class="modal-body d-flex justify-content-center align-items-center flex-column"
+  >
+    <p>Are you sure you want to delete this book?</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+    <button
+      id="confirmDeleteBtn"
+      class="btn btn-danger"
+      th:hx-post="@{'/book/delete/' + ${book.bookId}}"
+      hx-target="#bookDetailsModal .modal-content"
+      hx-swap="innerHTML"
+    >
+      Yes
+    </button>
+  </div>
+</div>
+
+<!-- Delete Success Modal -->
+<div th:fragment="deleteSuccessModal" class="modal-content">
+  <div class="modal-body">
+    <p>Book deleted successfully!</p>
+  </div>
   <div class="modal-footer">
     <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-    <button
-      th:if="${userRole == 'Admin'}"
-      th:hx-get="${'/book/edit/' + book.bookId}"
-      hx-target="#bookDetailsModal .modal-content"
-      hx-swap="innerHTML"
-      class="btn btn-primary"
-    >
-      Edit
-    </button>
-    <button
-      th:if="${userRole == 'Member'}"
-      th:hx-post="${'/book/request-borrow/' + book.bookId}"
-      hx-target="#bookDetailsModal .modal-content"
-      hx-swap="innerHTML"
-      class="btn btn-primary"
-    >
-      Request to Borrow
-    </button>
   </div>
 </div>

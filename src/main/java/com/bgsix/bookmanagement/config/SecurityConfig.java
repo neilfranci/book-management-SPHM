@@ -27,7 +27,6 @@ public class SecurityConfig {
         authenticationProvider.setUserDetailsService(userService);
         authenticationProvider.setPasswordEncoder(passwordEncoder());
 
-
         http
             .cors(cors -> cors.disable())
             .csrf(csrf -> csrf.disable())
@@ -36,7 +35,7 @@ public class SecurityConfig {
                 .requestMatchers("/signup", "/login", "/logout").permitAll()
                 .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
                 .requestMatchers("/book/add", "book/edit", "book/request-approve", "book/update").hasRole("Admin")
-				.requestMatchers("/user/update").hasRole("Admin")
+				.requestMatchers("/user/update", "book/delete").hasRole("Admin")
                 .anyRequest().authenticated())
             .formLogin(form -> form
                 .loginPage("/login")
