@@ -19,6 +19,10 @@ Dự án lớn về Quản lý Sách với Java OOP (Mục đích học tập)
 </div>
 <br/>
 
+## Project Preview
+
+<img src="../assets/LMS_preview.gif">
+
 ## Mục Lục
 
 ### 1. Yêu cầu cài đặt trước cho Windows
@@ -55,7 +59,7 @@ Dự án lớn về Quản lý Sách với Java OOP (Mục đích học tập)
 
 1.3 Bỏ chọn "Stack Builder".
 
-![alt text](assets/psql-install-1.png)
+<img src="../assets/psql-install-1.png" height="250">
 
 1.4 Nhấn "Next" cho đến khi gặp phần nhập mật khẩu cho superuser. Nhập mật khẩu của bạn.
 

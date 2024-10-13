@@ -25,6 +25,10 @@ Big Project about Book Management with Java OOP (Learining purpose)
   <a href="https://github.com/neilfranci/book-management-SJPM/blob/main/ALL_URLS.md">ALL_URLS</a>
 </div>
 
+## Project Preview
+
+<img src="assets/LMS_preview.gif">
+
 ## Table of Contents
 
 ### 1. Pre-requisite for Windows
