@@ -68,7 +68,7 @@
   <div class="modal-footer justify-content-between">
     <button
       class="btn btn-danger"
-      th:if="${userRole.name() == 'Admin' || userRole.name() == 'Librarian'}"
+      th:if="${userRole.name() == 'ADMIN' || userRole.name() == 'LIBRARIAN'}"
       th:hx-get="${'/book/delete/' + book.bookId}"
       hx-target="#bookDetailsModal .modal-content"
       hx-swap="innerHTML"
@@ -78,7 +78,7 @@
     <div class="ms-auto">
       <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       <button
-        th:if="${userRole.name() == 'Admin' || userRole.name() == 'Librarian'}"
+        th:if="${userRole.name() == 'ADMIN' || userRole.name() == 'LIBRARIAN'}"
         th:hx-get="${'/book/edit/' + book.bookId}"
         hx-target="#bookDetailsModal .modal-content"
         hx-swap="innerHTML"
@@ -87,7 +87,7 @@
         Edit
       </button>
       <button
-        th:if="${userRole.name() == 'Member'}"
+        th:if="${userRole.name() == 'MEMBER'} and ${userStatus.name() == 'ACTIVE'}"
         th:hx-post="${'/book/request-borrow/' + book.bookId}"
         hx-target="#bookDetailsModal .modal-content"
         hx-swap="innerHTML"

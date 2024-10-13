@@ -6,34 +6,38 @@ import lombok.*;
 import java.time.LocalDate;
 
 import com.bgsix.bookmanagement.enums.UserRole;
+import com.bgsix.bookmanagement.enums.UserStatus;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
 @Entity
 @Table(name = "users")
 public abstract class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long userId;
+	private Long userId;
 
-	String name;
+	private String name;
 
 	// Male, Female, Other
-	String gender;
+	protected String gender;
 
-	String email;
+	private String email;
 
-	String passwordHash;
-	
-	UserRole role;
-	// Active, Inactive, Suspended
-	String status;
+	private String passwordHash;
 
-	LocalDate dateOfBirth;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "role", insertable = false, updatable = false)
+	protected UserRole role;
 
-	LocalDate dateJoined;
+	@Enumerated(EnumType.STRING)
+	protected UserStatus status;
+
+	private LocalDate dateOfBirth;
+
+	protected LocalDate dateJoined;
 }

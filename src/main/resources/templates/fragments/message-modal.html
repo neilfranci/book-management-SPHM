@@ -1,0 +1,24 @@
+<div class="modal-content">
+  <div class="modal-body">
+    <p th:text="${message}"></p>
+  </div>
+  <div class="modal-footer">
+    <button
+      th:if="${redirectUrl != null}"
+      class="btn btn-secondary"
+      data-bs-dismiss="modal"
+      th:hx-get="${redirectUrl}"
+      hx-target="body"
+      hx-swap="outerHTML"
+    >
+      Close and Redirect
+    </button>
+    <button
+      th:if="${redirectUrl == null}"
+      class="btn btn-secondary"
+      data-bs-dismiss="modal"
+    >
+      Close
+    </button>
+  </div>
+</div>

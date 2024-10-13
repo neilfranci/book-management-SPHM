@@ -3,19 +3,18 @@ package com.bgsix.bookmanagement.model;
 import java.time.LocalDate;
 
 import com.bgsix.bookmanagement.enums.UserRole;
+import com.bgsix.bookmanagement.enums.UserStatus;
 
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 
 @Entity
-@DiscriminatorValue("Librarian")
+@DiscriminatorValue("LIBRARIAN")
 public class Librarian extends User {
 
-
 	public Librarian() {
-		this.role = UserRole.Librarian;
+		this.role = UserRole.LIBRARIAN;
 		this.gender = "Other";
-		this.status = "Active";
+		this.status = UserStatus.INACTIVE;
 		this.dateJoined = LocalDate.now();
 	}
 }

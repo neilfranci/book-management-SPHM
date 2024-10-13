@@ -32,3 +32,44 @@
     ></span>
   </td>
 </tr>
+
+<div
+  th:fragment="requestApproveModal"
+  class="modal-content border-0 shadow-lg rounded"
+>
+  <div class="modal-header border-bottom">
+    <h5 class="modal-title text-uppercase fw-bold">Request Details</h5>
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="modal"
+      aria-label="Close"
+    ></button>
+  </div>
+  <div class="modal-body">
+    <p class="lead">Are you sure you want to approve this request?</p>
+    <div class="mb-3">
+      <strong>Book ID:</strong>
+      <p class="mb-0" th:text="${req.bookId}"></p>
+    </div>
+    <div class="mb-3">
+      <strong>User ID:</strong>
+      <p class="mb-0" th:text="${req.userId}"></p>
+    </div>
+    <div class="mb-3">
+      <strong>Request Date:</strong>
+      <p class="mb-0" th:text="${req.requestDate}"></p>
+    </div>
+  </div>
+  <div class="modal-footer border-top">
+    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    <button
+      class="btn btn-primary"
+      th:hx-put="${'/book/request-approve/' + req.requestId}"
+      hx-target="#userDetailModal .modal-content"
+      hx-swap="outerHTML"
+    >
+      Yes, Approve
+    </button>
+  </div>
+</div>

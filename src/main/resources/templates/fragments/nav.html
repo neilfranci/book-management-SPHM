@@ -16,11 +16,28 @@
         <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" />
       </svg>
       <span id="header-title" class="space-mono-bold">Library</span>
-      <span th:if="${userRole.name() == 'Member'}" style="color: white"
+      <span th:if="${user.role.name() == 'MEMBER'}" style="color: white"
         >(Member)</span
       >
-      <span th:if="${userRole.name() == 'Admin'}" style="color: white"
+      <span
+        th:if="${user.role.name() == 'MEMBER' && user.status.name() == 'INACTIVE'}"
+        class="text-dark bg-warning status-badge"
+      >
+        (Account Inactive Until Verification by Admin or Librarian)
+      </span>
+      <span
+        th:if="${user.role.name() == 'MEMBER' && user.status.name() == 'SUSPENDED'}"
+        class="text-bg-danger badge"
+        role="alert"
+      >
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        (Account Suspended please contact admin or Librarian)</span
+      >
+      <span th:if="${user.role.name() == 'ADMIN'}" style="color: white"
         >(Admin)</span
+      >
+      <span th:if="${user.role.name() == 'LIBRARIAN'}" style="color: white"
+        >(Librarian)</span
       >
     </li>
     <li>
@@ -35,7 +52,7 @@
         <span class="ps-2" style="align-self: center">Account</span>
       </button>
       <a
-        th:if="${userRole.name() == 'Admin' || userRole.name() == 'Librarian'}"
+        th:if="${user.role.name() == 'ADMIN' || user.role.name() == 'LIBRARIAN'}"
         th:href="@{/book/add}"
         class="bg6-btn text-center"
         style="text-decoration: none"

@@ -33,7 +33,12 @@
           <div>
             <h2 th:text="${user.name}" style="padding-top: 15px"></h2>
 
-            <p>Library <span th:text="${user.role}"></span></p>
+            <p>
+              Library
+              <span
+                th:text="${#strings.capitalize(#strings.toLowerCase(user.role))}"
+              ></span>
+            </p>
           </div>
         </div>
 
@@ -59,7 +64,12 @@
             </p>
             <p>
               <span>Account Status:</span>
-              <span class="status-badge" th:text="${user.status}">Active</span>
+              <span
+                class="status-badge"
+                th:classappend="${user.status.name() == 'ACTIVE' ? 'bg-success' : (user.status.name() == 'INACTIVE' ? 'bg-warning text-dark' : 'bg-danger')}"
+                th:text="${user.status}"
+                >Active</span
+              >
             </p>
           </div>
         </div>
@@ -122,7 +132,7 @@
                         hx-target="closest tr"
                         hx-swap="outerHTML"
                       >
-                        > Return
+                        Return
                       </button>
                       <button
                         class="bg6-btn"
@@ -134,7 +144,7 @@
                         data-bs-toggle="modal"
                         data-bs-target="#returnModal"
                       >
-                        > Return Fine
+                        Pay Fine
                       </button>
 
                       <span

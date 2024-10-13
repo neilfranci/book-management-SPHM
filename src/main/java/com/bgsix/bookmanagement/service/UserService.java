@@ -74,7 +74,6 @@ public class UserService implements UserDetailsService {
 		// Find user by email (or username) from the database
 		User user = userRepository.findByEmail(email)
 				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
-		System.out.println("User: " + user.getRole().name());
 		// Convert User to Spring Security's UserDetails
 		return org.springframework.security.core.userdetails.User.withUsername(user.getEmail())
 				.password(user.getPasswordHash()).roles(user.getRole().name()).build();
@@ -94,10 +93,13 @@ public class UserService implements UserDetailsService {
 			user.setName(userForm.getName());
 			user.setEmail(userForm.getEmail());
 			user.setGender(userForm.getGender());
-			user.setRole(userForm.getRole());
 			user.setStatus(userForm.getStatus());
 			user.setDateOfBirth(userForm.getDateOfBirth());
 			userRepository.save(user);
 		}
+	}
+
+	public void deleteUser(Long userId) {
+		userRepository.deleteById(userId);
 	}
 }

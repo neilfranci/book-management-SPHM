@@ -34,11 +34,9 @@ public class RequestService {
 	private UserService userService;
 
 	// REQUEST METHODS
-	public Map<Integer, String> createRequest(Long bookId) {
+	public Map<Integer, String> createRequest(Long bookId, Long userId) {
 
 		String message = "";
-
-		User user = userService.getCurrentUser();
 
 		Optional<Book> book = bookRepository.findById(bookId);
 
@@ -52,25 +50,26 @@ public class RequestService {
 			return Map.of(0, message);
 		}
 
-		if (requestRepository.findByBookIdAndUserIdAndStatus(bookId, user.getUserId(), RequestStatus.PENDING) != null) {
+		if (requestRepository.findByBookIdAndUserIdAndStatus(bookId, userId, RequestStatus.PENDING) != null) {
 			message = "You have already requested this book.";
 			return Map.of(0, message);
 		}
 
-		if (borrowRepository.findByBookIdAndUserIdAndStatus(bookId, user.getUserId(), BorrowStatus.BORROWED) != null) {
+		if (borrowRepository.findByBookIdAndUserIdAndStatus(bookId, userId, BorrowStatus.BORROWED) != null) {
 			message = "You have already borrowed this book. Please return it first.";
 			return Map.of(0, message);
 		}
 
 		BookRequest request = new BookRequest();
 		request.setBookId(bookId);
-		request.setUserId(user.getUserId());
+		request.setUserId(userId);
 		request.setRequestDate(LocalDate.now());
 		request.setStatus(RequestStatus.PENDING);
 
 		requestRepository.save(request);
 
 		book.get().setQuantity(book.get().getQuantity() - 1);
+
 		bookRepository.save(book.get());
 
 		message = "Successfully request the book!";
@@ -79,14 +78,12 @@ public class RequestService {
 	}
 
 	// Testing
-	public void approveRequest(Long requestId) {
+	public void approveRequest(Long requestId, Long userId) {
 		Optional<BookRequest> request = requestRepository.findById(requestId);
-
-		User user = userService.getCurrentUser();
 
 		if (request.isPresent()) {
 			BookRequest req = request.get();
-			req.setLibrarianId(user.getUserId());
+			req.setLibrarianId(userId);
 			req.setStatus(RequestStatus.APPROVED);
 			req.setApprovalDate(LocalDate.now());
 

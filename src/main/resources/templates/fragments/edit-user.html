@@ -10,9 +10,11 @@
   </div>
   <div class="modal-body">
     <form
-      th:action="@{'/user/update/' + ${user.userId}}"
-      th:object="${user}"
+      th:hx-post="@{'/user/update/' + ${user.userId}}"
+      hx-target="#userDetailModal .modal-content"
+      hx-swap="outerHTML"
       method="post"
+      th:object="${user}"
     >
       <div class="mb-3">
         <label for="editName" class="form-label">Name</label>
@@ -46,15 +48,17 @@
           </option>
         </select>
       </div>
-      <div class="mb-3">
+      <!-- <div class="mb-3">
         <label for="editRole" class="form-label">Role</label>
         <select class="form-select" id="editRole" name="role">
-          <option value="Member" th:selected="*{role} == 'Member'">
-            Member
-          </option>
-          <option value="Admin" th:selected="*{role} == 'Admin'">Admin</option>
+          <option
+            th:each="roleOption : ${T(com.bgsix.bookmanagement.enums.UserRole).values()}"
+            th:value="${roleOption}"
+            th:text="${#strings.capitalize(#strings.toLowerCase(roleOption.name()))}"
+            th:selected="${user.role != null and roleOption.name() == user.role.name()}"
+          ></option>
         </select>
-      </div>
+      </div> -->
       <div class="mb-3">
         <label for="editDateOfBirth" class="form-label">Date of Birth</label>
         <input
@@ -68,15 +72,12 @@
       <div class="mb-3">
         <label for="editStatus" class="form-label">Status</label>
         <select class="form-select" id="editStatus" name="status">
-          <option value="Active" th:selected="*{status} == 'Active'">
-            Active
-          </option>
-          <option value="Pending" th:selected="*{status} == 'Pending'">
-            Pending
-          </option>
-          <option value="Inactive" th:selected="*{status} == 'Inactive'">
-            Inactive
-          </option>
+          <option
+            th:each="statusOption : ${T(com.bgsix.bookmanagement.enums.UserStatus).values()}"
+            th:value="${statusOption}"
+            th:text="${#strings.capitalize(#strings.toLowerCase(statusOption.name()))}"
+            th:selected="${user.status != null and statusOption.name() == user.status.name()}"
+          ></option>
         </select>
       </div>
       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">

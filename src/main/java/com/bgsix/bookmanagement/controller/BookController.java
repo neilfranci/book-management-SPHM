@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import com.bgsix.bookmanagement.dto.BookDTO;
 import com.bgsix.bookmanagement.dto.BookForm;
 import com.bgsix.bookmanagement.dto.BorrowedBookDTO;
+import com.bgsix.bookmanagement.enums.UserRole;
+import com.bgsix.bookmanagement.enums.UserStatus;
 // import com.bgsix.bookmanagement.dto.TopGenreDTO;
 import com.bgsix.bookmanagement.model.Book;
+import com.bgsix.bookmanagement.model.BookRequest;
 import com.bgsix.bookmanagement.model.User;
 import com.bgsix.bookmanagement.service.BookService;
 import com.bgsix.bookmanagement.service.BorrowService;
@@ -56,7 +59,7 @@ public class BookController {
 
 		// Get User Role
 		User user = userService.getCurrentUser();
-		model.addAttribute("userRole", user.getRole());
+		model.addAttribute("user", user);
 
 		return "book/search";
 	}
@@ -87,6 +90,7 @@ public class BookController {
 		User user = userService.getCurrentUser();
 		
 		model.addAttribute("userRole", user.getRole());
+		model.addAttribute("userStatus", user.getStatus());
 		model.addAttribute("book", bookDTO);
 
 		return "fragments/book-detail :: detailModal";
@@ -94,7 +98,18 @@ public class BookController {
 
 	@PostMapping("/request-borrow/{bookId}")
 	public String requestBorrowBook(@PathVariable Long bookId, Model model) {
-		Map<Integer, String> result = requestService.createRequest(bookId);
+
+		User user = userService.getCurrentUser();
+
+		if (user.getStatus() == UserStatus.INACTIVE) {
+			model.addAttribute("message", "Please activate your account first.");
+			return "fragments/request :: requestMessage";
+		} else if (user.getStatus() == UserStatus.SUSPENDED) {
+			model.addAttribute("message", "Your account is suspended. Please contact the librarian.");
+			return "fragments/request :: requestMessage";
+		}
+
+		Map<Integer, String> result = requestService.createRequest(bookId, user.getUserId());
 
 		if (result.get(0) != null) {
 			model.addAttribute("message", result.get(0));
@@ -107,13 +122,31 @@ public class BookController {
 		return "fragments/request :: requestMessage";
 	}
 
+	@GetMapping("/request-approve/{requestId}")
+	public String getRequestApprove(@PathVariable Long requestId, Model model) {
+
+		BookRequest request = requestService.getRequestById(requestId);
+		model.addAttribute("req", request);
+		
+		return "fragments/request :: requestApproveModal";
+	}
+
 	@PutMapping("/request-approve/{requestId}")
 	public String approveRequest(@PathVariable Long requestId, Model model) {
-		requestService.approveRequest(requestId);
+		//Check user who can approve request
+		User user = userService.getCurrentUser();
+		
+		if (user.getRole() != UserRole.LIBRARIAN && user.getRole() != UserRole.ADMIN) {
+			model.addAttribute("message", "You are not allowed to approve this request.");
+			return "fragments/message-modal";
+		}
 
-		model.addAttribute("req", requestService.getRequestById(requestId));
+		requestService.approveRequest(requestId, user.getUserId());
 
-		return "fragments/request :: requestRow";
+		model.addAttribute("message", "Request approved successfully.");
+		model.addAttribute("redirectUrl", "/user/details");
+
+		return "fragments/message-modal";
 	}
 
 	@PutMapping("/borrow/return/{borrowId}")
@@ -130,6 +163,7 @@ public class BookController {
 		return "fragments/borrow :: borrowBookRow";
 	}
 
+	
 	@PostMapping("/borrow/pay/{borrowId}")
 	public String payFine(@PathVariable Long borrowId, Model model) {
 		borrowService.payFine(borrowId);

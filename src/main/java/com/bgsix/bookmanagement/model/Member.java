@@ -2,23 +2,18 @@ package com.bgsix.bookmanagement.model;
 
 import java.time.LocalDate;
 
-import com.bgsix.bookmanagement.enums.UserRole;
+import com.bgsix.bookmanagement.enums.*;
 
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 
 @Entity
-@DiscriminatorValue("Member")
+@DiscriminatorValue("MEMBER")
 public class Member extends User {
 
-	public void borrowBook(Book book) {
-		// Example logic for borrowing a book
-	}
-
 	public Member() {
-		this.role = UserRole.Member;
+		this.role = UserRole.MEMBER;
 		this.gender = "Other";
-		this.status = "Active";
+		this.status = UserStatus.INACTIVE;
 		this.dateJoined = LocalDate.now();
 	}
 }

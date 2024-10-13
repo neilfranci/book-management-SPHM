@@ -2,7 +2,13 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
   <head>
     <title>Library Admin</title>
+    <style>
+      * {
+        --bs-table-hover-color: #b1b1b1;
+      }
+    </style>
   </head>
+
   <body>
     <div class="container user-detail">
       <div class="d-flex justify-content-between">
@@ -61,7 +67,12 @@
             </p>
             <p>
               <span>Account Status:</span>
-              <span class="status-badge" th:text="${user.status}">Active</span>
+              <span
+                class="status-badge"
+                th:classappend="${user.status.name() == 'ACTIVE' ? 'bg-success' : (user.status.name() == 'INACTIVE' ? 'bg-warning text-dark' : 'bg-danger')}"
+                th:text="${user.status}"
+                >Active</span
+              >
             </p>
           </div>
         </div>
@@ -69,30 +80,30 @@
 
       <div class="border-top mt-2 pt-2">
         <h3 class="mb-4">Manage Members</h3>
-        <div class="d-flex justify-content-between mb-3">
-          <!-- <input
+        <!-- <div class="d-flex justify-content-between mb-3">
+          <input
             type="text"
             class="form-control w-25"
             placeholder="Search members..."
             data-th:attr="hx-get='/member/search?query=' + this.value, hx-target='#user-detail-table', hx-trigger='input'"
-          /> -->
-          <!--/*
+          />
+          
           <button
             class="bg6-btn"
             data-bs-toggle="modal"
-            data-bs-target="#editModal"
+            data-bs-target="#userDetailModal"
             disabled
           >
             Add New Member
           </button>
-          */-->
-        </div>
+          
+        </div> -->
         <div>
           <ul class="nav nav-tabs">
             <li class="nav-item">
               <button
-                th:if="${user.role == 'Admin'}"
-                class="nav-link"
+                th:if="${user.role.name() == 'ADMIN'}"
+                class="nav-link active"
                 data-bs-toggle="tab"
                 data-bs-target="#tab1"
               >
@@ -101,7 +112,8 @@
             </li>
             <li class="nav-item">
               <button
-                class="nav-link active"
+                th:classappend="${user.role.name() == 'LIBRARIAN'} ? 'active' : ''"
+                class="nav-link"
                 data-bs-toggle="tab"
                 data-bs-target="#tab2"
               >
@@ -121,14 +133,14 @@
 
           <div class="tab-content">
             <div
-              th:if="${user.role == 'Admin'}"
-              class="tab-pane fade"
+              th:if="${user.role.name() == 'ADMIN'}"
+              class="tab-pane fade show active"
               id="tab1"
             >
               <div class="table-responsive">
                 <table
                   id="user-detail-table"
-                  class="table table-striped align-middle"
+                  class="table table-striped align-middle table-hover"
                 >
                   <thead>
                     <tr>
@@ -153,7 +165,7 @@
                       <td>
                         <span
                           class="badge"
-                          th:classappend="${member.status == 'Active' ? 'bg-success' : (member.status == 'Pending' ? 'bg-warning text-dark' : 'bg-danger')}"
+                          th:classappend="${member.status.name() == 'ACTIVE' ? 'bg-success' : (member.status.name() == 'INACTIVE' ? 'bg-warning text-dark' : 'bg-danger')}"
                           th:text="${member.status}"
                           >Active</span
                         >
@@ -162,11 +174,11 @@
                         <button
                           class="btn btn-sm btn-outline-light me-2"
                           th:hx-get="${'/user/' + member.userId}"
-                          hx-target="#editModal .modal-content"
+                          hx-target="#userDetailModal .modal-content"
                           hx-swap="outerHTML"
                           hx-trigger="click"
                           data-bs-toggle="modal"
-                          data-bs-target="#editModal"
+                          data-bs-target="#userDetailModal"
                         >
                           Edit
                         </button>
@@ -185,7 +197,11 @@
                 </table>
               </div>
             </div>
-            <div class="tab-pane fade show active" id="tab2">
+            <div
+              class="tab-pane fade"
+              id="tab2"
+              th:classappend="${user.role.name() == 'LIBRARIAN'} ? 'show active' : ''"
+            >
               <table
                 id="user-detail-table"
                 class="table table-striped align-middle"
@@ -211,9 +227,12 @@
                       <button
                         class="bg6-btn"
                         th:if="${req.status.name() == 'PENDING'}"
-                        th:hx-put="${'/book/request-approve/' + req.requestId}"
-                        hx-target="closest tr"
+                        th:hx-get="${'/book/request-approve/' + req.requestId}"
+                        hx-target="#userDetailModal .modal-content"
                         hx-swap="outerHTML"
+                        hx-trigger="click"
+                        data-bs-toggle="modal"
+                        data-bs-target="#userDetailModal"
                       >
                         Approve
                       </button>
@@ -285,7 +304,7 @@
     </div>
 
     <!--/* Edit User Modal */-->
-    <div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal fade" id="userDetailModal" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-dark text-light"></div>
       </div>
