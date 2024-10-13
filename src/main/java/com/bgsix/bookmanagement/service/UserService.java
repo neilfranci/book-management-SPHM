@@ -8,15 +8,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.bgsix.bookmanagement.dto.SignInForm;
-import com.bgsix.bookmanagement.dto.SignUpForm;
-import com.bgsix.bookmanagement.dto.UserForm;
-import com.bgsix.bookmanagement.model.Member;
-import com.bgsix.bookmanagement.model.User;
+import com.bgsix.bookmanagement.dto.*;
+import com.bgsix.bookmanagement.enums.*;
+import com.bgsix.bookmanagement.model.*;
 import com.bgsix.bookmanagement.repository.UserRepository;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -86,6 +83,49 @@ public class UserService implements UserDetailsService {
 	public User getUserById(Long userId) {
 		return userRepository.findById(userId).orElse(null);
 	}
+
+
+
+	public Map<Integer, String> addUser(UserForm userForm) {
+		if (userRepository.findByEmail(userForm.getEmail()).isPresent()) {
+			return Map.of(0, "This email is already registered.");
+		}
+	
+		User user;
+		String successMessage;
+	
+		switch (userForm.getRole()) {
+			case MEMBER:
+				user = new Member();
+				successMessage = "Member added successfully.";
+				break;
+			case LIBRARIAN:
+				user = new Librarian();
+				successMessage = "Librarian added successfully.";
+				break;
+			case ADMIN:
+				user = new Admin();
+				successMessage = "Admin added successfully.";
+				break;
+			default:
+				return Map.of(2, "Invalid user role.");
+		}
+	
+		setUserDetail(user, userForm);
+		userRepository.save(user);
+	
+		return Map.of(1, successMessage);
+	}
+	
+	private void setUserDetail(User user, UserForm userForm) {
+		user.setName(userForm.getName());
+		user.setEmail(userForm.getEmail());
+		user.setPasswordHash(passwordEncoder.encode(userForm.getPassword()));
+		user.setGender(userForm.getGender());
+		user.setDateOfBirth(userForm.getDateOfBirth());
+		user.setStatus(UserStatus.ACTIVE);
+	}
+	
 
 	public void updateUser(Long userId, UserForm userForm) {
 		User user = userRepository.findById(userId).orElse(null);

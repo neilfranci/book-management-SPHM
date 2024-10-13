@@ -15,6 +15,7 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+    <link rel="stylesheet" th:href="@{/css/global.css}" />
     <style>
       body {
         background-color: #2a313a;
@@ -201,9 +202,19 @@
                   placeholder="Enter publication year"
                 />
               </div>
-              <div class="col-12 text-center mt-4">
-                <button type="submit" class="btn btn-primary">Add Book</button>
+              <div class="col-md-4">
+                <label for="quantity" class="form-label">Quantity</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="quantity"
+                  th:value="*{quantity}"
+                  placeholder="Enter quantity"
+                />
               </div>
+            </div>
+            <div class="col-12 text-center mt-4">
+              <button type="submit" class="btn btn-primary">Add Book</button>
             </div>
           </form>
         </div>

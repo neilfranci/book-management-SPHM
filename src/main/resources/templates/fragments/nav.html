@@ -47,6 +47,13 @@
       </a>
 
       <a
+        th:if="${user.role.name() == 'ADMIN'}"
+        th:href="@{/user/add}"
+        class="bg6-btn text-center"
+        style="text-decoration: none"
+        >Add User</a
+      >
+      <a
         th:if="${user.role.name() == 'ADMIN' || user.role.name() == 'LIBRARIAN'}"
         th:href="@{/book/add}"
         class="bg6-btn text-center"

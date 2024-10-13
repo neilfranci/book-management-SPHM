@@ -1,5 +1,7 @@
 package com.bgsix.bookmanagement.controller;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +11,7 @@ import org.springframework.ui.Model;
 import com.bgsix.bookmanagement.dto.UserForm;
 import com.bgsix.bookmanagement.enums.UserRole;
 import com.bgsix.bookmanagement.model.User;
-import com.bgsix.bookmanagement.service.BorrowService;
-import com.bgsix.bookmanagement.service.RequestService;
-import com.bgsix.bookmanagement.service.UserService;
+import com.bgsix.bookmanagement.service.*;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -72,6 +72,30 @@ public class UserController {
 		}
 
 		model.addAttribute("message", "You are not allowed to update this user");
+		return "fragments/message-modal";
+	}
+
+	@GetMapping("/add")
+	public String getAddUserForm(Model model) {
+		model.addAttribute("userForm", new UserForm());
+		return "user/add-user";
+	}
+
+	@PostMapping("/add")
+	public String addUser(@ModelAttribute UserForm userForm, Model model) {
+		User currentUser = userService.getCurrentUser();
+
+		// Ensure only admins can add new users
+		if (currentUser.getRole() != UserRole.ADMIN) {
+			model.addAttribute("message", "You are not allowed to add users");
+			return "fragments/message-modal";
+		}
+
+		Map<Integer, String> result = userService.addUser(userForm);
+
+		String message = result.values().stream().findFirst().orElse("Unknown error occurred");
+
+		model.addAttribute("message", message);
 		return "fragments/message-modal";
 	}
 
