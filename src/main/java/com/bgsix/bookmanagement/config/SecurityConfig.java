@@ -2,12 +2,14 @@ package com.bgsix.bookmanagement.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter.Directive;
@@ -21,7 +23,7 @@ public class SecurityConfig {
     private final HeaderWriterLogoutHandler clearSiteData = new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(Directive.COOKIES));
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http,  UserService userService) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http,  UserService userService, UserExistenceCheckFilter userExistenceCheckFilter) throws Exception {
 
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userService);
@@ -31,11 +33,12 @@ public class SecurityConfig {
             .cors(cors -> cors.disable())
             .csrf(csrf -> csrf.disable())
             .authenticationProvider(authenticationProvider)
+			.addFilterBefore(userExistenceCheckFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/signup", "/login", "/logout").permitAll()
 				.requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
-                .requestMatchers("/book/add", "/book/edit", "/book/request-approve", "/book/update", "/book/delete").hasAnyRole("ADMIN", "LIBRARIAN")
-				.requestMatchers("/user/update").hasRole("ADMIN")
+                .requestMatchers("/book/add", "/book/edit", "/book/request-approve", "/book/update/**", "/book/delete/**").hasAnyRole("ADMIN", "LIBRARIAN")
+				.requestMatchers("/user/update/**").hasRole("ADMIN")
                 .anyRequest().authenticated())
             .formLogin(form -> form
                 .loginPage("/login")

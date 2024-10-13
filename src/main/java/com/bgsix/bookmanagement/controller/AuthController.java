@@ -29,6 +29,7 @@ public class AuthController {
 	@GetMapping("/login")
 	public String showLoginForm(Model model) {
 		model.addAttribute("signInForm", new SignInForm());
+
 		return "auth/login";
 	}
 

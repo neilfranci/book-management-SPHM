@@ -29,7 +29,7 @@
     />
     <link rel="stylesheet" th:href="@{/css/global.css}" />
   </head>
-  <body>
+  <body style="padding-top: 60px">
     <nav th:replace="~{fragments/nav}"></nav>
     <div
       th:if="${user.role.name() == 'MEMBER'}"
@@ -39,6 +39,12 @@
       th:if="${user.role.name() == 'ADMIN' || user.role.name() == 'LIBRARIAN'}"
       th:insert="~{fragments/admin-detail}"
     ></div>
+
+    <div class="modal fade" id="userDetailModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-light"></div>
+      </div>
+    </div>
   </body>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </html>

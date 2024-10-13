@@ -36,6 +36,10 @@ public class UserService implements UserDetailsService {
 		return userRepository.save(member);
 	}
 
+	public boolean existsByEmail(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
 	public void deleteById(Long id) {
 		userRepository.deleteById(id);
 	}

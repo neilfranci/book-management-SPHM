@@ -1,280 +1,224 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <title>Library Admin</title>
-    <style>
-      * {
-        --bs-table-hover-color: #b1b1b1;
-      }
-    </style>
-    <link rel="stylesheet" th:href="@{/css/global.css}" />
-  </head>
+<div class="container user-detail">
+  <div class="d-flex justify-content-between">
+    <a th:href="@{/book/search}" class="bg6-btn"> ← Return to Home Page </a>
 
-  <body>
-    <div class="container user-detail">
-      <div class="d-flex justify-content-between">
-        <button
-          hx-get="/book/search"
-          hx-target="body"
-          hx-swap="outerHTML"
-          hx-push-url="/book/search"
-          class="bg6-btn"
-        >
-          ← Return to Home Page
-        </button>
+    <i
+      role="button"
+      class="bi bi-caret-down-fill"
+      data-bs-toggle="collapse"
+      data-bs-target="#info"
+    ></i>
+  </div>
 
-        <i
-          role="button"
-          class="bi bi-caret-down-fill"
-          data-bs-toggle="collapse"
-          data-bs-target="#info"
-        ></i>
+  <div id="info" class="collapse show">
+    <div class="header">
+      <img class="avatar" src="https://placehold.co/80x80" alt="" />
+      <div>
+        <h2 th:text="${user.name}" style="padding-top: 15px">Emma Wilson</h2>
+        <p>Library <span th:text="${user.role}">MEMBER</span></p>
       </div>
+    </div>
 
-      <div id="info" class="collapse show">
-        <div class="header">
-          <img class="avatar" src="https://placehold.co/80x80" alt="" />
-          <div>
-            <h2 th:text="${user.name}" style="padding-top: 15px">
-              Emma Wilson
-            </h2>
-            <p>Library <span th:text="${user.role}">MEMBER</span></p>
-          </div>
-        </div>
-
-        <div class="user-info">
-          <div>
-            <p>
-              <span>Name:</span> <span th:text="${user.name}">Emma Wilson</span>
-            </p>
-            <p>
-              <span>Member Since:</span>
-              <span th:text="${user.dateJoined}">March 10, 2022</span>
-            </p>
-            <p>
-              <span>Date of Birth:</span>
-              <span th:text="${user.dateOfBirth ?: 'Not Exist'}"
-                >Not Exist</span
-              >
-            </p>
-          </div>
-          <div>
-            <p>
-              <span>Email:</span>
-              <span th:text="${user.email}">emma.wilson@example.com</span>
-            </p>
-            <p>
-              <span>Gender:</span> <span th:text="${user.gender}">OTHER</span>
-            </p>
-            <p>
-              <span>Account Status:</span>
-              <span
-                class="status-badge"
-                th:classappend="${user.status.name() == 'ACTIVE' ? 'bg-success' : (user.status.name() == 'INACTIVE' ? 'bg-warning text-dark' : 'bg-danger')}"
-                th:text="${user.status}"
-                >Active</span
-              >
-            </p>
-          </div>
-        </div>
+    <div class="user-info">
+      <div>
+        <p>
+          <span>Name:</span> <span th:text="${user.name}">Emma Wilson</span>
+        </p>
+        <p>
+          <span>Member Since:</span>
+          <span th:text="${user.dateJoined}">March 10, 2022</span>
+        </p>
+        <p>
+          <span>Date of Birth:</span>
+          <span th:text="${user.dateOfBirth ?: 'Not Exist'}">Not Exist</span>
+        </p>
       </div>
-
-      <div class="border-top mt-2 pt-2">
-        <h3 class="mb-4">Manage Members</h3>
-        <!-- <div class="d-flex justify-content-between mb-3">
-          <input
-            type="text"
-            class="form-control w-25"
-            placeholder="Search members..."
-            data-th:attr="hx-get='/member/search?query=' + this.value, hx-target='#user-detail-table', hx-trigger='input'"
-          />
-          
-          <button
-            class="bg6-btn"
-            data-bs-toggle="modal"
-            data-bs-target="#userDetailModal"
-            disabled
+      <div>
+        <p>
+          <span>Email:</span>
+          <span th:text="${user.email}">emma.wilson@example.com</span>
+        </p>
+        <p><span>Gender:</span> <span th:text="${user.gender}">OTHER</span></p>
+        <p>
+          <span>Account Status:</span>
+          <span
+            class="status-badge"
+            th:classappend="${user.status.name() == 'ACTIVE' ? 'bg-success' : (user.status.name() == 'INACTIVE' ? 'bg-warning text-dark' : 'bg-danger')}"
+            th:text="${user.status}"
+            >Active</span
           >
-            Add New Member
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="border-top mt-2 pt-2">
+    <h3 class="mb-4">Manage Members</h3>
+    <div>
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <button
+            th:if="${user.role.name() == 'ADMIN'}"
+            class="nav-link active"
+            data-bs-toggle="tab"
+            data-bs-target="#tab1"
+          >
+            Members
           </button>
-          
-        </div> -->
-        <div>
-          <ul class="nav nav-tabs">
-            <li class="nav-item">
-              <button
-                th:if="${user.role.name() == 'ADMIN'}"
-                class="nav-link active"
-                data-bs-toggle="tab"
-                data-bs-target="#tab1"
-              >
-                Members
-              </button>
-            </li>
-            <li class="nav-item">
-              <button
-                th:classappend="${user.role.name() == 'LIBRARIAN'} ? 'active' : ''"
-                class="nav-link"
-                data-bs-toggle="tab"
-                data-bs-target="#tab2"
-              >
-                Requests
-              </button>
-            </li>
-            <li class="nav-item">
-              <button
-                class="nav-link"
-                data-bs-toggle="tab"
-                data-bs-target="#tab3"
-              >
-                Borrowed Books
-              </button>
-            </li>
-          </ul>
+        </li>
+        <li class="nav-item">
+          <button
+            th:classappend="${user.role.name() == 'LIBRARIAN'} ? 'active' : ''"
+            class="nav-link"
+            data-bs-toggle="tab"
+            data-bs-target="#tab2"
+          >
+            Requests
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab3">
+            Borrowed Books
+          </button>
+        </li>
+      </ul>
 
-          <div class="tab-content">
-            <div
-              th:if="${user.role.name() == 'ADMIN'}"
-              class="tab-pane fade show active"
-              id="tab1"
+      <div class="tab-content">
+        <div
+          th:if="${user.role.name() == 'ADMIN'}"
+          class="tab-pane fade show active"
+          id="tab1"
+        >
+          <div class="table-responsive">
+            <table
+              class="table table-striped align-middle table-hover user-detail-table"
             >
-              <div class="table-responsive">
-                <table
-                  id="user-detail-table"
-                  class="table table-striped align-middle table-hover"
-                >
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Email</th>
-                      <th>Member Since</th>
-                      <th>Date of Birth</th>
-                      <th>Role</th>
-                      <th>Status</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody id="user-detail-table">
-                    <tr th:each="member : ${members}">
-                      <td th:text="${member.name}">John Doe</td>
-                      <td th:text="${member.email}">john@example.com</td>
-                      <td th:text="${member.dateJoined}">2023-05-15</td>
-                      <td th:text="${member.dateOfBirth} ?: 'Not Exist'">
-                        2023-05-15
-                      </td>
-                      <td th:text="${member.role}">Role</td>
-                      <td>
-                        <span
-                          class="badge"
-                          th:classappend="${member.status.name() == 'ACTIVE' ? 'bg-success' : (member.status.name() == 'INACTIVE' ? 'bg-warning text-dark' : 'bg-danger')}"
-                          th:text="${member.status}"
-                          >Active</span
-                        >
-                      </td>
-                      <td>
-                        <button
-                          class="btn btn-sm btn-outline-light me-2"
-                          th:hx-get="${'/user/' + member.userId}"
-                          hx-target="#userDetailModal .modal-content"
-                          hx-swap="outerHTML"
-                          hx-trigger="click"
-                          data-bs-toggle="modal"
-                          data-bs-target="#userDetailModal"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          class="btn btn-sm btn-danger"
-                          disabled
-                          th:hx-delete="${'/user/' + member.userId}"
-                          hx-target="#user-detail-table"
-                          hx-swap="outerHTML"
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div
-              class="tab-pane fade"
-              id="tab2"
-              th:classappend="${user.role.name() == 'LIBRARIAN'} ? 'show active' : ''"
-            >
-              <table
-                id="user-detail-table"
-                class="table table-striped align-middle"
-              >
-                <thead>
-                  <tr>
-                    <th>Book ID</th>
-                    <th>User ID</th>
-                    <th>Librarian ID</th>
-                    <th>Request Date</th>
-                    <th style="width: 20%">Approval Date</th>
-                    <th style="width: 20%">Status/Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr th:each="req : ${requests}">
-                    <td th:text="${req.bookId}"></td>
-                    <td th:text="${req.userId}"></td>
-                    <td th:text="${req.librarianId ?: 'Not Assigned'}"></td>
-                    <td th:text="${req.requestDate}"></td>
-                    <td th:text="${req.approvalDate ?: 'Not Approved'}"></td>
-                    <td>
-                      <button
-                        class="bg6-btn"
-                        th:if="${req.status.name() == 'PENDING'}"
-                        th:hx-get="${'/book/request-approve/' + req.requestId}"
-                        hx-target="#userDetailModal .modal-content"
-                        hx-swap="outerHTML"
-                        hx-trigger="click"
-                        data-bs-toggle="modal"
-                        data-bs-target="#userDetailModal"
-                      >
-                        Approve
-                      </button>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Member Since</th>
+                  <th>Date of Birth</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="member : ${members}">
+                  <td th:text="${member.name}">John Doe</td>
+                  <td th:text="${member.email}">john@example.com</td>
+                  <td th:text="${member.dateJoined}">2023-05-15</td>
+                  <td th:text="${member.dateOfBirth} ?: 'Not Exist'">
+                    2023-05-15
+                  </td>
+                  <td th:text="${member.role}">Role</td>
+                  <td>
+                    <span
+                      class="badge"
+                      th:classappend="${member.status.name() == 'ACTIVE' ? 'bg-success' : (member.status.name() == 'INACTIVE' ? 'bg-warning text-dark' : 'bg-danger')}"
+                      th:text="${member.status}"
+                      >Active</span
+                    >
+                  </td>
+                  <td>
+                    <button
+                      class="btn btn-sm btn-outline-light me-2"
+                      th:hx-get="${'/user/' + member.userId}"
+                      hx-target="#userDetailModal .modal-content"
+                      hx-swap="outerHTML"
+                      data-bs-toggle="modal"
+                      data-bs-target="#userDetailModal"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      class="btn btn-sm btn-danger"
+                      th:hx-get="${'/user/delete/' + member.userId}"
+                      hx-target="#userDetailModal .modal-content"
+                      hx-swap="outerHTML"
+                      data-bs-toggle="modal"
+                      data-bs-target="#userDetailModal"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="tab2"
+          th:classappend="${user.role.name() == 'LIBRARIAN'} ? 'show active' : ''"
+        >
+          <table class="table table-striped align-middle">
+            <thead>
+              <tr>
+                <th>Book ID</th>
+                <th>User ID</th>
+                <th>Librarian ID</th>
+                <th>Request Date</th>
+                <th style="width: 20%">Approval Date</th>
+                <th style="width: 20%">Status/Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="req : ${requests}">
+                <td th:text="${req.bookId}"></td>
+                <td th:text="${req.userId}"></td>
+                <td th:text="${req.librarianId ?: 'Not Assigned'}"></td>
+                <td th:text="${req.requestDate}"></td>
+                <td th:text="${req.approvalDate ?: 'Not Approved'}"></td>
+                <td>
+                  <button
+                    class="bg6-btn"
+                    th:if="${req.status.name() == 'PENDING'}"
+                    th:hx-get="${'/book/request-approve/' + req.requestId}"
+                    hx-target="#userDetailModal .modal-content"
+                    hx-swap="outerHTML"
+                    hx-trigger="click"
+                    data-bs-toggle="modal"
+                    data-bs-target="#userDetailModal"
+                  >
+                    Approve
+                  </button>
 
-                      <span
-                        class="badge"
-                        th:classappend="${req.status.name() == 'APPROVED' ? 'bg-success' : (req.status.name() == 'PENDING' ? 'bg-warning text-dark' : 'bg-danger')}"
-                        th:if="${req.status.name() != 'PENDING'}"
-                        th:text="${req.status}"
-                      ></span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="tab-pane fade" id="tab3">
-              <table
-                id="user-detail-table"
-                class="table table-striped align-middle"
-              >
-                <thead>
-                  <tr>
-                    <th>Borrow ID</th>
-                    <th>User ID</th>
-                    <th>Borrow Date</th>
-                    <th>Due Date</th>
-                    <th>Returned Date</th>
-                    <th>Fine</th>
-                    <th style="width: 20%">Status/Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr th:each="borrow : ${borrowedBooks}">
-                    <td th:text="${borrow.borrowId}"></td>
-                    <td th:text="${borrow.userId}"></td>
-                    <td th:text="${borrow.borrowDate}"></td>
-                    <td th:text="${borrow.dueDate}"></td>
-                    <td th:text="${borrow.returnedDate ?: 'Not Returned'}"></td>
-                    <td th:text="${borrow.fine}"></td>
-                    <td>
-                      <!-- <button
+                  <span
+                    class="badge"
+                    th:classappend="${req.status.name() == 'APPROVED' ? 'bg-success' : (req.status.name() == 'PENDING' ? 'bg-warning text-dark' : 'bg-danger')}"
+                    th:if="${req.status.name() != 'PENDING'}"
+                    th:text="${req.status}"
+                  ></span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="tab-pane fade" id="tab3">
+          <table class="table table-striped align-middle">
+            <thead>
+              <tr>
+                <th>Borrow ID</th>
+                <th>User ID</th>
+                <th>Borrow Date</th>
+                <th>Due Date</th>
+                <th>Returned Date</th>
+                <th>Fine</th>
+                <th style="width: 20%">Status/Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="borrow : ${borrowedBooks}">
+                <td th:text="${borrow.borrowId}"></td>
+                <td th:text="${borrow.userId}"></td>
+                <td th:text="${borrow.borrowDate}"></td>
+                <td th:text="${borrow.dueDate}"></td>
+                <td th:text="${borrow.returnedDate ?: 'Not Returned'}"></td>
+                <td th:text="${borrow.fine}"></td>
+                <td>
+                  <!-- <button
                         class="bg6-btn"
                         th:if="${req.status.name() == 'PENDING'}"
                         th:hx-put="${'/book/request-approve/' + req.requestId}"
@@ -283,32 +227,23 @@
                       >
                         Edit
                       </button> -->
-                      <span
-                        class="badge"
-                        th:classappend="${borrow.status.name() == 'RETURNED' ? 'bg-success' : 'bg-warning text-dark'}"
-                        th:text="${borrow.status}"
-                      ></span>
-                      <span
-                        class="badge bg-danger text-dark"
-                        th:if="${borrow.status.name() == 'BORROWED'} and ${borrow.fine} > 0"
-                      >
-                        Overdue
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+                  <span
+                    class="badge"
+                    th:classappend="${borrow.status.name() == 'RETURNED' ? 'bg-success' : 'bg-warning text-dark'}"
+                    th:text="${borrow.status}"
+                  ></span>
+                  <span
+                    class="badge bg-danger text-dark"
+                    th:if="${borrow.status.name() == 'BORROWED'} and ${borrow.fine} > 0"
+                  >
+                    Overdue
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
-
-    <!--/* Edit User Modal */-->
-    <div class="modal fade" id="userDetailModal" tabindex="-1">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-dark text-light"></div>
-      </div>
-    </div>
-  </body>
-</html>
+  </div>
+</div>

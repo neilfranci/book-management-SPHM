@@ -40,7 +40,7 @@ body {
 	background-position: center;
 	background-attachment: fixed;
 	position: relative;
-	padding-top: 60px;
+
 }
 
 body::before {
@@ -57,6 +57,29 @@ body::before {
 
 a {
 	text-decoration: none;
+}
+
+/* Table */
+
+.table {
+	--bs-table-bg: #202d3c;
+	--bs-table-color: #ddffff;
+	--bs-table-hover-bg: #788694;
+	--bs-table-hover-color: #ddffff;
+}
+
+.table-striped {
+	--bs-table-striped-bg: #343f4d;
+	--bs-table-striped-color: #ddffff;
+}
+
+td {
+	text-align: left;
+	border-bottom: solid 1px rgba(255, 255, 255, 0.3);
+}
+
+th {
+	background-color: #1e293b;
 }
 
 .modal-body img {
@@ -266,24 +289,4 @@ a {
 	padding: 5px 10px;
 	border-radius: 5px;
 	font-size: 0.9em;
-}
-
-#user-detail-table.table {
-	--bs-table-bg: #202d3c;
-	--bs-table-color: #ddffff;
-
-}
-
-#user-detail-table.table-striped {
-	--bs-table-striped-color: #ddffff;
-	--bs-table-striped-bg: #343f4d;
-}
-
-#user-detail-table td {
-	text-align: left;
-	border-bottom: solid 1px rgba(255, 255, 255, 0.3);
-}
-
-#user-detail-table th {
-	background-color: #1e293b;
 }

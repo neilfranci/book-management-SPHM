@@ -38,13 +38,7 @@
           User added successfully!
         </div>
         <div class="card-body">
-          <form
-            th:hx-post="@{/user/add}"
-            hx-target="#messageModal .modal-content"
-            hx-swap="outerHTML"
-            method="post"
-            th:object="${userForm}"
-          >
+          <form th:action="@{/user/add}" method="post" th:object="${userForm}">
             <div class="row g-4">
               <div class="col-md-6">
                 <label for="name" class="form-label">Name*</label>
@@ -130,24 +124,34 @@
               </div>
             </div>
             <div class="text-center mt-4">
-              <button
-                type="submit"
-                class="btn btn-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#messageModal"
-              >
-                Add User
-              </button>
+              <button type="submit" class="btn btn-primary">Add User</button>
             </div>
           </form>
         </div>
       </div>
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="messageModal" tabindex="-1">
+    <!--/* Modal */-->
+    <div
+      th:if="${message != null}"
+      class="modal fade"
+      id="messageModal"
+      th:style="${message != null ? 'display:block' : 'display:none'}"
+      tabindex="-1"
+    >
       <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content"></div>
+        <div class="modal-content">
+          <div class="modal-content">
+            <div class="modal-body">
+              <p th:text="${message}"></p>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-secondary" data-bs-dismiss="modal">
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -168,6 +172,17 @@
           icon.classList.add("bi-eye");
         }
       }
+
+      // Show message modal if message is not null
+      document.addEventListener("DOMContentLoaded", function () {
+        const messageModal = document.getElementById("messageModal");
+        if (messageModal) {
+          const modalInstance = new bootstrap.Modal(messageModal);
+          if (messageModal.style.display === "block") {
+            modalInstance.show();
+          }
+        }
+      });
     </script>
   </body>
 </html>

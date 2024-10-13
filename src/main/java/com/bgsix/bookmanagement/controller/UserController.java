@@ -14,6 +14,7 @@ import com.bgsix.bookmanagement.model.User;
 import com.bgsix.bookmanagement.service.*;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/user")
@@ -54,7 +55,7 @@ public class UserController {
 
 		model.addAttribute("user", user);
 
-		return "fragments/edit-user";
+		return "fragments/user/edit-user";
 	}
 
 	@PostMapping("/update/{userId}")
@@ -78,31 +79,53 @@ public class UserController {
 	@GetMapping("/add")
 	public String getAddUserForm(Model model) {
 		model.addAttribute("userForm", new UserForm());
+
+		// The flash message from the previous request will automatically be added to
+		// the model if exists (POST /add request)
+
 		return "user/add-user";
 	}
 
 	@PostMapping("/add")
-	public String addUser(@ModelAttribute UserForm userForm, Model model) {
+	public String addUser(@ModelAttribute UserForm userForm, RedirectAttributes redirectAttributes) {
 		User currentUser = userService.getCurrentUser();
 
 		// Ensure only admins can add new users
 		if (currentUser.getRole() != UserRole.ADMIN) {
-			model.addAttribute("message", "You are not allowed to add users");
-			return "fragments/message-modal";
+			redirectAttributes.addFlashAttribute("message", "You are not allowed to add users");
+			return "redirect:/user/add";
 		}
 
 		Map<Integer, String> result = userService.addUser(userForm);
-
 		String message = result.values().stream().findFirst().orElse("Unknown error occurred");
 
-		model.addAttribute("message", message);
-		return "fragments/message-modal";
+		// Add the message to redirect attributes
+		redirectAttributes.addFlashAttribute("message", message);
+
+		return "redirect:/user/add";
 	}
 
 	@GetMapping("/delete/{userId}")
-	public String deleteUser(@PathVariable Long userId) {
+	public String getUserInfoBeforeDelete(@PathVariable Long userId, Model model) {
+		User currentUser = userService.getCurrentUser();
+		// Ensure only admins can delete users
+		User user = userService.getUserById(userId);
+		if (currentUser.getRole() != UserRole.ADMIN) {
+			return "redirect:/user/details";
+		}
+		model.addAttribute("user", user);
+
+		return "fragments/user/confirm-delete";
+	}
+
+	@PostMapping("/delete/{userId}")
+	public String deleteUser(@PathVariable Long userId, Model model) {
 		userService.deleteUser(userId);
-		return "redirect:/user/details";
+
+		model.addAttribute("message", "User deleted successfully");
+		model.addAttribute("redirectUrl", "/user/details");
+
+		return "fragments/message-modal";
 	}
 
 }

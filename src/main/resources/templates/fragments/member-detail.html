@@ -9,16 +9,8 @@
   <body>
     <div class="container user-detail">
       <div class="d-flex justify-content-between">
-        <button
-          hx-get="/book/search"
-          hx-target="body"
-          hx-swap="outerHTML"
-          hx-push-url="/book/search"
-          class="bg6-btn"
-        >
-          ← Return to Home Page
-        </button>
-        <!-- <button class="bg6-btn">Edit Profile</button> -->
+        <a th:href="@{/book/search}" class="bg6-btn"> ← Return to Home Page </a>
+        <button class="bg6-btn">Edit Profile</button>
         <i
           role="button"
           class="bi bi-caret-down-fill"
