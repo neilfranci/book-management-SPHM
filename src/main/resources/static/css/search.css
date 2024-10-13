@@ -26,6 +26,11 @@ body::before {
     z-index: -1;
 }
 
+
+a {
+    text-decoration: none;
+}
+
 .modal-body img {
     height: 500px;
     max-width: 300px;

@@ -41,16 +41,11 @@
       >
     </li>
     <li>
-      <button
-        class="bg6-btn d-flex"
-        hx-get="/user/details?frag=1"
-        hx-target="main"
-        hx-swap="outerHTML"
-        hx-push-url="/user/details"
-      >
+      <a href="/user/details" class="bg6-btn d-flex">
         <i class="bi bi-person" style="font-size: 1.2rem"></i>
         <span class="ps-2" style="align-self: center">Account</span>
-      </button>
+      </a>
+
       <a
         th:if="${user.role.name() == 'ADMIN' || user.role.name() == 'LIBRARIAN'}"
         th:href="@{/book/add}"
