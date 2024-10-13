@@ -44,51 +44,73 @@ public class BookController {
 	private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(BookController.class);
 
 	@GetMapping("/search")
-	public String searcPage(Model model) {
+	public String searcPage(
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "20") int size,
+			@RequestParam(defaultValue = "false") Boolean topRated,
+			Model model) {
 		// Load Genre options
 		// List<TopGenreDTO> genres = genreService.getTopGenres();
 
-		Pageable pageable = PageRequest.of(0, 20);
+		Pageable pageable = PageRequest.of(page, size);
 
-		Page<BookDTO> books = bookService.getTopRateBooks(pageable);
+		Page<BookDTO> bookDTOs = bookService.getTopRateBooks(pageable);
 
-		model.addAttribute("books", books.getContent());
-		model.addAttribute("totalPages", books.getTotalPages());
-		model.addAttribute("totalElements", books.getTotalElements());
+		model.addAttribute("books", bookDTOs.getContent());
+		model.addAttribute("currentPage", page);
+		model.addAttribute("totalPages", bookDTOs.getTotalPages());
+		model.addAttribute("topRated", true);
 		// model.addAttribute("genres", genres);
 
 		// Get User Role
 		User user = userService.getCurrentUser();
 		model.addAttribute("user", user);
 
+		if (topRated){
+			return "fragments/search :: bookTable";
+		}
+
 		return "book/search";
 	}
 
 	@GetMapping("/search-request")
-	public String searchRequest(@RequestParam String searchInput, @RequestParam(required = false) String searchBy,
-			@RequestParam(required = false) List<String> genre, Model model) {
+	public String searchRequest(
+			@RequestParam String searchInput, 
+			@RequestParam(required = false) String searchBy,
+			@RequestParam(required = false) List<String> genre,
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "20") int size,
+			Model model) {
+	
+	
 
-		System.out.println("Search Input: " + searchInput);
-		System.out.println("Search By: " + searchBy);
-		System.out.println("Genres: " + genre);
-
-		Pageable pageable = PageRequest.of(0, 20);
-
+		Pageable pageable = PageRequest.of(page, size);
 		Page<BookDTO> bookDTOs = bookService.getBooksByTitle(searchInput, pageable);
 
-		model.addAttribute("books", bookDTOs.getContent());
+		logger.info("Search Input: " + searchInput);
+		logger.info("Search By: " + searchBy);
+		logger.info("Genres: " + genre);
+		logger.info("Page: " + page + ", Size: " + size);
+		logger.info("Total Pages: " + bookDTOs.getTotalPages());
+		logger.info("--------------------");
 
+	
+		model.addAttribute("books", bookDTOs.getContent());
+		model.addAttribute("currentPage", page);
+		model.addAttribute("totalPages", bookDTOs.getTotalPages());
+		model.addAttribute("searchInput", searchInput); // Add search input for consistency
+	
 		if (bookDTOs.getContent().isEmpty()) {
 			return "fragments/search :: noBookFound";
 		}
-		return "fragments/search :: bookRow";
+		return "fragments/search :: bookTable";
 	}
 
 	@GetMapping("/details/{id}")
 	public String getBookDetails(@PathVariable Long id, Model model) {
 		BookDTO bookDTO = bookService.getBookById(id);
 		User user = userService.getCurrentUser();
-		
+
 		model.addAttribute("userRole", user.getRole());
 		model.addAttribute("userStatus", user.getStatus());
 		model.addAttribute("book", bookDTO);
@@ -127,15 +149,15 @@ public class BookController {
 
 		BookRequest request = requestService.getRequestById(requestId);
 		model.addAttribute("req", request);
-		
+
 		return "fragments/request :: requestApproveModal";
 	}
 
 	@PutMapping("/request-approve/{requestId}")
 	public String approveRequest(@PathVariable Long requestId, Model model) {
-		//Check user who can approve request
+		// Check user who can approve request
 		User user = userService.getCurrentUser();
-		
+
 		if (user.getRole() != UserRole.LIBRARIAN && user.getRole() != UserRole.ADMIN) {
 			model.addAttribute("message", "You are not allowed to approve this request.");
 			return "fragments/message-modal";
@@ -163,7 +185,6 @@ public class BookController {
 		return "fragments/borrow :: borrowBookRow";
 	}
 
-	
 	@PostMapping("/borrow/pay/{borrowId}")
 	public String payFine(@PathVariable Long borrowId, Model model) {
 		borrowService.payFine(borrowId);
@@ -191,7 +212,7 @@ public class BookController {
 	@PostMapping("/add")
 	public String addBook(@ModelAttribute BookForm addBookForm, Model model) {
 
-		System.out.println(addBookForm.toString());
+		logger.info(addBookForm.toString());
 
 		Book bookToSave = new Book(addBookForm);
 
@@ -224,7 +245,6 @@ public class BookController {
 		model.addAttribute("book", book);
 		return "fragments/book-detail :: confirmDeleteModal";
 	}
-
 
 	@PostMapping("/delete/{bookId}")
 	public String deleteBook(@PathVariable Long bookId, Model model) {

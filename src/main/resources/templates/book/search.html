@@ -43,7 +43,7 @@
         <form
           id="searchForm"
           hx-get="/book/search-request"
-          hx-target="#bookRow"
+          hx-target="#bookTable"
           hx-trigger="submit"
           hx-include="#searchInput, #searchBy, .genre-checkbox:checked"
         >
@@ -52,7 +52,7 @@
             id="searchInput"
             name="searchInput"
             placeholder="Search ..."
-            value="hunger"
+            value="love"
           />
           <button id="searchBtn" class="bg6-btn" type="submit">Search</button>
 
@@ -132,24 +132,7 @@
         <p style="color: #ddffff">Recently Added</p>
 
         <!-- Table to display books -->
-        <table id="bookTable" class="table text-center align-middle">
-          <!-- Table Header -->
-          <thead>
-            <tr>
-              <th scope="col" style="width: 10%">Image</th>
-              <th scope="col" style="width: 20%">Title</th>
-              <th scope="col" style="width: 15%">Author</th>
-              <th scope="col" style="width: 10%">Format</th>
-              <th scope="col" style="width: 20%">Genres</th>
-              <th scope="col" style="width: 10%">Rating</th>
-              <th scope="col" style="width: 15%">Details</th>
-            </tr>
-          </thead>
-
-          <tbody id="bookRow">
-            <div th:replace="~{fragments/search :: bookRow}"></div>
-          </tbody>
-        </table>
+        <div id="bookTable" th:replace="~{fragments/search :: bookTable}"></div>
       </div>
     </main>
 
@@ -164,7 +147,10 @@
         <div class="modal-content"></div>
       </div>
     </div>
-
+    <script>
+      // Set the global scroll behavior for HTMX
+      htmx.config.scrollBehavior = "smooth";
+    </script>
     <script th:src="@{/js/searchPage.js}"></script>
   </body>
 </html>

@@ -206,6 +206,11 @@ th {
 	font-size: 14px;
 }
 
+#bookTable {
+	margin-bottom: 20px;
+	padding-bottom: 10px;
+}
+
 #bookTable.table {
 	--bs-table-bg: #202d3c;
 	--bs-table-color: #ddffff;
@@ -289,4 +294,12 @@ th {
 	padding: 5px 10px;
 	border-radius: 5px;
 	font-size: 0.9em;
+}
+
+
+.page-link {
+	--bs-pagination-color: #000;
+	--bs-pagination-hover-color: #202d3c;
+	--bs-pagination-hover-bg: #7e7e7e;
+	--bs-pagination-hover-border-color: #7e7e7e;
 }
