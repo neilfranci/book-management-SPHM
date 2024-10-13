@@ -53,7 +53,17 @@ public class UserController {
 	public String getUserDetails(@PathVariable Long userId, Model model) {
 		User user = userService.getUserById(userId);
 
-		model.addAttribute("user", user);
+		UserForm userForm = new UserForm();
+		userForm.setName(user.getName());
+		userForm.setEmail(user.getEmail());
+		userForm.setGender(user.getGender());
+		userForm.setDateOfBirth(user.getDateOfBirth());
+		userForm.setStatus(user.getStatus());
+		userForm.setRole(user.getRole());
+
+		model.addAttribute("currentUser", userService.getCurrentUser());
+		model.addAttribute("userId", userId);
+		model.addAttribute("userForm", userForm);
 
 		return "fragments/user/edit-user";
 	}
@@ -63,9 +73,9 @@ public class UserController {
 
 		User currentUser = userService.getCurrentUser();
 
-		if (currentUser.getRole() == UserRole.ADMIN || currentUser.getRole() == UserRole.LIBRARIAN || currentUser.getUserId() == userId) {
+		if (currentUser.getRole() == UserRole.ADMIN || currentUser.getUserId() == userId) {
 
-			userService.updateUser(userId, userForm);
+			userService.updateUser(userId, userForm, currentUser);
 
 			model.addAttribute("message", "User updated successfully");
 			model.addAttribute("redirectUrl", "/user/details");
@@ -79,6 +89,8 @@ public class UserController {
 	@GetMapping("/add")
 	public String getAddUserForm(Model model) {
 		model.addAttribute("userForm", new UserForm());
+
+		model.addAttribute("user", userService.getCurrentUser());
 
 		// The flash message from the previous request will automatically be added to
 		// the model if exists (POST /add request)

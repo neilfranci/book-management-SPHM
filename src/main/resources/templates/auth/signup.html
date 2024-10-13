@@ -20,6 +20,13 @@
       href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"
+      integrity="sha512-dPXYcDub/aeb08c63jRq/k6GaKccl256JQy/AnOq7CAnEZ9FzSL9wSbcZkMp4R26vBsMLFYH4kQ67/bbV8XaCQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <link rel="stylesheet" th:href="@{/css/global.css}" />
     <link rel="stylesheet" th:href="@{/css/loginPage.css}" />
   </head>
@@ -85,15 +92,25 @@
       </div>
       <div class="form-group">
         <label for="password">Password:</label>
-        <input
-          type="password"
-          class="form-control"
-          id="password"
-          name="password"
-          th:value="*{password}"
-          placeholder="Enter password"
-          required
-        />
+        <div class="input-group">
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            name="password"
+            placeholder="Enter password"
+            th:value="*{password}"
+            required
+          />
+          <button
+            class="btn btn-outline-secondary"
+            type="button"
+            id="togglePassword"
+            onclick="togglePasswordVisibility()"
+          >
+            <i class="bi bi-eye"></i>
+          </button>
+        </div>
       </div>
       <button type="submit" id="submit-btn" class="bg6-btn">Sign Up</button>
       <div
@@ -103,4 +120,21 @@
       </div>
     </form>
   </body>
+  <script>
+    function togglePasswordVisibility() {
+      const passwordInput = document.getElementById("password");
+      const toggleButton = document.getElementById("togglePassword");
+      const icon = toggleButton.querySelector("i");
+
+      if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        icon.classList.remove("bi-eye");
+        icon.classList.add("bi-eye-slash");
+      } else {
+        passwordInput.type = "password";
+        icon.classList.remove("bi-eye-slash");
+        icon.classList.add("bi-eye");
+      }
+    }
+  </script>
 </html>

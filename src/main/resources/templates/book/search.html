@@ -33,9 +33,9 @@
     <link rel="stylesheet" th:href="@{/css/global.css}" />
   </head>
 
-  <body style="padding-top: 120px">
+  <body>
     <nav th:replace="~{fragments/nav}"></nav>
-    <main class="container-fluid">
+    <main class="container-fluid" style="padding-top: 60px">
       <!-- Search Section -->
       <div id="search">
         <p>Search Books</p>
@@ -108,7 +108,7 @@
         </div> */-->
         </form>
 
-        <div class="btn-group" role="group">
+        <!-- <div class="btn-group" role="group">
           <button class="bg6-btn me-2">Recently Added</button>
           <button class="bg6-btn me-2">Trending Now</button>
 
@@ -125,11 +125,11 @@
               </li>
             </ul>
           </div>
-        </div>
+        </div> -->
       </div>
       <!-- List Book Section -->
       <div id="content">
-        <p style="color: #ddffff">Recently Added</p>
+        <!-- <p style="color: #ddffff">Recently Added</p> -->
 
         <!-- Table to display books -->
         <div id="bookTable" th:replace="~{fragments/search :: bookTable}"></div>

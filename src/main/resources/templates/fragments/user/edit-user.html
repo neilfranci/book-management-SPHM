@@ -10,11 +10,11 @@
   </div>
   <div class="modal-body">
     <form
-      th:hx-post="@{'/user/update/' + ${user.userId}}"
+      th:hx-post="@{'/user/update/' + ${userId}}"
       hx-target="#userDetailModal .modal-content"
       hx-swap="outerHTML"
       method="post"
-      th:object="${user}"
+      th:object="${userForm}"
     >
       <div class="mb-3">
         <label for="editName" class="form-label">Name</label>
@@ -48,17 +48,6 @@
           </option>
         </select>
       </div>
-      <!-- <div class="mb-3">
-        <label for="editRole" class="form-label">Role</label>
-        <select class="form-select" id="editRole" name="role">
-          <option
-            th:each="roleOption : ${T(com.bgsix.bookmanagement.enums.UserRole).values()}"
-            th:value="${roleOption}"
-            th:text="${#strings.capitalize(#strings.toLowerCase(roleOption.name()))}"
-            th:selected="${user.role != null and roleOption.name() == user.role.name()}"
-          ></option>
-        </select>
-      </div> -->
       <div class="mb-3">
         <label for="editDateOfBirth" class="form-label">Date of Birth</label>
         <input
@@ -69,16 +58,40 @@
           th:value="*{dateOfBirth}"
         />
       </div>
-      <div class="mb-3">
+      <div class="mb-3" th:if="${currentUser.role.name() == 'ADMIN'}">
         <label for="editStatus" class="form-label">Status</label>
         <select class="form-select" id="editStatus" name="status">
           <option
             th:each="statusOption : ${T(com.bgsix.bookmanagement.enums.UserStatus).values()}"
             th:value="${statusOption}"
             th:text="${#strings.capitalize(#strings.toLowerCase(statusOption.name()))}"
-            th:selected="${user.status != null and statusOption.name() == user.status.name()}"
+            th:selected="${userForm.status != null and statusOption.name() == userForm.status.name()}"
           ></option>
         </select>
+      </div>
+      <div
+        class="mb-3"
+        th:if="${currentUser.role.name() == userForm.role.name()}"
+      >
+        <label for="password" class="form-label">Password*</label>
+        <div class="input-group">
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            name="password"
+            th:value="*{password}"
+            placeholder="Enter user password"
+          />
+          <button
+            class="btn btn-outline-secondary"
+            type="button"
+            id="togglePassword"
+            onclick="togglePasswordVisibility()"
+          >
+            <i class="bi bi-eye"></i>
+          </button>
+        </div>
       </div>
       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
         Close

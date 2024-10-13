@@ -131,14 +131,25 @@ public class UserService implements UserDetailsService {
 	}
 	
 
-	public void updateUser(Long userId, UserForm userForm) {
+	public void updateUser(Long userId, UserForm userForm, User currentUser) {
 		User user = userRepository.findById(userId).orElse(null);
 		if (user != null) {
 			user.setName(userForm.getName());
 			user.setEmail(userForm.getEmail());
 			user.setGender(userForm.getGender());
-			user.setStatus(userForm.getStatus());
+
+			if (currentUser.getRole() == UserRole.ADMIN) {
+				user.setStatus(userForm.getStatus());
+			}else {
+				user.setStatus(user.getStatus());
+			}
+
 			user.setDateOfBirth(userForm.getDateOfBirth());
+
+			if (userForm.getPassword() != null) {
+				user.setPasswordHash(passwordEncoder.encode(userForm.getPassword()));
+			}
+
 			userRepository.save(user);
 		}
 	}

@@ -206,6 +206,7 @@ public class BookController {
 	@GetMapping("/add")
 	public String getMethodName(Model model) {
 		model.addAttribute("addBookForm", new BookForm());
+		model.addAttribute("user", userService.getCurrentUser());
 		return "book/add-book";
 	}
 
