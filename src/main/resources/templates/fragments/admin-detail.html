@@ -13,7 +13,33 @@
   <div id="info" class="collapse show">
     <div class="header">
       <img class="avatar" src="https://placehold.co/80x80" alt="" />
-      <div>
+      <div
+        class="container d-flex justify-content-between align-items-center"
+        th:if="${user.role.name() == 'LIBRARIAN'}"
+      >
+        <div>
+          <h2 th:text="${user.name}" style="padding-top: 15px"></h2>
+          <p>
+            Library
+            <span
+              th:text="${#strings.capitalize(#strings.toLowerCase(user.role))}"
+            ></span>
+          </p>
+        </div>
+        <button
+          class="bg6-btn"
+          style="height: 40px"
+          th:hx-get="${'/user/' + user.userId}"
+          hx-target="#userDetailModal .modal-content"
+          hx-swap="outerHTML"
+          data-bs-toggle="modal"
+          data-bs-target="#userDetailModal"
+        >
+          Edit Profile
+        </button>
+      </div>
+
+      <div th:if="${user.role.name() == 'ADMIN'}">
         <h2 th:text="${user.name}" style="padding-top: 15px">Emma Wilson</h2>
         <p>Library <span th:text="${user.role}">MEMBER</span></p>
       </div>

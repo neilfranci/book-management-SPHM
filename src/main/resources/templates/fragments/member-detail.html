@@ -1,204 +1,190 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Library Member</title>
-    <link rel="stylesheet" th:href="@{/css/global.css}" />
-  </head>
-  <body>
-    <div class="container user-detail">
-      <div class="d-flex justify-content-between">
-        <a th:href="@{/book/search}" class="bg6-btn"> ← Return to Home Page </a>
-        <button class="bg6-btn">Edit Profile</button>
-        <i
-          role="button"
-          class="bi bi-caret-down-fill"
-          data-bs-toggle="collapse"
-          data-bs-target="#info"
-        ></i>
-      </div>
+<div class="container user-detail">
+  <div class="d-flex justify-content-between">
+    <a th:href="@{/book/search}" class="bg6-btn"> ← Return to Home Page </a>
+    <i
+      role="button"
+      class="bi bi-caret-down-fill"
+      data-bs-toggle="collapse"
+      data-bs-target="#info"
+    ></i>
+  </div>
 
-      <div class="collapse show" id="info">
-        <div class="header">
-          <img class="avatar" src="https://placehold.co/80x80" alt="" />
-          <div>
-            <h2 th:text="${user.name}" style="padding-top: 15px"></h2>
-
-            <p>
-              Library
-              <span
-                th:text="${#strings.capitalize(#strings.toLowerCase(user.role))}"
-              ></span>
-            </p>
-          </div>
-        </div>
-
-        <div class="user-info">
-          <div>
-            <p><span>Name:</span> <span th:text="${user.name}"></span></p>
-            <p>
-              <span>Member Since:</span>
-              <span th:text="${user.dateJoined}"></span>
-            </p>
-            <p>
-              <span>Date of Birth:</span>
-              <span th:text="${user.dateOfBirth ?: 'Not Exist'}"></span>
-            </p>
-          </div>
-          <div>
-            <p>
-              <span>Email:</span>
-              <span th:text="${user.email}">emma.wilson@example.com</span>
-            </p>
-            <p>
-              <span>Gender:</span> <span th:text="${user.gender}">OTHER</span>
-            </p>
-            <p>
-              <span>Account Status:</span>
-              <span
-                class="status-badge"
-                th:classappend="${user.status.name() == 'ACTIVE' ? 'bg-success' : (user.status.name() == 'INACTIVE' ? 'bg-warning text-dark' : 'bg-danger')}"
-                th:text="${user.status}"
-                >Active</span
-              >
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div class="border-top mt-2 pt-2">
-        <h3>Books</h3>
+  <div class="collapse show" id="info">
+    <div class="header">
+      <img class="avatar" src="https://placehold.co/80x80" alt="" />
+      <div class="container d-flex justify-content-between align-items-center">
         <div>
-          <ul class="nav nav-tabs">
-            <li class="nav-item">
-              <a
-                class="nav-link active"
-                data-bs-toggle="tab"
-                data-bs-target="#tab1"
-                href="#"
-                >Borrow</a
-              >
-            </li>
-            <li class="nav-item">
-              <a
-                class="nav-link"
-                data-bs-toggle="tab"
-                data-bs-target="#tab2"
-                href="#"
-                >Requests</a
-              >
-            </li>
-          </ul>
+          <h2 th:text="${user.name}" style="padding-top: 15px"></h2>
+          <p>
+            Library
+            <span
+              th:text="${#strings.capitalize(#strings.toLowerCase(user.role))}"
+            ></span>
+          </p>
+        </div>
+        <button
+          class="bg6-btn"
+          style="height: 40px"
+          th:hx-get="${'/user/' + user.userId}"
+          hx-target="#userDetailModal .modal-content"
+          hx-swap="outerHTML"
+          data-bs-toggle="modal"
+          data-bs-target="#userDetailModal"
+        >
+          Edit Profile
+        </button>
+      </div>
+    </div>
 
-          <div class="tab-content">
-            <div class="tab-pane fade show active" id="tab1">
-              <table
-                id="user-detail-table"
-                class="table table-striped align-middle"
+    <div class="user-info">
+      <div>
+        <p><span>Name:</span> <span th:text="${user.name}"></span></p>
+        <p>
+          <span>Member Since:</span>
+          <span th:text="${user.dateJoined}"></span>
+        </p>
+        <p>
+          <span>Date of Birth:</span>
+          <span th:text="${user.dateOfBirth ?: 'Not Exist'}"></span>
+        </p>
+      </div>
+      <div>
+        <p>
+          <span>Email:</span>
+          <span th:text="${user.email}">emma.wilson@example.com</span>
+        </p>
+        <p><span>Gender:</span> <span th:text="${user.gender}">OTHER</span></p>
+        <p>
+          <span>Account Status:</span>
+          <span
+            class="status-badge"
+            th:classappend="${user.status.name() == 'ACTIVE' ? 'bg-success' : (user.status.name() == 'INACTIVE' ? 'bg-warning text-dark' : 'bg-danger')}"
+            th:text="${user.status}"
+            >Active</span
+          >
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="border-top mt-2 pt-2">
+    <h3>Books</h3>
+    <div>
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a
+            class="nav-link active"
+            data-bs-toggle="tab"
+            data-bs-target="#tab1"
+            href="#"
+            >Borrow</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            data-bs-toggle="tab"
+            data-bs-target="#tab2"
+            href="#"
+            >Requests</a
+          >
+        </li>
+      </ul>
+
+      <div class="tab-content">
+        <div class="tab-pane fade show active" id="tab1">
+          <table
+            id="user-detail-table"
+            class="table table-striped align-middle"
+          >
+            <thead>
+              <tr>
+                <th style="width: 40%">Title</th>
+                <th style="width: 20%">Author</th>
+                <th>Borrow Date</th>
+                <th>Due Date</th>
+                <th>Status/Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                th:each="borrow : ${borrowedBooks}"
+                th:id="'borrow-' + ${borrow.borrowId}"
               >
-                <thead>
-                  <tr>
-                    <th style="width: 40%">Title</th>
-                    <th style="width: 20%">Author</th>
-                    <th>Borrow Date</th>
-                    <th>Due Date</th>
-                    <th>Status/Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    th:each="borrow : ${borrowedBooks}"
-                    th:id="'borrow-' + ${borrow.borrowId}"
+                <td th:text="${borrow.title}">The Great Gatsby</td>
+                <td th:text="${borrow.author}">F. Scott Fitzgerald</td>
+                <td th:text="${borrow.borrowDate}">YEAR-M-DD</td>
+                <td th:text="${borrow.dueDate}">YEAR-M-DD</td>
+                <td>
+                  <button
+                    class="bg6-btn"
+                    th:if="${borrow.status.name() == 'BORROWED'} and ${borrow.fine == 0}"
+                    th:hx-put="${'/book/borrow/return/' + borrow.borrowId}"
+                    hx-trigger="click"
+                    hx-target="closest tr"
+                    hx-swap="outerHTML"
                   >
-                    <td th:text="${borrow.title}">The Great Gatsby</td>
-                    <td th:text="${borrow.author}">F. Scott Fitzgerald</td>
-                    <td th:text="${borrow.borrowDate}">YEAR-M-DD</td>
-                    <td th:text="${borrow.dueDate}">YEAR-M-DD</td>
-                    <td>
-                      <button
-                        class="bg6-btn"
-                        th:if="${borrow.status.name() == 'BORROWED'} and ${borrow.fine == 0}"
-                        th:hx-put="${'/book/borrow/return/' + borrow.borrowId}"
-                        hx-trigger="click"
-                        hx-target="closest tr"
-                        hx-swap="outerHTML"
-                      >
-                        Return
-                      </button>
-                      <button
-                        class="bg6-btn"
-                        th:if="${borrow.status.name() == 'BORROWED'} and ${borrow.fine != 0}"
-                        th:hx-put="${'/book/borrow/return/' + borrow.borrowId}"
-                        hx-target="#returnModal .modal-content"
-                        hx-trigger="click"
-                        hx-swap="outerHTML"
-                        data-bs-toggle="modal"
-                        data-bs-target="#returnModal"
-                      >
-                        Pay Fine
-                      </button>
+                    Return
+                  </button>
+                  <button
+                    class="bg6-btn"
+                    th:if="${borrow.status.name() == 'BORROWED'} and ${borrow.fine != 0}"
+                    th:hx-put="${'/book/borrow/return/' + borrow.borrowId}"
+                    hx-target="#userDetailModal .modal-content"
+                    hx-trigger="click"
+                    hx-swap="outerHTML"
+                    data-bs-toggle="modal"
+                    data-bs-target="#userDetailModal"
+                  >
+                    Pay Fine
+                  </button>
 
-                      <span
-                        style="margin: 10px 0"
-                        th:if="${borrow.status.name() == 'RETURNED'}"
-                        class="status-badge"
-                      >
-                        Returned
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="tab-pane fade" id="tab2">
-              <table
-                id="user-detail-table"
-                class="table table-striped align-middle"
-              >
-                <thead>
-                  <tr>
-                    <th style="width: 10%">Book ID</th>
-                    <th style="width: 10%">User ID</th>
-                    <th style="width: 20%">Librarian ID</th>
-                    <th style="width: 20%">Request Date</th>
-                    <th style="width: 20%">Request Status</th>
-                    <th style="width: 20%">Approval Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr th:each="req : ${requests}">
-                    <td th:text="${req.bookId}"></td>
-                    <td th:text="${req.userId}"></td>
-                    <td th:text="${req.librarianId ?: 'Not Assigned'}"></td>
-                    <td th:text="${req.requestDate}"></td>
-                    <td>
-                      <span
-                        class="badge"
-                        th:classappend="${req.status.name() == 'APPROVED' ? 'bg-success' : (req.status.name() == 'PENDING' ? 'bg-warning text-dark' : 'bg-danger')}"
-                        th:text="${req.status}"
-                      ></span>
-                    </td>
-                    <td th:text="${req.approvalDate ?: 'Not Approved'}"></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+                  <span
+                    style="margin: 10px 0"
+                    th:if="${borrow.status.name() == 'RETURNED'}"
+                    class="status-badge"
+                  >
+                    Returned
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="tab-pane fade" id="tab2">
+          <table
+            id="user-detail-table"
+            class="table table-striped align-middle"
+          >
+            <thead>
+              <tr>
+                <th style="width: 10%">Book ID</th>
+                <th style="width: 10%">User ID</th>
+                <th style="width: 20%">Librarian ID</th>
+                <th style="width: 20%">Request Date</th>
+                <th style="width: 20%">Request Status</th>
+                <th style="width: 20%">Approval Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="req : ${requests}">
+                <td th:text="${req.bookId}"></td>
+                <td th:text="${req.userId}"></td>
+                <td th:text="${req.librarianId ?: 'Not Assigned'}"></td>
+                <td th:text="${req.requestDate}"></td>
+                <td>
+                  <span
+                    class="badge"
+                    th:classappend="${req.status.name() == 'APPROVED' ? 'bg-success' : (req.status.name() == 'PENDING' ? 'bg-warning text-dark' : 'bg-danger')}"
+                    th:text="${req.status}"
+                  ></span>
+                </td>
+                <td th:text="${req.approvalDate ?: 'Not Approved'}"></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
-
-    <div
-      id="returnModal"
-      class="modal fade"
-      data-bs-backdrop="static"
-      data-bs-keyboard="false"
-      tabindex="-1"
-    >
-      <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content"></div>
-      </div>
-    </div>
-  </body>
-</html>
+  </div>
+</div>

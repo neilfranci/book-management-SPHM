@@ -63,7 +63,7 @@ public class UserController {
 
 		User currentUser = userService.getCurrentUser();
 
-		if (currentUser.getRole() == UserRole.ADMIN || currentUser.getRole() == UserRole.LIBRARIAN) {
+		if (currentUser.getRole() == UserRole.ADMIN || currentUser.getRole() == UserRole.LIBRARIAN || currentUser.getUserId() == userId) {
 
 			userService.updateUser(userId, userForm);
 
@@ -110,12 +110,12 @@ public class UserController {
 		User currentUser = userService.getCurrentUser();
 		// Ensure only admins can delete users
 		User user = userService.getUserById(userId);
-		if (currentUser.getRole() != UserRole.ADMIN) {
-			return "redirect:/user/details";
+		if (currentUser.getRole() == UserRole.ADMIN) {
+			model.addAttribute("user", user);
+			return "fragments/user/confirm-delete";
 		}
-		model.addAttribute("user", user);
-
-		return "fragments/user/confirm-delete";
+		
+		return "redirect:/user/details";
 	}
 
 	@PostMapping("/delete/{userId}")
@@ -124,6 +124,11 @@ public class UserController {
 
 		model.addAttribute("message", "User deleted successfully");
 		model.addAttribute("redirectUrl", "/user/details");
+		
+		// If user is deleting themself, use hard redirect
+		if (userService.getCurrentUser().getUserId() == userId) {
+			model.addAttribute("hardRedirect", true);
+		}
 
 		return "fragments/message-modal";
 	}

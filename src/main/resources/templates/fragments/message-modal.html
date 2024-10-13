@@ -4,7 +4,7 @@
   </div>
   <div class="modal-footer">
     <button
-      th:if="${redirectUrl != null}"
+      th:if="${redirectUrl != null && hardRedirect == null}"
       class="btn btn-secondary"
       data-bs-dismiss="modal"
       th:hx-get="${redirectUrl}"
@@ -20,5 +20,13 @@
     >
       Close
     </button>
+
+    <a
+      th:if="${redirectUrl != null && hardRedirect != null}"
+      class="btn btn-secondary"
+      th:href="${redirectUrl}"
+    >
+      Close
+    </a>
   </div>
 </div>

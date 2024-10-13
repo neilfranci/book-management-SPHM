@@ -23,7 +23,7 @@
     <form
       th:hx-post="@{'/book/borrow/pay/' + ${borrow.borrowId}}"
       hx-swap="outerHTML"
-      hx-target="#returnModal .modal-content"
+      hx-target="#detailModal .modal-content"
       id="fineForm"
       method="post"
     >
@@ -108,7 +108,7 @@
       hx-swap="outerHTML"
       th:hx-target="'#borrow-' + ${borrowId}"
       data-bs-toggle="modal"
-      data-bs-target="#returnModal"
+      data-bs-target="#detailModal"
       data-bs-dismiss="modal"
     >
       Close
