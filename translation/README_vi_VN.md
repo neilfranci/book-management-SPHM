@@ -1,8 +1,16 @@
-# big-project-group-6
+# Library Management System with Java OOP
+
+<!-- Discraimer -->
+> Dự án này chỉ dành cho mục đích học tập. MỌI DỮ LIỆU TRONG TẬP TIN SQL CHỈ DÀNH CHO MỤC ĐÍCH HỌC TẬP. BẠN CÓ THỂ SỬ DỤNG NÓ CHO MỤC ĐÍCH CÁ NHÂN CỦA BẠN. Nhưng, nếu bạn muốn sử dụng nó cho mục đích thương mại, hãy tạo cơ sở dữ liệu SQL của riêng bạn. Đây không phải là dự án thực tế.
 
 Dự án lớn về Quản lý Sách với Java OOP (Mục đích học tập)
 
 - bgsix: Là tên nhóm: Big Group Six (nhóm 6)
+- Thành viên:
+  - Trần Thành Long (Leader) [neilfranci](https://github.com/neilfranci)
+  - Nguyễn Vũ Hải Đăng [nguyendang3002](https://github.com/nguyendang3002)
+  - Vũ Văn Sơn [sunyn582](https://github.com/sunyn582)
+
 - SPHM: Spring Postgresql Htmx Maven (công nghệ sử dụng)
 
 <div align="center">

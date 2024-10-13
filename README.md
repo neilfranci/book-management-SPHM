@@ -1,8 +1,17 @@
-# big-project-group-6
+# Library Management System with Java OOP
+
+<!-- Discraimer -->
+
+> This project is for learning purpose. EVERY DATA IN THE SQL FILE IS JUST FOR LEARNING PURPOSE. YOU ARE FREE TO USE IT FOR YOUR OWN PURPOSE. But, if you want to use it for commercial purposes, please recreate your own sql database. It's not a production ready.
 
 Big Project about Book Management with Java OOP (Learining purpose)
 
-- bgsix: Is the team name: Big Group Six (nhom 6)
+- bgsix: Is the team name: Big Group Six (Nhóm 6)
+- Members:
+  - Trần Thành Long (Leader) [neilfranci](https://github.com/neilfranci)
+  - Nguyễn Vũ Hải Đăng [nguyendang3002](https://github.com/nguyendang3002)
+  - Vũ Văn Sơn [sunyn582](https://github.com/sunyn582)
+
 - SPHM: Spring Postgresql Htmx Maven (the technology stack)
 
 <div align="center">
@@ -26,7 +35,7 @@ Big Project about Book Management with Java OOP (Learining purpose)
    4. [Importing the database](#4-importing-the-database)
    5. [Install maven](#1-install-maven)
    6. [Install GraalVM native-image](#2-install-graalvm) (Java SDK replacement)
-   7. [Install Pre-requisite for GraalVM native-image (Production)](#3-install-pre-requisite-for-graalvm-native-image-to-build-the-production-build)
+   7. ~~[Install Pre-requisite for GraalVM native-image (Production)](#3-install-pre-requisite-for-graalvm-native-image-to-build-the-production-build)~~
 
 ### 2. Setup Project
 
@@ -37,7 +46,7 @@ Big Project about Book Management with Java OOP (Learining purpose)
 
 1. [Open the .env.template file in this path](#31-configure-the-environment-variables-env-file)
 2. [Running the server (Development)](#32-running-the-project-development)
-3. [Building the native image (Production)](#33-building-the-native-image-production-not-working-right-now)
+3. ~~[Building the native image (Production)](#33-building-the-native-image-production-not-working-right-now)~~
 
 ---
 
@@ -62,6 +71,8 @@ type your own password
 
 1.6 Wait for it done, and Finish. DONE!
 
+---
+
 ### 2. Adding necessary program to path
 
 Default install path is:
@@ -85,6 +96,8 @@ Open system enviroment variable on Windows.
 - CLick OK
 
 <img src="assets/add-path.png" height="400">
+
+---
 
 ### 3. Creating a database
 
@@ -130,6 +143,16 @@ postgres=# \l
 - Example output
 
 <img src="assets/psql-l.png">
+
+#### 3.4. Script to create database and import database (MUST HAVE THE .SQL FILE)
+
+```pwsh
+script\drcrim.cmd password
+```
+
+> 1. **password** is the password from [#1.4](#1-install-the-postgresql-download)
+
+---
 
 ### 4. Importing the database
 
@@ -200,6 +223,8 @@ java -version
 ### 3. Install Pre-requisite for GraalVM native-image to build the Production build
 
 - Follow the instruction from <https://www.graalvm.org/latest/docs/getting-started/windows/#prerequisites-for-native-image-on-windows>
+
+---
 
 ## Setup Project
 

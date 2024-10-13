@@ -5,7 +5,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-*.sql
+*.session.sql
 
 ### Local Configuration ###
 .env
