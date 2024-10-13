@@ -48,12 +48,4 @@ public class Application {
 		logger.info("Server URL: {}", serverUrl);
 	}
 
-	private static String getArgumentValue(String key, String[] args, String defaultValue) {
-		for (String arg : args) {
-			if (arg.startsWith("--" + key + "=")) {
-				return arg.split("=", 2)[1];
-			}
-		}
-		return defaultValue;
-	}
 }
