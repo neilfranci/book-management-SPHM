@@ -30,7 +30,7 @@ public class UserController {
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
 	@GetMapping("/details")
-	public String getUserDetails(@RequestParam(defaultValue = "0", name = "frag") boolean useFragment, Model model) {
+	public String getUserDetails(Model model) {
 		User user = userService.getCurrentUser();
 
 		model.addAttribute("user", user);
@@ -45,16 +45,7 @@ public class UserController {
 			model.addAttribute("borrowedBooks", borrowService.getBorrowedBooksForUser(userId));
 		}
 
-		if (useFragment) {
-			if (user.getRole() == UserRole.ADMIN || user.getRole() == UserRole.LIBRARIAN) {
-				return "fragments/admin-detail";
-			} else {
-				return "fragments/member-detail";
-			}
-
-		} else {
-			return "user/details";
-		}
+		return "user/details";
 	}
 
 	@GetMapping("/{userId}")
