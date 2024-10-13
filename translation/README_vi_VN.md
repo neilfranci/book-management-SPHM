@@ -38,9 +38,10 @@ Dự án lớn về Quản lý Sách với Java OOP (Mục đích học tập)
 
 ### 3. [Chạy Dự án](#3-chạy-dự-án)
 
-1. [Chỉnh sửa tệp `.env.template` trong đường dẫn này](#31-chỉnh-sửa-tệp-env-server)
-2. [Chạy server (Development)](#32-chạy-server-development)
-3. [Xây dựng native image (Production)](#33-xây-dựng-native-image-production)
+1. [Chỉnh sửa tệp `.env.template` trong đường dẫn này](#31-cấu-hình-biến-môi-trường-env-file)
+2. [Chạy server (Development)](#32-chạy-project-development)
+3. [Build self-contained jar (Production)](#33-build-self-contained-jar-production)
+4. [Xây dựng native image (Production)](#34-build-native-image-production-không-khả-dụng-bây-giờ)
 
 ---
 
@@ -248,7 +249,21 @@ mvn clean install
 mvn spring-boot:run
 ```
 
-#### 3.3 Build native image (Production) (Không khả dụng bây giờ)
+#### 3.3 Build self-contained jar (Production)
+
+```bash
+mvn clean package
+```
+
+- Tạo 1 jar file trong thư mục `target` (đặm bảo có thư mục `bookmanagement-{version}.jar`) (ví dụ: `bookmanagement-0.0.1-SNAPSHOT.jar`).
+
+- Để chạy jar file:
+
+```bash
+java -jar .\target\bookmanagement-{version}.jar
+```
+
+#### 3.4 Build native image (Production) (Không khả dụng bây giờ)
 
 ```bash
 mvn clean package -Pnative
@@ -256,8 +271,7 @@ mvn clean package -Pnative
 
 - Sau đó
 
- chạy tệp thực thi trong thư mục target
-`.\target` (native image là một tệp duy nhất), trong trường hợp này, tệp là `bookmanagement.exe`.
+ chạy tệp thực thi trong thư mục target `.\target` (native image là một tệp duy nhất),trong trường hợp này, tệp là `bookmanagement.exe`.
 
 ---
 

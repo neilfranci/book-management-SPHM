@@ -46,7 +46,8 @@ Big Project about Book Management with Java OOP (Learining purpose)
 
 1. [Open the .env.template file in this path](#31-configure-the-environment-variables-env-file)
 2. [Running the server (Development)](#32-running-the-project-development)
-3. ~~[Building the native image (Production)](#33-building-the-native-image-production-not-working-right-now)~~
+3. [Building self-contained jar (Production)](#33-building-self-contained-jar-production)
+4. ~~[Building the native image (Production)](#34-building-the-native-image-production-not-working-right-now)~~
 
 ---
 
@@ -272,14 +273,27 @@ mvn clean install
 mvn spring-boot:run
 ```
 
-#### 3.3 building the native image (Production) (NOT WORKING RIGHT NOW)
+#### 3.3 Building self-contained jar (Production)
+
+```bash
+mvn clean package
+```
+
+- this will create a jar file in the target folder `/target/bookmanagement-{version}.jar`
+
+- then to run jar file:
+
+```bash
+java -jar target/bookmanagement-{version}.jar
+```
+
+#### ~~3.4 building the native image (Production) (NOT WORKING RIGHT NOW)~~
 
 ```bash
 mvn clean package -Pnative
 ```
 
-- then run the executable file in the target folder
-`.\taget` (the native image is a single file) in this case the file is `bookmanagement.exe`
+- then run the executable file in the target folder `.\taget` (the native image is a single file) in this case the file is `bookmanagement.exe
 
 ---
 

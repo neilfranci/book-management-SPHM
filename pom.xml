@@ -110,7 +110,8 @@
 
 	<build>
 		<plugins>
-			<plugin>
+			<!-- This for building a native executable -->
+			<!-- <plugin>
 				<groupId>org.graalvm.buildtools</groupId>
 				<artifactId>native-maven-plugin</artifactId>
 				<executions>
@@ -118,6 +119,9 @@
 						<goals>
 							<goal>compile-no-fork</goal>
 						</goals>
+						<configuration>
+							<mainClass>com.bgsix.bookmanagement.Application</mainClass>
+						</configuration>
 					</execution>
 				</executions>
 				<configuration>
@@ -128,7 +132,7 @@
 						<arg>-march=native</arg>
 					</buildArgs>
 				</configuration>
-			</plugin>
+			</plugin> -->
 
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
