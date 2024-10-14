@@ -1,0 +1,173 @@
+-- Book Add --
+@startuml
+actor User
+participant Browser
+participant Server
+participant Thymeleaf
+participant BookService
+
+== Add Book Process ==
+User -> Browser: 1. Click "Add Book"
+Browser -> Server: 2. HTTP GET /book/add
+Server -> Thymeleaf: 3. Render add book form
+Thymeleaf --> Browser: 4. Display add book form
+
+User -> Browser: 5. Fill book details
+Browser -> Server: 6. HTTP POST /book/add with form data
+Server -> BookService: 7. Add new book
+BookService --> Server: 8. Save confirmation
+Server --> Browser: 9. Show book add success
+@enduml
+
+
+-- Borrow Book Request --
+@startuml
+actor User
+participant Browser
+participant Server
+participant RequestService
+participant UserService
+participant Thymeleaf
+
+== Borrow Book Request Process ==
+User -> Browser: 1. Request to borrow a book
+Browser -> Server: 2. HTTP POST /book/request-borrow/{bookId}
+Server -> UserService: 3. Get current user status
+UserService --> Server: 4. Return user status
+
+alt User inactive or suspended
+    Server -> Thymeleaf: 5. Render restriction message
+    Thymeleaf --> Browser: 6. Display "Please activate your account" or "Account suspended"
+else User active
+    Server -> RequestService: 7. Create borrow request
+    RequestService --> Server: 8. Return request status
+    Server -> Thymeleaf: 9. Render request result
+    Thymeleaf --> Browser: 10. Display request result
+end
+@enduml
+
+
+
+-- Delete Book --
+
+@startuml
+actor Admin
+participant Browser
+participant Server
+participant BookService
+participant Thymeleaf
+
+== Delete Book Process ==
+Admin -> Browser: 1. Click "Delete Book"
+Browser -> Server: 2. HTTP GET /book/delete/{bookId}
+Server -> BookService: 3. Get book details for confirmation
+BookService --> Server: 4. Return book details
+Server -> Thymeleaf: 5. Render delete confirmation modal
+Thymeleaf --> Browser: 6. Display delete confirmation modal
+
+Admin -> Browser: 7. Confirm deletion
+Browser -> Server: 8. HTTP POST /book/delete/{bookId}
+Server -> BookService: 9. Delete book
+BookService --> Server: 10. Confirmation of deletion
+Server -> Thymeleaf: 11. Render deletion success message
+Thymeleaf --> Browser: 12. Display "Book deleted successfully"
+@enduml
+
+
+-- Edit Book -- 
+@startuml
+actor User
+participant Browser
+participant Server
+participant BookService
+participant Thymeleaf
+
+== Edit Book Process ==
+User -> Browser: 1. Click "Edit Book"
+Browser -> Server: 2. HTTP GET /book/edit/{bookId}
+Server -> BookService: 3. Get book details
+BookService --> Server: 4. Return book details
+Server -> Thymeleaf: 5. Render edit book form
+Thymeleaf --> Browser: 6. Display edit form
+
+User -> Browser: 7. Submit updated book details
+Browser -> Server: 8. HTTP POST /book/update/{bookId} with updated data
+Server -> BookService: 9. Update book details
+BookService --> Server: 10. Update confirmation
+Server -> Thymeleaf: 11. Render update success message
+Thymeleaf --> Browser: 12. Display "Book updated successfully"
+@enduml
+
+
+-- Book Detail --
+@startuml
+actor User
+participant Browser
+participant Server
+participant BookService
+participant Thymeleaf
+
+== View Book Details Process ==
+User -> Browser: 1. Click "View Book Details"
+Browser -> Server: 2. HTTP GET /book/details/{id}
+Server -> BookService: 3. Fetch book details by ID
+BookService --> Server: 4. Return book details
+Server -> Thymeleaf: 5. Render book detail modal
+Thymeleaf --> Browser: 6. Display book details modal
+@enduml
+
+
+-- Approve Request -- 
+@startuml
+actor Librarian
+participant Browser
+participant Server
+participant RequestService
+participant UserService
+participant Thymeleaf
+
+== Approve Request Process ==
+Librarian -> Browser: 1. Click "Approve Request"
+Browser -> Server: 2. HTTP GET /book/request-approve/{requestId}
+Server -> RequestService: 3. Get request details
+RequestService --> Server: 4. Return request details
+Server -> Thymeleaf: 5. Render request approval modal
+Thymeleaf --> Browser: 6. Display approval modal
+
+Librarian -> Browser: 7. Confirm approval
+Browser -> Server: 8. HTTP PUT /book/request-approve/{requestId}
+Server -> UserService: 9. Check if user can approve
+UserService --> Server: 10. Return approval eligibility
+Server -> RequestService: 11. Approve request
+RequestService --> Server: 12. Approval confirmation
+Server -> Thymeleaf: 13. Render success message
+Thymeleaf --> Browser: 14. Display "Request approved successfully"
+@enduml
+
+
+@startuml
+actor User
+participant Browser
+participant Server
+participant Database
+participant Thymeleaf
+
+== Book Search Process ==
+User -> Browser: 1. Enter search query
+Browser -> Server: 2. HTTP GET /book/search
+
+alt default
+    Server -> Database: 3. Fetch top-rated books
+    Database --> Server: 4. Return list of top-rated books
+else search input provided
+    Server -> Database: 5. Fetch books by search input
+    Database --> Server: 6. Return list of matching books
+end
+
+Server -> Thymeleaf: 7. Render search results page
+alt Books found
+    Thymeleaf --> Browser: 8. Display search results
+else No books found
+    Thymeleaf --> Browser: 9. Display "No books found" message
+end
+@enduml
