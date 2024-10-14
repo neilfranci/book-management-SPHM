@@ -1,0 +1,19 @@
+@startuml
+actor User
+participant Browser
+participant Server
+participant Database
+participant Thymeleaf
+
+== Sign-up Process ==
+User -> Browser: 1. Click "Sign Up" link
+Browser -> Server: 2. HTTP GET /signup
+Server -> Thymeleaf: 3. Render sign-up page
+Thymeleaf --> Browser: 4. Return sign-up form
+
+User -> Browser: 5. Enter sign-up information
+Browser -> Server: 6. HTTP POST /signup with user data
+Server -> Database: 7. Save new user details
+Database --> Server: 8. Confirmation of new user creation
+Server --> Browser: 9. Redirect to /login with success message
+@enduml

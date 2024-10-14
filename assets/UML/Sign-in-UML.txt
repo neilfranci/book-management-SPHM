@@ -1,0 +1,34 @@
+@startuml
+actor User
+participant Browser
+participant Server
+participant Database
+participant Thymeleaf
+
+User -> Browser: 1. Navigate to /
+Browser -> Server: 2. HTTP GET /
+Server -> Database: 3. Check current login session
+Database --> Server: 4. Return session/user data
+
+alt User not logged in
+    Server --> Browser: 5. Redirect to /login
+    Browser -> Server: 6. HTTP GET /login
+    Server -> Thymeleaf: 7. Render login page with sign-up link
+    Thymeleaf --> Browser: 8. Return login form with sign-up option
+else User logged in
+    Server --> Browser: 9. Return book/search
+end
+
+== Sign-in Process ==
+User -> Browser: 10. Enter credentials (username/password)
+Browser -> Server: 11. HTTP POST /login with credentials
+Server -> Database: 12. Validate credentials
+Database --> Server: 13. Return validation result
+
+alt Credentials Valid
+    Server --> Browser: 14. Redirect to book/search
+else Credentials Invalid
+    Server -> Thymeleaf: 15. Render login form with error
+    Thymeleaf --> Browser: 16. Return login form with error
+end
+@enduml
