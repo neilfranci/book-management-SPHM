@@ -16,28 +16,26 @@ import com.bgsix.bookmanagement.enums.UserStatus;
 @Entity
 @Table(name = "users")
 public abstract class User {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long userId;
 
 	private String name;
-
-	// Male, Female, Other
-	protected String gender;
-
+	
 	private String email;
-
+	
 	private String passwordHash;
 
+	private LocalDate dateOfBirth;
+	// Male, Female, Other
+	String gender;
+	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "role", insertable = false, updatable = false)
-	protected UserRole role;
-
+	UserRole role;
+	
 	@Enumerated(EnumType.STRING)
-	protected UserStatus status;
-
-	private LocalDate dateOfBirth;
-
-	protected LocalDate dateJoined;
+	UserStatus status;
+	
+	LocalDate dateJoined;
 }

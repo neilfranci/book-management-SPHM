@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -15,18 +16,16 @@ import org.springframework.stereotype.Service;
 // import com.bgsix.bookmanagement.controller.api.BookApiController;
 import com.bgsix.bookmanagement.dto.BookDTO;
 import com.bgsix.bookmanagement.dto.BookForm;
+import com.bgsix.bookmanagement.interfaces.IBookService;
 import com.bgsix.bookmanagement.model.Book;
 import com.bgsix.bookmanagement.repository.BookRepository;
 
 @Service
-public class BookService {
-	private final BookRepository bookRepository;
+public class BookService implements IBookService {
+	@Autowired
+	private BookRepository bookRepository;
 
 	private static final Logger logger = LoggerFactory.getLogger(BookService.class);
-
-	public BookService(BookRepository bookRepository) {
-		this.bookRepository = bookRepository;
-	}
 
 	public BookDTO getBookById(Long id) {
 		Book book = bookRepository.findBookById(id);
