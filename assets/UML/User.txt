@@ -1,0 +1,102 @@
+
+-- Add User --
+@startuml
+actor Admin
+participant Browser
+participant UserController
+participant UserService
+
+== Add User Process ==
+Admin -> Browser: 1. Navigate to "Add User"
+Browser -> UserController: 2. Request to add user form
+UserController -> Browser: 3. Render "add-user" form
+
+Admin -> Browser: 4. Submit form with user data
+Browser -> UserController: 5. Send user data
+UserController -> UserService: 6. Add user
+UserService --> UserController: 7. Return result of add user
+UserController --> Browser: 8. Send result to Admin
+@enduml
+
+
+-- Edit User --
+@startuml
+actor User
+participant Browser
+participant UserController
+participant UserService
+
+== Edit User Process ==
+User -> Browser: 1. Click "Edit User"
+Browser -> UserController: 2. Request user edit form
+UserController -> UserService: 3. Retrieve user by ID
+UserService --> UserController: 4. Return user data
+UserController -> Browser: 5. Render "edit-user" form
+
+User -> Browser: 6. Submit updated data
+Browser -> UserController: 7. Send updated data
+UserController -> UserService: 8. Get current user
+UserService --> UserController: 9. Return current user
+
+alt User is ADMIN or editing own profile
+    UserController -> UserService: 10. Update user with new data
+    UserService --> UserController: 11. Return update success
+    UserController --> Browser: 12. Display "User updated successfully"
+else User is not ADMIN
+    UserController --> Browser: 13. Display "You are not allowed to update this user"
+end
+@enduml
+
+
+
+-- Delete User --
+@startuml
+actor Admin
+participant Browser
+participant UserController
+participant UserService
+
+== Delete User Process ==
+Admin -> Browser: 1. Click "Delete User"
+Browser -> UserController: 2. Request to confirm deletion
+UserController -> UserService: 3. Retrieve user by ID
+UserService --> UserController: 4. Return user details
+UserController -> Browser: 5. Render "confirm-delete" modal
+
+Admin -> Browser: 6. Confirm deletion
+Browser -> UserController: 7. Send deletion confirmation
+UserController -> UserService: 8. Delete user
+UserService --> UserController: 9. Return deletion confirmation
+UserController --> Browser: 10. Display "User deleted successfully"
+@enduml
+
+
+-- User Detail --
+@startuml
+actor User
+participant Browser
+participant UserController
+participant UserService
+participant RequestService
+participant BorrowService
+
+== User Page Process ==
+User -> Browser: 1. Click "View User Details"
+Browser -> UserController: 2. Request to view user details
+UserController -> UserService: 3. Retrieve current user information
+UserService --> UserController: 4. Return user information
+UserController -> RequestService: 5. Get user's borrowing requests
+RequestService --> UserController: 6. Return borrowing requests
+
+alt User is ADMIN or LIBRARIAN
+    UserController -> UserService: 7. Retrieve list of all users
+    UserService --> UserController: 8. Return list of users
+    UserController -> BorrowService: 9. Get borrowed books of all users
+    BorrowService --> UserController: 10. Return borrowed books data
+else User is a regular member
+    UserController -> BorrowService: 11. Get borrowed books for this user
+    BorrowService --> UserController: 12. Return borrowed books data for user
+end
+
+UserController --> Browser: 13. Display user details and borrowed books
+@enduml
