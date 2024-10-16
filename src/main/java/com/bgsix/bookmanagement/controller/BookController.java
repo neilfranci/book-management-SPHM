@@ -9,20 +9,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import com.bgsix.bookmanagement.dto.BookDTO;
-import com.bgsix.bookmanagement.dto.BookForm;
-import com.bgsix.bookmanagement.dto.BorrowedBookDTO;
-import com.bgsix.bookmanagement.enums.UserRole;
-import com.bgsix.bookmanagement.enums.UserStatus;
-// import com.bgsix.bookmanagement.dto.TopGenreDTO;
-import com.bgsix.bookmanagement.model.Book;
-import com.bgsix.bookmanagement.model.BookRequest;
-import com.bgsix.bookmanagement.model.User;
-import com.bgsix.bookmanagement.service.BookService;
-import com.bgsix.bookmanagement.service.BorrowService;
-// import com.bgsix.bookmanagement.service.GenreService;
-import com.bgsix.bookmanagement.service.RequestService;
-import com.bgsix.bookmanagement.service.UserService;
+import com.bgsix.bookmanagement.dto.*;
+import com.bgsix.bookmanagement.enums.*;
+import com.bgsix.bookmanagement.model.*;
+import com.bgsix.bookmanagement.service.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @Controller
 @RequestMapping("/book")
@@ -43,69 +36,93 @@ public class BookController {
 
 	private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(BookController.class);
 
-	@GetMapping("/search")
-	public String searcPage(
-			@RequestParam(defaultValue = "0") int page,
+
+	@GetMapping("home")
+	public String getHomePage(
+			@RequestParam(required = false, defaultValue = "top-rate") String searchBy,
+			@RequestParam(defaultValue = "1") int page,
 			@RequestParam(defaultValue = "20") int size,
-			@RequestParam(defaultValue = "false") Boolean topRated,
 			Model model) {
-		// Load Genre options
-		// List<TopGenreDTO> genres = genreService.getTopGenres();
 
-		Pageable pageable = PageRequest.of(page, size);
+		Pageable pageable = PageRequest.of(page - 1, size);
 
-		Page<BookDTO> bookDTOs = bookService.getTopRateBooks(pageable);
+		Page<BookDTO> bookDTOs;
 
+		if (searchBy.equals("top-rate")) {
+			bookDTOs = bookService.getTopRateBooks(pageable);
+		} else {
+			bookDTOs = bookService.getAllBooks(pageable);
+		}
+
+		logger.info("Search By: " + searchBy);
+		logger.info("Page: " + page + ", Size: " + size);
+		logger.info("Total Pages: " + bookDTOs.getTotalPages());
+		logger.info("--------------------");
+
+		model.addAttribute("searchBy", searchBy);
 		model.addAttribute("books", bookDTOs.getContent());
 		model.addAttribute("currentPage", page);
 		model.addAttribute("totalPages", bookDTOs.getTotalPages());
-		model.addAttribute("topRated", true);
+
 		// model.addAttribute("genres", genres);
 
 		// Get User Role
 		User user = userService.getCurrentUser();
 		model.addAttribute("user", user);
 
-		if (topRated){
-			return "fragments/search :: bookTable";
-		}
-
 		return "book/search";
 	}
+	
 
-	@GetMapping("/search-request")
-	public String searchRequest(
-			@RequestParam String searchInput, 
+	@GetMapping("/search")
+	public String searcPage(
+			@RequestParam(required = false) String searchInput, 
 			@RequestParam(required = false) String searchBy,
 			@RequestParam(required = false) List<String> genre,
-			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "1") int page,
 			@RequestParam(defaultValue = "20") int size,
 			Model model) {
-	
-	
+		// Load Genre options
+		// List<TopGenreDTO> genres = genreService.getTopGenres();
 
-		Pageable pageable = PageRequest.of(page, size);
-		Page<BookDTO> bookDTOs = bookService.getBooksByTitle(searchInput, pageable);
+		if (searchInput == null || searchInput.isEmpty()) {
+			return "redirect:/book/home";
+		}
+
+		Pageable pageable = PageRequest.of(page - 1, size);
+
+		Page<BookDTO> bookDTOs = null;
+
+		bookDTOs = bookService.getBooksByTitle(searchInput, pageable);
+
+		int totalPages = bookDTOs.getTotalPages();
 
 		logger.info("Search Input: " + searchInput);
 		logger.info("Search By: " + searchBy);
 		logger.info("Genres: " + genre);
 		logger.info("Page: " + page + ", Size: " + size);
-		logger.info("Total Pages: " + bookDTOs.getTotalPages());
+		logger.info("Total Pages: " + totalPages);
 		logger.info("--------------------");
 
-	
+		model.addAttribute("searchInput", searchInput);
+		model.addAttribute("searchBy", searchBy);
 		model.addAttribute("books", bookDTOs.getContent());
 		model.addAttribute("currentPage", page);
-		model.addAttribute("totalPages", bookDTOs.getTotalPages());
-		model.addAttribute("searchInput", searchInput); // Add search input for consistency
-	
-		if (bookDTOs.getContent().isEmpty()) {
-			return "fragments/search :: noBookFound";
+		model.addAttribute("totalPages", totalPages);
+		// model.addAttribute("genres", genres);
+
+		// Get User Role
+		User user = userService.getCurrentUser();
+		model.addAttribute("user", user);
+		
+		if (totalPages < page  && totalPages > 0) {
+			return "redirect:/book/search?searchInput=" + searchInput + "&page=" + totalPages;
 		}
-		return "fragments/search :: bookTable";
+		
+		return "book/search";
 	}
 
+	
 	@GetMapping("/details/{id}")
 	public String getBookDetails(@PathVariable Long id, Model model) {
 		BookDTO bookDTO = bookService.getBookById(id);

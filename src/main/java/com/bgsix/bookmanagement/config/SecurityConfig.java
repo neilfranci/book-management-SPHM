@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .loginProcessingUrl("/login")
                 .usernameParameter("email")
                 .passwordParameter("password")
-                .defaultSuccessUrl("/book/search", true)
+                .defaultSuccessUrl("/book/home", true)
                 .failureUrl("/login?error")
                 .permitAll())
             .logout(logout -> logout

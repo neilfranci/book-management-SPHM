@@ -42,8 +42,10 @@
 
         <form
           id="searchForm"
-          hx-get="/book/search-request"
-          hx-target="#bookTable"
+          th:hx-get="@{/book/search}"
+          hx-target="body"
+          hx-push-url="true"
+          hx-swap="outerHTML"
           hx-trigger="submit"
           hx-include="#searchInput, #searchBy, .genre-checkbox:checked"
         >
@@ -52,7 +54,13 @@
             id="searchInput"
             name="searchInput"
             placeholder="Search ..."
-            value="love"
+            th:value="${searchInput}"
+            onkeyup="this.setCustomValidity('') // reset the validation on keyup"
+            hx-on:htmx:validation:validate="
+              if(this.value === '') {
+                this.setCustomValidity('Vui lòng nhập từ khóa tìm kiếm') // set the validation error
+                htmx.find('#searchForm').reportValidity()            // report the issue
+              }"
           />
           <button id="searchBtn" class="bg6-btn" type="submit">Search</button>
 
@@ -111,6 +119,8 @@
         <!-- <div class="btn-group" role="group">
           <button class="bg6-btn me-2">Recently Added</button>
           <button class="bg6-btn me-2">Trending Now</button>
+          <button class="bg6-btn me-2">Top Rated</button>
+
 
           <div class="dropdown">
             <button class="bg6-btn dropdown-toggle" data-bs-toggle="dropdown">
@@ -132,7 +142,144 @@
         <!-- <p style="color: #ddffff">Recently Added</p> -->
 
         <!-- Table to display books -->
-        <div id="bookTable" th:replace="~{fragments/search :: bookTable}"></div>
+        <div id="bookTable" th:fragment="bookTable">
+          <table class="table text-center align-middle">
+            <thead>
+              <tr>
+                <th scope="col" style="width: 10%">Image</th>
+                <th scope="col" style="width: 20%">Title</th>
+                <th scope="col" style="width: 15%">Author</th>
+                <th scope="col" style="width: 10%">Format</th>
+                <th scope="col" style="width: 20%">Genres</th>
+                <th scope="col" style="width: 10%">Rating</th>
+                <th scope="col" style="width: 15%">Details</th>
+              </tr>
+            </thead>
+            <tbody id="bookRow">
+              <tr th:if="${totalPages == 0}" th:fragment="noBookFound">
+                <td colspan="7" style="color: #ddffff">No Books Found</td>
+              </tr>
+              <tr th:each="book : ${books}" th:fragment="bookRow">
+                <td>
+                  <img
+                    th:src="${book.coverImg}"
+                    th:alt="${book.title}"
+                    class="img-fluid"
+                    style="min-width: 100px; min-height: 120px"
+                  />
+                </td>
+                <td
+                  th:text="${book.title}"
+                  style="font-size: 14px; font-family: sans-serif"
+                >
+                  Title
+                </td>
+                <td th:text="${book.author}">Author</td>
+                <td th:text="${book.bookFormat}">Format</td>
+
+                <td
+                  style="font-size: 14px; padding: 0 20px"
+                  th:if="${book.genres != null and not #lists.isEmpty(book.genres)}"
+                  th:text="${#strings.listJoin(book.genres, ', ')}"
+                >
+                  Genres
+                </td>
+
+                <td
+                  th:if="${#lists.isEmpty(book.genres) || book.genres == null}"
+                >
+                  No Genres
+                </td>
+
+                <td th:text="${book.rating ?: '0' + '/5'}">Rating</td>
+                <td>
+                  <button
+                    class="bg6-btn"
+                    th:hx-get="${'/book/details/' + book.bookId}"
+                    hx-target="#bookDetailsModal .modal-content"
+                    hx-trigger="click"
+                    hx-swap="outerHTML"
+                    data-bs-toggle="modal"
+                    data-bs-target="#bookDetailsModal"
+                  >
+                    View Details
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <nav th:if="${totalPages > 0}">
+            <ul class="pagination justify-content-center">
+              <!-- Previous button -->
+              <li
+                role="button"
+                class="page-item"
+                th:if="${currentPage > 0}"
+                th:hx-get="@{'/book/' + ${searchInput != null ? 'search' : 'home'} + '?page=' + ${currentPage - 1}}"
+                hx-include="#searchInput, #searchBy, .genre-checkbox:checked"
+                hx-target="body"
+                hx-swap="outerHTML show:window:top"
+                th:hx-push-url="@{'/book/' + ${searchInput != null ? 'search' : 'home'} + '?page=' + ${currentPage - 1}}"
+              >
+                <a class="page-link">Previous</a>
+              </li>
+
+              <!-- Start Ellipsis -->
+              <li class="page-item" th:if="${currentPage > 2}">
+                <span class="page-link">...</span>
+              </li>
+
+              <!-- Page numbers logic -->
+              <li
+                role="button"
+                th:each="i : ${#numbers.sequence(
+                        currentPage <= 2 ? 1 : (currentPage >= totalPages - 3 ? totalPages - 4 : currentPage - 2),
+                        currentPage >= totalPages - 3 ? totalPages : (currentPage <= 2 ? 5 : currentPage + 2)
+                    )}"
+                th:if="${i > 0 and i <= totalPages}"
+                class="page-item"
+                th:classappend="${i == currentPage} ? 'active'"
+              >
+                <a
+                  class="page-link"
+                  th:hx-get="@{'/book/' + ${searchInput != null ? 'search' : 'home'} + '?page=' + ${i}}"
+                  hx-include="#searchInput, #searchBy, .genre-checkbox:checked"
+                  hx-target="body"
+                  hx-swap="outerHTML show:window:top"
+                  th:hx-push-url="@{'/book/' + ${searchInput != null ? 'search' : 'home'} + '?page=' + ${i}}"
+                  th:text="${i}"
+                ></a>
+              </li>
+
+              <!-- End Ellipsis -->
+              <li class="page-item" th:if="${currentPage < totalPages - 3}">
+                <span class="page-link">...</span>
+              </li>
+
+              <!-- Next button -->
+              <li
+                role="button"
+                class="page-item"
+                th:if="${currentPage < totalPages - 1}"
+                th:hx-get="@{'/book/' + ${searchInput != null ? 'search' : 'home'} + '?page=' + ${currentPage + 1}}"
+                hx-include="#searchInput, #searchBy, .genre-checkbox:checked"
+                hx-target="body"
+                hx-swap="outerHTML show:window:top"
+                th:hx-push-url="@{'/book/' + ${searchInput != null ? 'search' : 'home'} + '?page=' + ${currentPage + 1}}"
+              >
+                <a class="page-link">Next</a>
+              </li>
+
+              <!-- Show total pages -->
+              <li class="page-item ms-2">
+                <span class="page-link user-select-none"
+                  >Page <span th:text="${currentPage + 1}"></span> of
+                  <span th:text="${totalPages}"></span
+                ></span>
+              </li>
+            </ul>
+          </nav>
+        </div>
       </div>
     </main>
 
@@ -147,10 +294,10 @@
         <div class="modal-content"></div>
       </div>
     </div>
-    <script>
-      // Set the global scroll behavior for HTMX
-      htmx.config.scrollBehavior = "smooth";
-    </script>
-    <script th:src="@{/js/searchPage.js}"></script>
   </body>
+  <script>
+    // Set the global scroll behavior for HTMX
+    htmx.config.scrollBehavior = "smooth";
+  </script>
+  <script th:src="@{/js/searchPage.js}"></script>
 </html>

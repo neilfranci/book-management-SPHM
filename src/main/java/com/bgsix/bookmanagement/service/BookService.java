@@ -27,6 +27,11 @@ public class BookService implements IBookService {
 
 	private static final Logger logger = LoggerFactory.getLogger(BookService.class);
 
+	public Page<BookDTO> getAllBooks(Pageable pageable) {
+		Page<Book> booksPage = bookRepository.findAll(pageable);
+		return convertToBookDTOPage(booksPage, pageable);
+	}
+
 	public BookDTO getBookById(Long id) {
 		Book book = bookRepository.findBookById(id);
 

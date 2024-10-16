@@ -30,6 +30,7 @@ public class UserController {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
+	// Lấy thông tin người dùng hiện tại
 	@GetMapping("/details")
 	public String getUserDetails(Model model) {
 		User user = userService.getCurrentUser();
