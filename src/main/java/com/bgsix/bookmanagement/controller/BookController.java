@@ -76,8 +76,8 @@ public class BookController {
 
 	@GetMapping("/search")
 	public String searcPage(
-			@RequestParam(required = false) String searchInput, 
-			@RequestParam(required = false) String searchBy,
+			@RequestParam(required = false, name = "query") String searchInput, 
+			@RequestParam(required = false, name = "by") String searchBy,
 			@RequestParam(required = false) List<String> genre,
 			@RequestParam(defaultValue = "1") int page,
 			@RequestParam(defaultValue = "20") int size,
@@ -132,7 +132,7 @@ public class BookController {
 		model.addAttribute("userStatus", user.getStatus());
 		model.addAttribute("book", bookDTO);
 
-		return "fragments/book-detail :: detailModal";
+		return "fragments/book/book-detail :: detailModal";
 	}
 
 	@PostMapping("/request-borrow/{bookId}")
@@ -142,23 +142,23 @@ public class BookController {
 
 		if (user.getStatus() == UserStatus.INACTIVE) {
 			model.addAttribute("message", "Please activate your account first.");
-			return "fragments/request :: requestMessage";
+			return "fragments/request/message";
 		} else if (user.getStatus() == UserStatus.SUSPENDED) {
 			model.addAttribute("message", "Your account is suspended. Please contact the librarian.");
-			return "fragments/request :: requestMessage";
+			return "fragments/request/message";
 		}
 
 		Map<Integer, String> result = requestService.createRequest(bookId, user.getUserId());
 
 		if (result.get(0) != null) {
 			model.addAttribute("message", result.get(0));
-			return "fragments/request :: requestMessage";
+			return "fragments/request/message";
 		} else if (result.get(1) != null) {
 			model.addAttribute("message", result.get(1));
-			return "fragments/request :: requestMessage";
+			return "fragments/request/message";
 		}
 
-		return "fragments/request :: requestMessage";
+		return "fragments/request/message";
 	}
 
 	@GetMapping("/request-approve/{requestId}")
@@ -167,7 +167,7 @@ public class BookController {
 		BookRequest request = requestService.getRequestById(requestId);
 		model.addAttribute("req", request);
 
-		return "fragments/request :: requestApproveModal";
+		return "fragments/request/approve-modal";
 	}
 
 	@PutMapping("/request-approve/{requestId}")
@@ -247,26 +247,26 @@ public class BookController {
 		model.addAttribute("book", bookService.getBookById(bookId)); // Reload the updated book
 		model.addAttribute("message", "Book updated successfully!");
 
-		return "fragments/edit-book";
+		return "fragments/book/edit-book";
 	}
 
 	@GetMapping("/edit/{bookId}")
 	public String editBook(@PathVariable Long bookId, Model model) {
 		Book book = bookService.getBookById(bookId);
 		model.addAttribute("book", book);
-		return "fragments/edit-book";
+		return "fragments/book/edit-book";
 	}
 
 	@GetMapping("/delete/{bookId}")
 	public String getDeleteModal(@PathVariable Long bookId, Model model) {
 		Book book = bookService.getBookById(bookId);
 		model.addAttribute("book", book);
-		return "fragments/book-detail :: confirmDeleteModal";
+		return "fragments/book/book-detail :: confirmDeleteModal";
 	}
 
 	@PostMapping("/delete/{bookId}")
 	public String deleteBook(@PathVariable Long bookId, Model model) {
 		bookService.deleteBook(bookId);
-		return "fragments/book-detail :: deleteSuccessModal";
+		return "fragments/book/book-detail :: deleteSuccessModal";
 	}
 }

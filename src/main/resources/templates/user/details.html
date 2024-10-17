@@ -37,11 +37,11 @@
     <nav th:replace="~{fragments/nav}"></nav>
     <div
       th:if="${user.role.name() == 'MEMBER'}"
-      th:insert="~{fragments/member-detail}"
+      th:insert="~{fragments/user/member-detail}"
     ></div>
     <div
       th:if="${user.role.name() == 'ADMIN' || user.role.name() == 'LIBRARIAN'}"
-      th:insert="~{fragments/admin-detail}"
+      th:insert="~{fragments/user/admin-detail}"
     ></div>
 
     <div class="modal fade" id="userDetailModal" tabindex="-1">

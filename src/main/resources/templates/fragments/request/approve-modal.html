@@ -1,38 +1,3 @@
-<div th:fragment="requestMessage" class="modal-content">
-  <div class="modal-body">
-    <p th:text="${message}"></p>
-  </div>
-  <div class="modal-footer">
-    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-  </div>
-</div>
-
-<tr th:fragment="requestRow">
-  <td th:text="${req.bookId}"></td>
-  <td th:text="${req.userId}"></td>
-  <td th:text="${req.librarianId ?: 'Not Assigned'}"></td>
-  <td th:text="${req.requestDate}"></td>
-  <td th:text="${req.approvalDate ?: 'Not Approved'}"></td>
-  <td>
-    <button
-      class="bg6-btn"
-      th:if="${req.status.name() == 'PENDING'}"
-      th:hx-put="${'/book/request-approve/' + req.requestId}"
-      hx-target="closest tr"
-      hx-swap="outerHTML"
-    >
-      Approve
-    </button>
-
-    <span
-      class="badge"
-      th:classappend="${req.status.name() == 'APPROVED' ? 'bg-success' : (req.status.name() == 'PENDING' ? 'bg-warning text-dark' : 'bg-danger')}"
-      th:if="${req.status.name() != 'PENDING'}"
-      th:text="${req.status}"
-    ></span>
-  </td>
-</tr>
-
 <div
   th:fragment="requestApproveModal"
   class="modal-content border-0 shadow-lg rounded"

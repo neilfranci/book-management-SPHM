@@ -44,19 +44,19 @@
           id="searchForm"
           th:hx-get="@{/book/search}"
           hx-target="body"
-          hx-push-url="true"
           hx-swap="outerHTML"
           hx-trigger="submit"
           hx-include="#searchInput, #searchBy, .genre-checkbox:checked"
+          hx-push-url="true"
         >
           <input
             type="text"
             id="searchInput"
-            name="searchInput"
+            name="query"
             placeholder="Search ..."
             th:value="${searchInput}"
             onkeyup="this.setCustomValidity('') // reset the validation on keyup"
-            hx-on:htmx:validation:validate="
+            hx-on::validation:validate="
               if(this.value === '') {
                 this.setCustomValidity('Vui lòng nhập từ khóa tìm kiếm') // set the validation error
                 htmx.find('#searchForm').reportValidity()            // report the issue
@@ -65,7 +65,7 @@
           <button id="searchBtn" class="bg6-btn" type="submit">Search</button>
 
           <!-- Search By Dropdown -->
-          <!--/* <div class="dropdown">
+          <!-- <div class="dropdown">
           <button
             class="bg6-btn dropdown-toggle"
             type="button"
@@ -88,32 +88,37 @@
             </li>
           </ul>
         </div> -->
-
-          <!-- <input type="hidden" id="searchBy" name="searchBy" value="title" />
-        <div class="dropdown">
-          <button
-            class="bg6-btn dropdown-toggle"
-            type="button"
-            id="filterBtn"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            Filter by Genre
-          </button>
-          <ul class="dropdown-menu" aria-labelledby="filterBtn">
-            <li th:each="genre : ${genres}">
-              <label class="dropdown-item">
-                <input
-                  type="checkbox"
-                  class="genre-checkbox"
-                  name="genre"
-                  th:value="${genre.genreName}"
-                />
-                <span th:text="${genre.genreName}"></span>
-              </label>
-            </li>
-          </ul>
-        </div> */-->
+          <input type="hidden" id="searchBy" name="by" th:value="${searchBy}" />
+          <input
+            type="hidden"
+            id="page"
+            name="page"
+            th:value="${currentPage}"
+          />
+          <!-- <div class="dropdown">
+            <button
+              class="bg6-btn dropdown-toggle"
+              type="button"
+              id="filterBtn"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Filter by Genre
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="filterBtn">
+              <li th:each="genre : ${genres}">
+                <label class="dropdown-item">
+                  <input
+                    type="checkbox"
+                    class="genre-checkbox"
+                    name="genre"
+                    th:value="${genre.genreName}"
+                  />
+                  <span th:text="${genre.genreName}"></span>
+                </label>
+              </li>
+            </ul>
+          </div> -->
         </form>
 
         <!-- <div class="btn-group" role="group">
@@ -214,7 +219,7 @@
               <li
                 role="button"
                 class="page-item"
-                th:if="${currentPage > 0}"
+                th:if="${currentPage > 1}"
                 th:hx-get="@{'/book/' + ${searchInput != null ? 'search' : 'home'} + '?page=' + ${currentPage - 1}}"
                 hx-include="#searchInput, #searchBy, .genre-checkbox:checked"
                 hx-target="body"
@@ -240,7 +245,9 @@
                 class="page-item"
                 th:classappend="${i == currentPage} ? 'active'"
               >
-                <a
+                <button
+                  th:id="'page-' + ${i}"
+                  th:hx-disable="${i == currentPage}"
                   class="page-link"
                   th:hx-get="@{'/book/' + ${searchInput != null ? 'search' : 'home'} + '?page=' + ${i}}"
                   hx-include="#searchInput, #searchBy, .genre-checkbox:checked"
@@ -248,7 +255,7 @@
                   hx-swap="outerHTML show:window:top"
                   th:hx-push-url="@{'/book/' + ${searchInput != null ? 'search' : 'home'} + '?page=' + ${i}}"
                   th:text="${i}"
-                ></a>
+                ></button>
               </li>
 
               <!-- End Ellipsis -->
@@ -273,7 +280,7 @@
               <!-- Show total pages -->
               <li class="page-item ms-2">
                 <span class="page-link user-select-none"
-                  >Page <span th:text="${currentPage + 1}"></span> of
+                  >Page <span th:text="${currentPage}"></span> of
                   <span th:text="${totalPages}"></span
                 ></span>
               </li>
@@ -295,9 +302,24 @@
       </div>
     </div>
   </body>
-  <script>
+  <script th:inline="javascript">
     // Set the global scroll behavior for HTMX
     htmx.config.scrollBehavior = "smooth";
+
+    // document.body.addEventListener("htmx:beforeRequest", function (event) {
+    //   var currentPage = /*[[${currentPage}]]*/ 0;
+    //   var targetId = event.detail.elt.id; // Get the ID of the clicked button
+    //   var targetPage = targetId.split("-")[1];
+
+    //   console.log(
+    //     "Current page is " + currentPage + ", target page is " + targetPage
+    //   );
+
+    //   if (parseInt(currentPage) === parseInt(targetPage)) {
+    //     console.log("Already on page " + targetPage);
+    //     event.preventDefault(); // Prevent the request if already on the current page
+    //   }
+    // });
   </script>
   <script th:src="@{/js/searchPage.js}"></script>
 </html>
