@@ -1,0 +1,47 @@
+@startuml
+title Library Book Management Site Map
+
+package "Library Management System" {
+    [Home] as Home << (H,#FFAAAA) >>
+    [Sign In] as SignIn << (A,#FFFFAA) >>
+    [Sign Up] as SignUp << (A,#FFFFAA) >>
+    
+    [Book Search] as BookSearch << (B,#AAFFAA) >>
+    [Book Details] as BookDetails << (B,#AAFFAA) >>
+    
+    [Add Book] as AddBook << (B,#AAFFAA) >>
+    [Edit Book] as EditBook << (B,#AAFFAA) >>
+    [Delete Book] as DeleteBook << (B,#AAFFAA) >>
+    
+    [Borrow Book] as BorrowBook << (B,#AAFFAA) >>
+    [Return Book] as ReturnBook << (B,#AAFFAA) >>
+    [Pay Fine] as PayFine << (B,#AAFFAA) >>
+    
+    [User Management] as UserManagement << (U,#AAAAFF) >>
+    
+    [Add User] as AddUser << (U,#AAAAFF) >>
+    [Edit User] as EditUser << (U,#AAAAFF) >>
+    [Delete User] as DeleteUser << (U,#AAAAFF) >>
+    [User Details] as UserDetails << (U,#AAAAFF) >>
+    
+    ' Define the hierarchy and flow
+    Home --> SignIn : /login
+    Home --> SignUp : /signup
+    SignIn --> BookSearch : /book/search
+    BookSearch --> BookDetails : /book/details/{id}
+    
+    Home --> UserManagement : /user/{userId}
+    UserManagement --> AddUser : /user/add
+    UserManagement --> EditUser : /user/update/{userId}
+    UserManagement --> DeleteUser : /user/delete/{userId}
+    UserManagement --> UserDetails : /user/details
+    
+    BookSearch --> AddBook : /book/add
+    BookDetails --> EditBook : /book/edit/{bookId}
+    BookDetails --> DeleteBook : /book/delete/{bookId}
+    BookDetails --> BorrowBook : /book/request-borrow/{bookId}
+    BorrowBook --> ReturnBook : /book/borrow/return/{borrowId}
+    BorrowBook --> PayFine : /book/borrow/pay/{borrowId}
+}
+
+@enduml

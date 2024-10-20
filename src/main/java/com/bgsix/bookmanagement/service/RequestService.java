@@ -13,7 +13,6 @@ import com.bgsix.bookmanagement.enums.RequestStatus;
 import com.bgsix.bookmanagement.model.Book;
 import com.bgsix.bookmanagement.model.BookRequest;
 import com.bgsix.bookmanagement.model.Borrow;
-import com.bgsix.bookmanagement.model.User;
 import com.bgsix.bookmanagement.repository.BookRepository;
 import com.bgsix.bookmanagement.repository.BorrowRepository;
 import com.bgsix.bookmanagement.repository.RequestRepository;
@@ -30,8 +29,8 @@ public class RequestService {
 	@Autowired
 	private BookRepository bookRepository;
 
-	@Autowired
-	private UserService userService;
+	// @Autowired
+	// private UserService userService;
 
 	// REQUEST METHODS
 	public Map<Integer, String> createRequest(Long bookId, Long userId) {

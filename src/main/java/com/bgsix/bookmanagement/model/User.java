@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-
 import com.bgsix.bookmanagement.enums.UserRole;
 import com.bgsix.bookmanagement.enums.UserStatus;
 
@@ -21,21 +20,23 @@ public abstract class User {
 	private Long userId;
 
 	private String name;
-	
+
 	private String email;
-	
+
 	private String passwordHash;
 
 	private LocalDate dateOfBirth;
-	// Male, Female, Other
-	String gender;
-	
+
+	private String gender; // Male, Female, Other
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "role", insertable = false, updatable = false)
-	UserRole role;
-	
+	private UserRole role;
+
 	@Enumerated(EnumType.STRING)
-	UserStatus status;
-	
-	LocalDate dateJoined;
+	private UserStatus status;
+
+	private LocalDate dateJoined;
+
+	public abstract void displayInfo();
 }

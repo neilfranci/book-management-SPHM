@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.bgsix.bookmanagement.dto.*;
 import com.bgsix.bookmanagement.enums.*;
+import com.bgsix.bookmanagement.interfaces.IBookService;
 import com.bgsix.bookmanagement.model.*;
 import com.bgsix.bookmanagement.service.*;
 
@@ -23,12 +24,11 @@ import jakarta.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping("/book")
 public class BookController {
+	@Autowired
+	private IBookService bookService;
 
 	@Autowired
 	private GenreService genreService;
-
-	@Autowired
-	private BookService bookService;
 
 	@Autowired
 	private BorrowService borrowService;

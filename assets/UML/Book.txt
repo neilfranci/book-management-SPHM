@@ -145,6 +145,7 @@ Thymeleaf --> Browser: 14. Display "Request approved successfully"
 @enduml
 
 
+-- Search Request --
 @startuml
 actor User
 participant Browser
@@ -153,21 +154,18 @@ participant Database
 participant Thymeleaf
 
 == Book Search Process ==
+
 User -> Browser: 1. Enter search query
 Browser -> Server: 2. HTTP GET /book/search
 
-alt default
-    Server -> Database: 3. Fetch top-rated books
-    Database --> Server: 4. Return list of top-rated books
-else search input provided
-    Server -> Database: 5. Fetch books by search input
-    Database --> Server: 6. Return list of matching books
-end
+Server -> Database: 3. Fetch books by search keyword
+Database --> Server: 4. Return list of matching books
 
-Server -> Thymeleaf: 7. Render search results page
 alt Books found
-    Thymeleaf --> Browser: 8. Display search results
+    Server -> Thymeleaf: 5. Render search results page
+    Thymeleaf --> Browser: 6. Display search results
 else No books found
-    Thymeleaf --> Browser: 9. Display "No books found" message
+    Server -> Thymeleaf: 7. Render "No books found" message
+    Thymeleaf --> Browser: 8. Display "No books found" message
 end
 @enduml
