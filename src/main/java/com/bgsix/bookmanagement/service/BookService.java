@@ -1,201 +1,24 @@
 package com.bgsix.bookmanagement.service;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-// import com.bgsix.bookmanagement.controller.api.BookApiController;
-import com.bgsix.bookmanagement.dto.BookDTO;
 import com.bgsix.bookmanagement.dto.BookForm;
-import com.bgsix.bookmanagement.interfaces.IBookService;
 import com.bgsix.bookmanagement.model.Book;
 import com.bgsix.bookmanagement.repository.BookRepository;
 
 @Service
-public class BookService implements IBookService {
+public class BookService {
 	@Autowired
 	private BookRepository bookRepository;
 
-	private static final Logger logger = LoggerFactory.getLogger(BookService.class);
-
-	public Page<BookDTO> getAllBooks(Pageable pageable) {
-		Page<Book> booksPage = bookRepository.findAll(pageable);
-		return convertToBookDTOPage(booksPage, pageable);
-	}
-
-	public BookDTO getBookById(Long id) {
-		Book book = bookRepository.findBookById(id);
-
-		// Temporary fix to get genres for a book by ID instead of using
-		// findGenresForBookId
-		List<Object[]> genres = bookRepository.findGenresForBookIds(Arrays.asList(id));
-
-		Map<Long, List<String>> genresMap = genres.stream()
-				.collect(Collectors.toMap(result -> ((Number) result[0]).longValue(),
-						result -> (List<String>) Arrays.asList((String[]) result[1])));
-
-		List<String> genresList = genresMap.get(id);
-
-		return new BookDTO(book, genresList);
-	}
-
-	// Convert a Page<Book> to a Page<BookDTO>
-	private Page<BookDTO> convertToBookDTOPage(Page<Book> booksPage, Pageable pageable) {
-		List<Long> bookIds = booksPage.stream().map(Book::getBookId).collect(Collectors.toList());
-
-		List<Object[]> genresResult = bookRepository.findGenresForBookIds(bookIds);
-
-		Map<Long, List<String>> genresMap = genresResult.stream()
-				.collect(Collectors.toMap(result -> ((Number) result[0]).longValue(),
-						result -> (List<String>) Arrays.asList((String[]) result[1])));
-
-		List<BookDTO> bookDTOs = booksPage.stream().map(book -> new BookDTO(book, genresMap.get(book.getBookId())))
-				.collect(Collectors.toList());
-
-		return new PageImpl<>(bookDTOs, pageable, booksPage.getTotalElements());
-	}
-
-	public Page<BookDTO> getBooksByTitle(String title, Pageable pageable) {
-		Page<Book> booksPage = bookRepository.findByTitleContainingIgnoreCase(title, pageable);
-
-		return convertToBookDTOPage(booksPage, pageable);
-	}
-
-	public Page<BookDTO> getBooksByGenre(List<String> genreList, Pageable pageable) {
-		// long startTime = System.currentTimeMillis();
-
-		// genreList =
-		// genreList.stream().map(String::toLowerCase).collect(Collectors.toList());
-
-		long genreCount = genreList.size();
-
-		logger.info("Searching for books with genres: {} and genreCount: {}", genreList, genreCount);
-
-		// Find books by genres
-		Page<Book> booksPage = bookRepository.findByGenre(genreList, genreCount, pageable);
-
-		// long endTime = System.currentTimeMillis();
-		// long executionTime = endTime - startTime;
-		// logger.info("Execution time: {} ms", executionTime);
-
-		return convertToBookDTOPage(booksPage, pageable);
-	}
-
-	public Page<BookDTO> getBooksByAuthor(String author, Pageable pageable) {
-		Page<Book> booksPage = bookRepository.findByAuthorContainingIgnoreCase(author, pageable);
-		return convertToBookDTOPage(booksPage, pageable);
-	}
-
-	public Page<BookDTO> getBooksByIsbn(String isbn, Pageable pageable) {
-		Page<Book> booksPage = bookRepository.findByIsbnContainingIgnoreCase(isbn, pageable);
-		return convertToBookDTOPage(booksPage, pageable);
-	}
-
-	public Page<BookDTO> getBooksByRating(Float rating, Pageable pageable) {
-		Page<Book> booksPage = bookRepository.findByRatingGreaterThanEqual(rating, pageable);
-		return convertToBookDTOPage(booksPage, pageable);
-	}
-
-	public Page<BookDTO> getTopRateBooks(Pageable pageable) {
-		Page<Book> booksPage = bookRepository.findTopRate(pageable);
-		return convertToBookDTOPage(booksPage, pageable);
-	}
-
-	// public BookResponse searchBooks(String searchInput, String searchBy,
-	// List<String> genreList, Pageable pageable) {
-	// Page<BookDTO> booksPage = Page.empty(); // Initialize an empty page
-
-	// // If searchInput is blank, return top-rated books
-	// if (searchInput == null || searchInput.isBlank()) {
-	// booksPage = getTopRateBooks(pageable);
-
-	// } else if (genreList != null && !genreList.isEmpty()) {
-
-	// long genreCount = genreList.size();
-	// // Fetch all books by genre without pagination
-	// List<BookDTO> booksByGenre = bookRepository.getBooksByGenres(genreList,
-	// genreCount).stream()
-	// .map(book -> new BookDTO(book, null)) // Set null genres for now, will
-	// populate later
-	// .collect(Collectors.toList());
-
-	// // Apply search input filtering
-	// String input = searchInput.toLowerCase().trim();
-	// List<BookDTO> filteredBooks = booksByGenre.stream().filter(book -> {
-	// switch (searchBy.toLowerCase().trim()) {
-	// case "title":
-	// logger.info("Searching for books by title: {}", book.getTitle());
-	// return book.getTitle().toLowerCase().contains(input);
-	// case "author":
-	// return book.getAuthor().toLowerCase().contains(input);
-	// case "isbn":
-	// return book.getIsbn().toLowerCase().contains(input);
-	// default:
-	// return false;
-	// }
-	// }).collect(Collectors.toList());
-
-	// // Get book IDs for the filtered books
-	// List<Long> bookIds =
-	// filteredBooks.stream().map(BookDTO::getBookId).collect(Collectors.toList());
-
-	// // Fetch genres for the filtered books
-	// List<Object[]> genresResult = bookRepository.findGenresForBooks(bookIds);
-	// Map<Long, List<String>> genresMap = genresResult.stream()
-	// .collect(Collectors.toMap(result -> ((Number) result[0]).longValue(),
-	// result -> (List<String>) Arrays.asList((String[]) result[1])));
-
-	// // Map genres back to the books
-	// filteredBooks.forEach(book ->
-	// book.setGenres(genresMap.get(book.getBookId())));
-
-	// // Convert filtered and genre-mapped list to Page object with pagination
-	// booksPage = createPaginatedResult(filteredBooks, pageable);
-
-	// } else {
-	// // Search directly by searchBy criteria
-	// switch (searchBy.toLowerCase()) {
-	// case "title":
-	// logger.info("Searching for books by title: {}", searchInput);
-	// booksPage = getBooksByTitle(searchInput, pageable);
-	// break;
-	// case "author":
-	// booksPage = getBooksByAuthor(searchInput, pageable);
-	// break;
-	// case "isbn":
-	// booksPage = getBooksByIsbn(searchInput, pageable);
-	// break;
-	// default:
-	// booksPage = Page.empty(); // Return empty page for invalid searchBy
-	// break;
-	// }
-	// }
-
-	// logger.info("Search results: {} books found",
-	// booksPage.getNumberOfElements());
-
-	// return new BookResponse(booksPage.getContent(), booksPage.getTotalPages(),
-	// booksPage.getTotalElements());
-	// }
-
-	// private Page<BookDTO> createPaginatedResult(List<BookDTO> books, Pageable
-	// pageable) {
-	// // Find the subset of books for the current page
-	// int start = (int) pageable.getOffset();
-	// int end = Math.min((start + pageable.getPageSize()), books.size());
-
-	// List<BookDTO> paginatedBooks = books.subList(start, end);
-	// return new PageImpl<>(paginatedBooks, pageable, books.size());
-	// }
+	private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(BookService.class);
 
 	public Book addBook(Book book) {
 		return bookRepository.save(book);
@@ -209,8 +32,55 @@ public class BookService implements IBookService {
 		bookRepository.deleteById(id);
 	}
 
+	public Page<Book> findAll(Pageable pageable) {
+		Page<Book> booksPage = bookRepository.findAll(pageable);
+		return booksPage;
+	}
+
+	public Book findById(Long id) {
+		Book book = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("Book not found"));
+
+		return book;
+	}
+
+	public Page<Book> findByTitle(String title, Pageable pageable) {
+		Page<Book> booksPage = bookRepository.findByTitleContainingIgnoreCase(title, pageable);
+
+		return booksPage;
+	}
+
+	public Page<Book> findByGenres(List<String> genres, Pageable pageable) {
+		Page<Book> booksPage = bookRepository.findByGenres(genres, pageable);
+
+		return booksPage;
+	}
+
+	public Page<Book> getBooksByAuthor(String author, Pageable pageable) {
+		Page<Book> booksPage = bookRepository.findByAuthorContainingIgnoreCase(author, pageable);
+		return booksPage;
+	}
+
+	public Page<Book> getBooksByIsbn(String isbn, Pageable pageable) {
+		Page<Book> booksPage = bookRepository.findByIsbnContainingIgnoreCase(isbn, pageable);
+		return booksPage;
+	}
+
+	public Page<Book> getBooksByRating(Float rating, Pageable pageable) {
+		Page<Book> booksPage = bookRepository.findByRatingGreaterThanEqual(rating, pageable);
+		return booksPage;
+	}
+
+	public Page<Book> getTopRateBooks(Pageable pageable) {
+		Page<Book> booksPage = bookRepository.findTopRate(pageable);
+		return booksPage;
+	}
+
+	public Page<Book> findByTitleAndGenres(String title, List<String> genres, Pageable pageable) {
+		return bookRepository.findByTitleAndGenres(title, genres, genres.size(), pageable);
+	}
+
 	public BookForm updateBook(Long bookId, BookForm bookForm) {
-		Book book = bookRepository.findBookById(bookId);
+		Book book = bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Book not found"));
 		book.setTitle(bookForm.getTitle());
 		book.setAuthor(bookForm.getAuthor());
 		book.setIsbn(bookForm.getIsbn());
@@ -224,4 +94,66 @@ public class BookService implements IBookService {
 
 		return bookForm;
 	}
+
+	public Page<Book> searchBooks(String searchInput, List<String> selectedGenres, String sortBy, int page, int size) {
+		Sort sort = Sort.by(Sort.Direction.ASC, "title"); // Default sort
+
+		// Set sort based on sortBy parameter
+		if (sortBy != null) {
+			switch (sortBy) {
+				case "relevance_asc":
+					sort = Sort.by(Sort.Direction.ASC, "title");
+					break;
+				case "relevance_desc":
+					sort = Sort.by(Sort.Direction.DESC, "title");
+					break;
+				case "rating_asc":
+					sort = Sort.by(Sort.Direction.ASC, "rating");
+					break;
+				case "rating_desc":
+					sort = Sort.by(Sort.Direction.DESC, "rating");
+					break;
+			}
+		}
+
+		Pageable pageable = PageRequest.of(page, size, sort);
+
+		// If both searchInput and selectedGenres are provided, search by title and
+		// genres
+		if (!searchInput.isEmpty() && !selectedGenres.isEmpty()) {
+			logger.info("Searching by title and genres");
+			return findByTitleAndGenres(searchInput, selectedGenres, pageable);
+		}
+
+		// If only searchInput is provided, search by title
+		if (searchInput != null && !searchInput.isEmpty()) {
+			logger.info("Searching by title");
+			return findByTitle(searchInput, pageable);
+		}
+
+		// If no searchInput is provided, genre is provided, search by genres
+		if (!selectedGenres.isEmpty()) {
+			logger.info("Searching by genres");
+			return findByGenres(selectedGenres, pageable);
+		}
+
+		// If only sortBy is provided, sort by rating
+		if (sortBy != null) {
+			logger.info("Sorting by rating");
+			return findTopRate(pageable);
+		}
+
+		// If no criteria are provided, return all books or a default sorted list
+		return findAll(pageable);
+	}
+
+	public Page<Book> findTopRate(Pageable pageable) {
+		Page<Book> booksPage = bookRepository.findTopRate(pageable);
+
+		// for (Book book : booksPage.getContent()) {
+		// logger.info("Book : " + book.getRating());
+		// }
+		return booksPage;
+	}
+
 }

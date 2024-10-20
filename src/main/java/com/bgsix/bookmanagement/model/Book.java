@@ -1,5 +1,8 @@
 package com.bgsix.bookmanagement.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.bgsix.bookmanagement.dto.BookForm;
 
 import jakarta.persistence.*;
@@ -44,7 +47,16 @@ public class Book {
 
 	private Integer quantity;
 
+	@ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "book_genre",
+        joinColumns = @JoinColumn(name = "book_id"),
+        inverseJoinColumns = @JoinColumn(name = "genre_id")
+    )
+    private List<Genre> genres;
+
 	public Book() {
+		this.genres = new ArrayList<>();
 		this.likedPercent = 90;
 		this.numRatings = 100;
 		this.rating = 4.5f;
@@ -62,6 +74,8 @@ public class Book {
 		this.coverImg = bookForm.getCoverImg();
 		this.publicationYear = bookForm.getPublicationYear();
 		this.quantity = bookForm.getQuantity();
+
+		this.genres = new ArrayList<>();
 
 		this.likedPercent = 90;
 		this.numRatings = 100;

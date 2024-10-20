@@ -1,5 +1,9 @@
 package com.bgsix.bookmanagement.controller;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -13,15 +17,16 @@ import com.bgsix.bookmanagement.dto.*;
 import com.bgsix.bookmanagement.enums.*;
 import com.bgsix.bookmanagement.model.*;
 import com.bgsix.bookmanagement.service.*;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/book")
 public class BookController {
 
-	// private GenreService genreService;
+	@Autowired
+	private GenreService genreService;
+
 	@Autowired
 	private BookService bookService;
 
@@ -36,101 +41,73 @@ public class BookController {
 
 	private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(BookController.class);
 
-
-	@GetMapping("home")
-	public String getHomePage(
-			@RequestParam(required = false, defaultValue = "top-rate") String searchBy,
+	@GetMapping("/search")
+	public String searcPage(@RequestParam(required = false, name = "q", defaultValue = "") String searchInput,
+			@RequestParam(required = false, name = "s", defaultValue = "rating_desc") String sortBy,
+			@RequestParam(required = false, name = "g", defaultValue = "") String selectedGenresStr, 
 			@RequestParam(defaultValue = "1") int page,
 			@RequestParam(defaultValue = "20") int size,
-			Model model) {
-
-		Pageable pageable = PageRequest.of(page - 1, size);
-
-		Page<BookDTO> bookDTOs;
-
-		if (searchBy.equals("top-rate")) {
-			bookDTOs = bookService.getTopRateBooks(pageable);
-		} else {
-			bookDTOs = bookService.getAllBooks(pageable);
-		}
-
-		logger.info("Search By: " + searchBy);
-		logger.info("Page: " + page + ", Size: " + size);
-		logger.info("Total Pages: " + bookDTOs.getTotalPages());
+			HttpServletRequest request, Model model) {
+		// Load Genre options
 		logger.info("--------------------");
 
-		model.addAttribute("searchBy", searchBy);
-		model.addAttribute("books", bookDTOs.getContent());
-		model.addAttribute("currentPage", page);
-		model.addAttribute("totalPages", bookDTOs.getTotalPages());
+		List<String> topGenreDTOs = genreService.getTopGenres();
+		model.addAttribute("genres", topGenreDTOs);
+		
+		// Convert comma-separated genres string to a List<String>
+		List<String> selectedGenres = !selectedGenresStr.equals("") ? Arrays.asList(selectedGenresStr.split(",")) : Collections.emptyList();
+		
+		Page<Book> booksPage = bookService.searchBooks(searchInput, selectedGenres, sortBy, page - 1, size);
 
-		// model.addAttribute("genres", genres);
-
-		// Get User Role
-		User user = userService.getCurrentUser();
-		model.addAttribute("user", user);
-
-		return "book/search";
-	}
-	
-
-	@GetMapping("/search")
-	public String searcPage(
-			@RequestParam(required = false, name = "query") String searchInput, 
-			@RequestParam(required = false, name = "by") String searchBy,
-			@RequestParam(required = false) List<String> genre,
-			@RequestParam(defaultValue = "1") int page,
-			@RequestParam(defaultValue = "20") int size,
-			Model model) {
-		// Load Genre options
-		// List<TopGenreDTO> genres = genreService.getTopGenres();
-
-		if (searchInput == null || searchInput.isEmpty()) {
-			return "redirect:/book/home";
-		}
-
-		Pageable pageable = PageRequest.of(page - 1, size);
-
-		Page<BookDTO> bookDTOs = null;
-
-		bookDTOs = bookService.getBooksByTitle(searchInput, pageable);
-
-		int totalPages = bookDTOs.getTotalPages();
+		int totalPages = booksPage.getTotalPages();
 
 		logger.info("Search Input: " + searchInput);
-		logger.info("Search By: " + searchBy);
-		logger.info("Genres: " + genre);
+		logger.info("Selected Genres: " + selectedGenresStr);
+		logger.info("Sort By: " + sortBy);
 		logger.info("Page: " + page + ", Size: " + size);
 		logger.info("Total Pages: " + totalPages);
-		logger.info("--------------------");
+		logger.info("Total Books: " + booksPage.getTotalElements());
 
 		model.addAttribute("searchInput", searchInput);
-		model.addAttribute("searchBy", searchBy);
-		model.addAttribute("books", bookDTOs.getContent());
+		model.addAttribute("sortBy", sortBy);
+		model.addAttribute("books", booksPage.getContent());
 		model.addAttribute("currentPage", page);
 		model.addAttribute("totalPages", totalPages);
-		// model.addAttribute("genres", genres);
+		model.addAttribute("selectedGenres", selectedGenresStr);
 
 		// Get User Role
 		User user = userService.getCurrentUser();
 		model.addAttribute("user", user);
-		
-		if (totalPages < page  && totalPages > 0) {
-			return "redirect:/book/search?searchInput=" + searchInput + "&page=" + totalPages;
+
+		if (totalPages < page && totalPages > 0) {
+			return "redirect:/book/search?q=" + URLEncoder.encode(searchInput, StandardCharsets.UTF_8) 
+					+ "&g=" + String.join(",", selectedGenres)
+					+ "&page=" + totalPages;
 		}
-		
-		return "book/search";
+
+		String referer = request.getHeader("Referer");
+		logger.info("Request URI: " + referer);
+	
+		// Check if the request is made through HTMX
+		boolean isHtmxRequest = "true".equals(request.getHeader("HX-Request"));
+	
+		if (isHtmxRequest) {
+			return "book/search :: searchResults";
+		} else if (referer != null && referer.contains("/book/search")) {
+			return "book/search";
+		}
+	
+		return "book/search"; // Default case, return full page
 	}
 
-	
 	@GetMapping("/details/{id}")
 	public String getBookDetails(@PathVariable Long id, Model model) {
-		BookDTO bookDTO = bookService.getBookById(id);
+		Book book = bookService.findById(id);
 		User user = userService.getCurrentUser();
 
 		model.addAttribute("userRole", user.getRole());
 		model.addAttribute("userStatus", user.getStatus());
-		model.addAttribute("book", bookDTO);
+		model.addAttribute("book", book);
 
 		return "fragments/book/book-detail :: detailModal";
 	}
@@ -244,7 +221,7 @@ public class BookController {
 		bookService.updateBook(bookId, bookForm);
 
 		// Add a success message to the model
-		model.addAttribute("book", bookService.getBookById(bookId)); // Reload the updated book
+		model.addAttribute("book", bookService.findById(bookId)); // Reload the updated book
 		model.addAttribute("message", "Book updated successfully!");
 
 		return "fragments/book/edit-book";
@@ -252,14 +229,14 @@ public class BookController {
 
 	@GetMapping("/edit/{bookId}")
 	public String editBook(@PathVariable Long bookId, Model model) {
-		Book book = bookService.getBookById(bookId);
+		Book book = bookService.findById(bookId);
 		model.addAttribute("book", book);
 		return "fragments/book/edit-book";
 	}
 
 	@GetMapping("/delete/{bookId}")
 	public String getDeleteModal(@PathVariable Long bookId, Model model) {
-		Book book = bookService.getBookById(bookId);
+		Book book = bookService.findById(bookId);
 		model.addAttribute("book", book);
 		return "fragments/book/book-detail :: confirmDeleteModal";
 	}

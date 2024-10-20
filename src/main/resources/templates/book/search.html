@@ -30,6 +30,18 @@
       referrerpolicy="no-referrer"
     />
 
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.min.js"
+      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+      crossorigin="anonymous"
+    ></script>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <link rel="stylesheet" th:href="@{/css/global.css}" />
   </head>
 
@@ -43,84 +55,101 @@
         <form
           id="searchForm"
           th:hx-get="@{/book/search}"
-          hx-target="body"
-          hx-swap="outerHTML"
+          hx-target="#bookTable"
+          hx-swap="innerHTML transition:true"
           hx-trigger="submit"
-          hx-include="#searchInput, #searchBy, .genre-checkbox:checked"
+          hx-include="#searchInput, #sortBy, #genreSelect"
           hx-push-url="true"
         >
           <input
             type="text"
             id="searchInput"
-            name="query"
+            name="q"
             placeholder="Search ..."
             th:value="${searchInput}"
             onkeyup="this.setCustomValidity('') // reset the validation on keyup"
             hx-on::validation:validate="
               if(this.value === '') {
                 this.setCustomValidity('Vui lòng nhập từ khóa tìm kiếm') // set the validation error
-                htmx.find('#searchForm').reportValidity()            // report the issue
+                htmx.find('#searchForm').reportValidity()                // report the issue
               }"
           />
-          <button id="searchBtn" class="bg6-btn" type="submit">Search</button>
 
-          <!-- Search By Dropdown -->
-          <!-- <div class="dropdown">
-          <button
-            class="bg6-btn dropdown-toggle"
-            type="button"
-            id="searchByBtn"
-            data-bs-toggle="dropdown"
-          >
-            Search by
-          </button>
-          <ul class="dropdown-menu">
-            <li>
-              <a class="dropdown-item" href="#" data-search-by="Title">Title</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="#" data-search-by="Author"
-                >Author</a
-              >
-            </li>
-            <li>
-              <a class="dropdown-item" href="#" data-search-by="ISBN">ISBN</a>
-            </li>
-          </ul>
-        </div> -->
-          <input type="hidden" id="searchBy" name="by" th:value="${searchBy}" />
           <input
             type="hidden"
-            id="page"
-            name="page"
-            th:value="${currentPage}"
+            id="genreSelect"
+            name="g"
+            th:value="${selectedGenres}"
           />
-          <!-- <div class="dropdown">
-            <button
-              class="bg6-btn dropdown-toggle"
-              type="button"
-              id="filterBtn"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Filter by Genre
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="filterBtn">
-              <li th:each="genre : ${genres}">
-                <label class="dropdown-item">
-                  <input
-                    type="checkbox"
-                    class="genre-checkbox"
-                    name="genre"
-                    th:value="${genre.genreName}"
-                  />
-                  <span th:text="${genre.genreName}"></span>
-                </label>
-              </li>
-            </ul>
-          </div> -->
+          <input type="hidden" id="sortBy" name="s" th:value="${sortBy}" />
+          <button id="searchBtn" class="bg6-btn" type="submit">Search</button>
         </form>
-
+        <div class="d-flex justify-content-between align-items-end">
+          <div style="width: 50%">
+            <label
+              for="genreSelectBtn"
+              class="text-white"
+              style="font-size: large"
+              >Genres:</label
+            >
+            <select
+              id="genreSelectBtn"
+              name="g"
+              multiple="multiple"
+              class="form-control"
+            >
+              <option
+                th:each="genre : ${genres}"
+                th:value="${genre}"
+                th:text="${genre}"
+                th:selected="${selectedGenres != null and selectedGenres.contains(genre)}"
+              ></option>
+            </select>
+          </div>
+          <div>
+            <label
+              for="sortByBtn"
+              class="text-white"
+              style="font-size: large; font-weight: bold"
+              >Sort By</label
+            >
+            <select
+              id="sortByBtn"
+              name="s"
+              class="form-control"
+              style="width: 200px; margin-right: 10px"
+            >
+              <optgroup label="Relevance">
+                <option
+                  value="relevance_asc"
+                  th:selected="${sortBy == 'relevance_asc'}"
+                >
+                  Ascending
+                </option>
+                <option
+                  value="relevance_desc"
+                  th:selected="${sortBy == 'relevance_desc'}"
+                >
+                  Descending
+                </option>
+              </optgroup>
+              <optgroup label="Rating">
+                <option
+                  value="rating_asc"
+                  th:selected="${sortBy == 'rating_asc'}"
+                >
+                  Ascending
+                </option>
+                <option
+                  value="rating_desc"
+                  th:selected="${sortBy == 'rating_desc'}"
+                >
+                  Descending
+                </option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
         <!-- <div class="btn-group" role="group">
           <button class="bg6-btn me-2">Recently Added</button>
           <button class="bg6-btn me-2">Trending Now</button>
@@ -143,11 +172,8 @@
         </div> -->
       </div>
       <!-- List Book Section -->
-      <div id="content">
-        <!-- <p style="color: #ddffff">Recently Added</p> -->
-
-        <!-- Table to display books -->
-        <div id="bookTable" th:fragment="bookTable">
+      <div id="content" style="transition: all ease-in 1s">
+        <div id="bookTable" th:fragment="searchResults">
           <table class="table text-center align-middle">
             <thead>
               <tr>
@@ -185,9 +211,12 @@
                 <td
                   style="font-size: 14px; padding: 0 20px"
                   th:if="${book.genres != null and not #lists.isEmpty(book.genres)}"
-                  th:text="${#strings.listJoin(book.genres, ', ')}"
                 >
-                  Genres
+                  <span th:each="genre, iterStat : ${book.genres}">
+                    <span
+                      th:text="${genre.name} + ${iterStat.index < iterStat.size - 1 ? ', ' : ''}"
+                    ></span>
+                  </span>
                 </td>
 
                 <td
@@ -220,11 +249,11 @@
                 role="button"
                 class="page-item"
                 th:if="${currentPage > 1}"
-                th:hx-get="@{'/book/' + ${searchInput != null ? 'search' : 'home'} + '?page=' + ${currentPage - 1}}"
-                hx-include="#searchInput, #searchBy, .genre-checkbox:checked"
-                hx-target="body"
-                hx-swap="outerHTML show:window:top"
-                th:hx-push-url="@{'/book/' + ${searchInput != null ? 'search' : 'home'} + '?page=' + ${currentPage - 1}}"
+                th:hx-get="@{'/book/' + ${searchInput != null ? 'search' : 'search'} + '?page=' + ${currentPage - 1}}"
+                hx-include="#searchInput, #sortBy, #genreSelect"
+                hx-target="#bookTable"
+                hx-swap="inderHTML show:window:top transition:true"
+                hx-push-url="true"
               >
                 <a class="page-link">Previous</a>
               </li>
@@ -245,17 +274,17 @@
                 class="page-item"
                 th:classappend="${i == currentPage} ? 'active'"
               >
-                <button
-                  th:id="'page-' + ${i}"
-                  th:hx-disable="${i == currentPage}"
+                <a
                   class="page-link"
-                  th:hx-get="@{'/book/' + ${searchInput != null ? 'search' : 'home'} + '?page=' + ${i}}"
-                  hx-include="#searchInput, #searchBy, .genre-checkbox:checked"
-                  hx-target="body"
-                  hx-swap="outerHTML show:window:top"
-                  th:hx-push-url="@{'/book/' + ${searchInput != null ? 'search' : 'home'} + '?page=' + ${i}}"
+                  th:id="'page-' + ${i}"
+                  th:classappend="${i == currentPage} ? 'disabled' : ''"
+                  th:hx-get="@{'/book/' + ${searchInput != null ? 'search' : 'search'} + '?page=' + ${i}}"
+                  hx-include="#searchInput, #sortBy, #genreSelect"
+                  hx-target="#bookTable"
+                  hx-swap="inderHTML show:window:top transition:true"
+                  th:hx-push-url="true"
                   th:text="${i}"
-                ></button>
+                ></a>
               </li>
 
               <!-- End Ellipsis -->
@@ -268,11 +297,11 @@
                 role="button"
                 class="page-item"
                 th:if="${currentPage < totalPages - 1}"
-                th:hx-get="@{'/book/' + ${searchInput != null ? 'search' : 'home'} + '?page=' + ${currentPage + 1}}"
-                hx-include="#searchInput, #searchBy, .genre-checkbox:checked"
-                hx-target="body"
-                hx-swap="outerHTML show:window:top"
-                th:hx-push-url="@{'/book/' + ${searchInput != null ? 'search' : 'home'} + '?page=' + ${currentPage + 1}}"
+                th:hx-get="@{'/book/' + ${searchInput != null ? 'search' : 'search'} + '?page=' + ${currentPage + 1}}"
+                hx-include="#searchInput, #sortBy, #genreSelect"
+                hx-target="#bookTable"
+                hx-swap="inderHTML show:window:top transition:true"
+                th:hx-push-url="true"
               >
                 <a class="page-link">Next</a>
               </li>
@@ -288,6 +317,14 @@
           </nav>
         </div>
       </div>
+      <div
+        th:if="${firstBookGenres != null and !#lists.isEmpty(firstBookGenres)}"
+      >
+        <h5>Genres of First Book:</h5>
+        <ul>
+          <li th:each="genre : ${firstBookGenres}" th:text="${genre.name}"></li>
+        </ul>
+      </div>
     </main>
 
     <div id="bookDetailsModal" class="modal fade" tabindex="-1">
@@ -302,24 +339,66 @@
       </div>
     </div>
   </body>
-  <script th:inline="javascript">
+  <!-- <script th:src="@{/js/searchPage.js}"></script> -->
+  <script>
     // Set the global scroll behavior for HTMX
     htmx.config.scrollBehavior = "smooth";
 
-    // document.body.addEventListener("htmx:beforeRequest", function (event) {
-    //   var currentPage = /*[[${currentPage}]]*/ 0;
-    //   var targetId = event.detail.elt.id; // Get the ID of the clicked button
-    //   var targetPage = targetId.split("-")[1];
+    // HTMX onLoad event
+    htmx.onLoad(function () {
+      $("#genreSelectBtn").select2({
+        tags: true, // Enable tagging
+        tokenSeparators: [",", " "], // Optional: allows space and comma to separate tags
+        createTag: function (params) {
+          var term = $.trim(params.term);
+          // Prevent empty tag creation
+          if (term === "") {
+            return null;
+          }
+          return {
+            id: term,
+            text: term,
+            newTag: true, // Mark as a new tag
+          };
+        },
+        insertTag: function (data, tag) {
+          // Insert the tag at the end of the results
+          data.push(tag);
+        },
+      });
 
-    //   console.log(
-    //     "Current page is " + currentPage + ", target page is " + targetPage
-    //   );
+      // Synchronize the selected values with the hidden input
+      $("#genreSelectBtn").on("change", function () {
+        // Get the selected values as an array
+        const selectedGenres = $(this).val();
+        // Update the hidden input value as a comma-separated string
+        $("#genreSelect").val(selectedGenres.join(","));
+      });
 
-    //   if (parseInt(currentPage) === parseInt(targetPage)) {
-    //     console.log("Already on page " + targetPage);
-    //     event.preventDefault(); // Prevent the request if already on the current page
-    //   }
-    // });
+      // Initialize Select2 for the Sort By dropdown
+      $("#sortByBtn").select2({
+        minimumResultsForSearch: Infinity, // Hide the search box inside dropdown
+      });
+
+      // Trigger form submission on change of the sortBy dropdown
+      $("#sortByBtn").on("change", function () {
+        $("#sortBy").val(this.value);
+        // const searchInput = document.getElementById("searchInput").value.trim();
+        // console.log("searchInput: " + searchInput);
+        $("#searchForm").submit();
+
+        if (searchInput !== "") {
+        }
+      });
+
+      // Prevent request same page in pagination
+      document.addEventListener("click", function (event) {
+        // If the clicked element has the 'disabled' class, prevent the default action.
+        if (event.target.matches(".disabled")) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      });
+    });
   </script>
-  <script th:src="@{/js/searchPage.js}"></script>
 </html>

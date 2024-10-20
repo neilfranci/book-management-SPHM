@@ -15,48 +15,21 @@ import com.bgsix.bookmanagement.model.Book;
 public interface BookRepository extends JpaRepository<Book, Long> {
 	Page<Book> findByTitleContainingIgnoreCase(String title, Pageable pageable);
 
-	@Query(value = """
-			SELECT B.*
-			FROM BOOK B
-			JOIN BOOK_GENRE BG ON B.BOOK_ID = BG.BOOK_ID
-			JOIN GENRE G ON BG.GENRE_ID = G.GENRE_ID
-			WHERE LOWER(G.NAME) IN (:genres)
-			GROUP BY B.BOOK_ID
-			HAVING COUNT(DISTINCT G.NAME) = :genreCount
-			""", nativeQuery = true)
-	Page<Book> findByGenre(@Param("genres") List<String> genres, @Param("genreCount") long genreCount,
-			Pageable pageable);
+	@Query("SELECT b FROM Book b JOIN b.genres g WHERE g.name IN :genres")
+	Page<Book> findByGenres(@Param("genres") List<String> genres, Pageable pageable);
 
-	@Query(value = """
-			SELECT B.*
-			FROM BOOK B
-			JOIN BOOK_GENRE BG ON B.BOOK_ID = BG.BOOK_ID
-			JOIN GENRE G ON BG.GENRE_ID = G.GENRE_ID
-			WHERE LOWER(G.NAME) IN (:genres)
-			GROUP BY B.BOOK_ID
-			HAVING COUNT(DISTINCT G.NAME) = :genreCount
-			""", nativeQuery = true)
-	List<Book> getBooksByGenres(List<String> genres, long genreCount);
+	@Query("""
+			    SELECT b
+			    FROM Book b
+			    JOIN b.genres g
+			    WHERE LOWER(b.title) LIKE LOWER(CONCAT('%', :title, '%'))
+			    AND g.name IN :genres
+			    GROUP BY b
+			    HAVING COUNT(DISTINCT g.name) = :genreCount
+			""")
+	Page<Book> findByTitleAndGenres(@Param("title") String title, @Param("genres") List<String> genres,
+			@Param("genreCount") long genreCount, Pageable pageable);
 
-	@Query(value = """
-			SELECT B.BOOK_ID, array_agg(DISTINCT G.NAME) AS genres
-			FROM BOOK B
-			JOIN BOOK_GENRE BG ON B.BOOK_ID = BG.BOOK_ID
-			JOIN GENRE G ON BG.GENRE_ID = G.GENRE_ID
-			WHERE B.BOOK_ID IN (:bookIds)
-			GROUP BY B.BOOK_ID
-			""", nativeQuery = true)
-	List<Object[]> findGenresForBookIds(@Param("bookIds") List<Long> bookIds);
-
-	// TODO: Fix later
-	// @Query(value = """
-	// SELECT array_agg(DISTINCT G.NAME)::TEXT[] AS genres
-	// FROM BOOK B
-	// JOIN BOOK_GENRE BG ON B.BOOK_ID = BG.BOOK_ID
-	// JOIN GENRE G ON BG.GENRE_ID = G.GENRE_ID
-	// WHERE B.BOOK_ID = :bookId
-	// """, nativeQuery = true)
-	// List<String> findGenresForBookId(@Param("bookId") Long bookId);
 
 	Page<Book> findByAuthorContainingIgnoreCase(String author, Pageable pageable);
 
@@ -64,40 +37,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
 	Page<Book> findByRatingGreaterThanEqual(Float rating, Pageable pageable);
 
-	// @Query(value = """
-	// SELECT B.*
-	// FROM BOOK B
-	// JOIN BOOK_GENRE BG ON B.BOOK_ID = BG.BOOK_ID
-	// JOIN GENRE G ON BG.GENRE_ID = G.GENRE_ID
-	// WHERE LOWER(G.NAME) IN (:genres)
-	// AND LOWER(B.TITLE) LIKE LOWER(CONCAT('%', :title, '%'))
-	// GROUP BY B.BOOK_ID
-	// HAVING COUNT(DISTINCT G.NAME) = :genreCount
-	// """, nativeQuery = true)
-	// Page<Book> findByGenreAndTitle(@Param("genres") List<String> genres,
-	// @Param("genreCount") long genreCount,
-	// @Param("title") String title, Pageable pageable);
-
-	@Query(value = """
-			SELECT
-				*
-			FROM
-				BOOK
-			WHERE
-				BOOK_ID = :id
-			""", nativeQuery = true)
-	Book findBookById(long id);
-
-	@Query(value = """
-			SELECT
-				*
-			FROM
-				BOOK
-			WHERE RATING <= 4.8
-			ORDER BY
-				RATING DESC
-			""", nativeQuery = true)
+	@Query("SELECT b FROM Book b WHERE b.rating <= 4.8 ORDER BY b.rating DESC")
 	Page<Book> findTopRate(Pageable pageable);
-
-	Book findByBookId(Long bookId);
 }

@@ -23,7 +23,7 @@ public class AuthController {
 
 	@GetMapping("")
 	public String getBooks(Model model) {
-		return "redirect:/book/home";
+		return "redirect:/book/search";
 	}
 
 	@GetMapping("/login")

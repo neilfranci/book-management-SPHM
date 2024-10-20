@@ -29,8 +29,12 @@
           <strong>Genres:</strong>
           <span
             th:if="${book.genres != null and not #lists.isEmpty(book.genres)}"
-            th:text="${#strings.listJoin(book.genres, ', ')}"
           >
+            <span th:each="genre, iterStat : ${book.genres}">
+              <span
+                th:text="${genre.name} + ${iterStat.index < iterStat.size - 1 ? ', ' : ''}"
+              ></span>
+            </span>
           </span>
           <span th:if="${#lists.isEmpty(book.genres) || book.genres == null}">
             No Genres
@@ -130,7 +134,7 @@
   </div>
   <div class="modal-footer">
     <button
-      hx-get="/book/home"
+      hx-get="/book/search"
       hx-target="body"
       hx-swap="outerHTML"
       class="btn btn-secondary"

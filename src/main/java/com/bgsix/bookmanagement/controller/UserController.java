@@ -2,8 +2,6 @@ package com.bgsix.bookmanagement.controller;
 
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,7 +26,7 @@ public class UserController {
 	@Autowired
 	private RequestService requestService;
 
-	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+	// private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(BookController.class);
 
 	// Lấy thông tin người dùng hiện tại
 	@GetMapping("/details")

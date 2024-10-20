@@ -308,3 +308,70 @@ th {
 #add-book .form-label {
 	color: white;
 }
+
+.pagination {
+	padding: 10px;
+	background-color: #202d3c;
+	border-radius: 5px;
+}
+
+.page-item {
+	margin: 0 5px;
+}
+
+.page-link {
+	color: #ddffff;
+	background-color: #2b3e50;
+	border: 1px solid #568dc3;
+	border-radius: 4px;
+	padding: 8px 12px;
+	transition: background-color 0.2s, color 0.2s;
+}
+
+.page-link:hover {
+	background-color: #3c5064;
+	color: #ffffff;
+}
+
+.page-item.active .page-link {
+	background-color: #2075a0;
+	color: #ffffff;
+	border-color: #2075a0;
+}
+
+.page-link.disabled {
+	background-color: #3c5064;
+	color: #7a899c;
+	border-color: #3c5064;
+	pointer-events: none;
+	opacity: 0.6;
+}
+
+.page-item .page-link:focus {
+	box-shadow: 0 0 0 0.25rem rgba(88, 140, 195, 0.25);
+}
+
+/* 
+.page-item .page-link {
+	font-family: "Space Mono", system-ui;
+	font-weight: 400;
+} */
+
+.page-link.user-select-none {
+	background-color: transparent;
+	color: #ddffff;
+	border: none;
+}
+
+#genreSelectBtn {
+	background-color: #202d3c;
+	color: #ddffff;
+	border: 1px solid #568dc3;
+	height: 45px;
+	padding: 5px 10px;
+	border-radius: 5px;
+}
+
+.select2-hidden-accessible {
+	position: static !important;
+}

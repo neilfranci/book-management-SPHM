@@ -31,7 +31,8 @@ public class BorrowService {
 
 		Borrow borrow = borrowRepository.findByBorrowId(borrowId);
 
-		Book book = bookRepository.findByBookId(borrow.getBookId());
+		Book book = bookRepository.findById(borrow.getBookId())
+				.orElseThrow(() -> new RuntimeException("Book not found"));
 
 		// Fine calculation
 		LocalDate today = LocalDate.now();
@@ -56,20 +57,21 @@ public class BorrowService {
 	public BorrowedBookDTO getBorrowedBook(Long borrowId) {
 		Borrow borrow = borrowRepository.findByBorrowId(borrowId);
 
-		Book book = bookRepository.findByBookId(borrow.getBookId());
+		Book book = bookRepository.findById(borrow.getBookId())
+				.orElseThrow(() -> new RuntimeException("Book not found"));
 
 		BorrowedBookDTO borrowedBookDTO = new BorrowedBookDTO(borrow, book.getTitle(), book.getAuthor());
 
 		return borrowedBookDTO;
 	}
 
-
 	public List<BorrowedBookDTO> getBorrowedBooks() {
 		List<Borrow> borrows = borrowRepository.findAll();
 
 		List<BorrowedBookDTO> borrowedBooks = borrows.stream()
 				.sorted((borrow1, borrow2) -> borrow2.getBorrowId().compareTo(borrow1.getBorrowId())).map(borrow -> {
-					Book book = bookRepository.findByBookId(borrow.getBookId());
+					Book book = bookRepository.findById(borrow.getBookId())
+							.orElseThrow(() -> new RuntimeException("Book not found"));
 
 					// Fine calculation
 					LocalDate today = LocalDate.now();
@@ -95,7 +97,8 @@ public class BorrowService {
 
 		List<BorrowedBookDTO> borrowedBooks = borrows.stream()
 				.sorted((borrow1, borrow2) -> borrow2.getBorrowId().compareTo(borrow1.getBorrowId())).map(borrow -> {
-					Book book = bookRepository.findByBookId(borrow.getBookId());
+					Book book = bookRepository.findById(borrow.getBookId())
+							.orElseThrow(() -> new RuntimeException("Book not found"));
 
 					// Fine calculation
 					LocalDate today = LocalDate.now();
@@ -118,7 +121,8 @@ public class BorrowService {
 
 	public BorrowedBookDTO payFine(Long borrowId) {
 		Borrow borrow = borrowRepository.findByBorrowId(borrowId);
-		Book book = bookRepository.findByBookId(borrow.getBookId());
+		Book book = bookRepository.findById(borrow.getBookId())
+				.orElseThrow(() -> new RuntimeException("Book not found"));
 
 		book.setQuantity(book.getQuantity() + 1);
 		borrow.setStatus(BorrowStatus.RETURNED);

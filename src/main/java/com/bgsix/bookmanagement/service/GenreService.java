@@ -2,9 +2,10 @@ package com.bgsix.bookmanagement.service;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.stereotype.Service;
 
-import com.bgsix.bookmanagement.dto.TopGenreDTO;
+import com.bgsix.bookmanagement.model.Genre;
 import com.bgsix.bookmanagement.repository.GenreRepository;
 
 @Service
@@ -16,20 +17,18 @@ public class GenreService {
 		this.genreRepository = genreRepository;
 	}
 
-	public List<TopGenreDTO> getTopGenres() {
-		List<Object[]> results = genreRepository.findTopGenres();
+	public List<String> getTopGenres() {
+		List<Genre> genres = genreRepository.findTopGenres();
 
-		List<TopGenreDTO> topGenres = new ArrayList<TopGenreDTO>();
+		int numberOfGenres = Math.min(50, genres.size());
 
-		for (Object[] result : results) {
-			String genreName = (String) result[0];
-			Long numberOfBooks = ((Number) result[1]).longValue(); // Casting to Long
-
-			TopGenreDTO dto = new TopGenreDTO(genreName, numberOfBooks.intValue());
-			topGenres.add(dto);
+		// Convert List<Genre> to List<String>
+		List<String> genreNames = new ArrayList<>();
+		for (int i = 0; i < genres.size() && i < numberOfGenres; i++) {
+			genreNames.add(genres.get(i).getName());
 		}
 
-		return topGenres;
+		return genreNames;
 	}
 
 }
