@@ -36,7 +36,4 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 	Page<Book> findByIsbnContainingIgnoreCase(String isbn, Pageable pageable);
 
 	Page<Book> findByRatingGreaterThanEqual(Float rating, Pageable pageable);
-
-	@Query("SELECT b FROM Book b WHERE b.rating <= 4.8 ORDER BY b.rating DESC")
-	Page<Book> findTopRate(Pageable pageable);
 }
