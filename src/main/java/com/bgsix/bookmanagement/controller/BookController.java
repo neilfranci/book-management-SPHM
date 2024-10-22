@@ -2,10 +2,7 @@ package com.bgsix.bookmanagement.controller;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -78,7 +75,8 @@ public class BookController {
 		// Get User Role
 		User user = userService.getCurrentUser();
 		model.addAttribute("user", user);
-
+			
+		// Redirect to the last page if the page number is greater than the total number of pages
 		if (totalPages < page && totalPages > 0) {
 			return "redirect:/book/search?q=" + URLEncoder.encode(searchInput, StandardCharsets.UTF_8) 
 					+ "&g=" + String.join(",", selectedGenres)

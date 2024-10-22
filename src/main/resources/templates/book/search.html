@@ -50,8 +50,6 @@
     <main class="container-fluid" style="padding-top: 60px">
       <!-- Search Section -->
       <div id="search">
-        <p>Search Books</p>
-
         <form
           id="searchForm"
           th:hx-get="@{/book/search}"
@@ -84,14 +82,9 @@
           <input type="hidden" id="sortBy" name="s" th:value="${sortBy}" />
           <button id="searchBtn" class="bg6-btn" type="submit">Search</button>
         </form>
-        <div class="d-flex justify-content-between align-items-end">
+        <div id="extra-search">
           <div style="width: 50%">
-            <label
-              for="genreSelectBtn"
-              class="text-white"
-              style="font-size: large"
-              >Genres:</label
-            >
+            <p class="text-white" style="font-size: large">Genres:</p>
             <select
               id="genreSelectBtn"
               name="g"
@@ -106,19 +99,9 @@
               ></option>
             </select>
           </div>
-          <div>
-            <label
-              for="sortByBtn"
-              class="text-white"
-              style="font-size: large; font-weight: bold"
-              >Sort By</label
-            >
-            <select
-              id="sortByBtn"
-              name="s"
-              class="form-control"
-              style="width: 200px; margin-right: 10px"
-            >
+          <div class="ps-2">
+            <p class="text-white" style="font-size: large">Sort by</p>
+            <select id="sortBySelectBtn" name="s" class="form-control">
               <optgroup label="Relevance">
                 <option
                   value="relevance_asc"
@@ -150,7 +133,7 @@
             </select>
           </div>
         </div>
-        <!-- <div class="btn-group" role="group">
+        <!--/* <div class="btn-group" role="group">
           <button class="bg6-btn me-2">Recently Added</button>
           <button class="bg6-btn me-2">Trending Now</button>
           <button class="bg6-btn me-2">Top Rated</button>
@@ -169,7 +152,7 @@
               </li>
             </ul>
           </div>
-        </div> -->
+        </div> */-->
       </div>
       <!-- List Book Section -->
       <div id="content" style="transition: all ease-in 1s">
@@ -317,14 +300,6 @@
           </nav>
         </div>
       </div>
-      <div
-        th:if="${firstBookGenres != null and !#lists.isEmpty(firstBookGenres)}"
-      >
-        <h5>Genres of First Book:</h5>
-        <ul>
-          <li th:each="genre : ${firstBookGenres}" th:text="${genre.name}"></li>
-        </ul>
-      </div>
     </main>
 
     <div id="bookDetailsModal" class="modal fade" tabindex="-1">
@@ -347,6 +322,7 @@
     // HTMX onLoad event
     htmx.onLoad(function () {
       $("#genreSelectBtn").select2({
+        selectionCssClass: "genreSelectBtn",
         tags: true, // Enable tagging
         tokenSeparators: [",", " "], // Optional: allows space and comma to separate tags
         createTag: function (params) {
@@ -376,12 +352,13 @@
       });
 
       // Initialize Select2 for the Sort By dropdown
-      $("#sortByBtn").select2({
+      $("#sortBySelectBtn").select2({
+        dropdownCssClass: "sortBySelectBtn",
         minimumResultsForSearch: Infinity, // Hide the search box inside dropdown
       });
 
       // Trigger form submission on change of the sortBy dropdown
-      $("#sortByBtn").on("change", function () {
+      $("#sortBySelectBtn").on("change", function () {
         $("#sortBy").val(this.value);
         // const searchInput = document.getElementById("searchInput").value.trim();
         // console.log("searchInput: " + searchInput);

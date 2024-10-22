@@ -59,6 +59,10 @@ a {
 	text-decoration: none;
 }
 
+p {
+	margin: 0;
+}
+
 /* Table */
 
 .table {
@@ -138,14 +142,7 @@ th {
 }
 
 #search {
-	margin-bottom: 30px;
-	margin-left: 20px;
-	margin-right: 20px;
-}
-
-#search p {
-	color: #ddffff;
-	font-size: 1.5rem;
+	margin: 20px 20px;
 }
 
 #search #searchForm {
@@ -363,6 +360,25 @@ th {
 	border: none;
 }
 
+
+#extra-search {
+	display: flex;
+	padding: 10px;
+	background-color: #202d3c;
+	border-radius: 5px;
+}
+
+#extra-search .select2-search {
+	display: inline-flex;
+	justify-content: center;
+}
+
+
+.select2 {
+	width: auto !important;
+	min-width: 100%;
+}
+
 #genreSelectBtn {
 	background-color: #202d3c;
 	color: #ddffff;
@@ -372,6 +388,31 @@ th {
 	border-radius: 5px;
 }
 
-.select2-hidden-accessible {
-	position: static !important;
+/* SORT BY */
+
+/* Make the dropdown menu show all instead of overflow y */
+.sortBySelectBtn .select2-results__options {
+	max-height: max-content;
+	overflow-y: visible;
+}
+
+/* Change the color of the selected option */
+.sortBySelectBtn .select2-results__option--selected {
+	background-color: #2075a0;
+	color: #ffffff;
+}
+
+
+.sortBySelectBtn .select2-results__group {
+	display: inline;
+	padding: 5px;
+}
+
+.sortBySelectBtn .select2-container {
+	width: 100px;
+	box-sizing: border-box;
+	display: inline;
+	margin: 0;
+	position: relative;
+	vertical-align: middle;
 }
