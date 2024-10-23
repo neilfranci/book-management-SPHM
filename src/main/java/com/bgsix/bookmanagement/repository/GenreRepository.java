@@ -18,4 +18,5 @@ public interface GenreRepository extends JpaRepository<Genre, Long> {
 			""")
 	List<Genre> findTopGenres();
 
+	Genre findByName(String name);
 }

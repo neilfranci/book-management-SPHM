@@ -196,20 +196,27 @@ public class BookController {
 
 	// Admin routes
 	@GetMapping("/add")
-	public String getMethodName(Model model) {
+	public String getBookAddForm(Model model) {
 		model.addAttribute("addBookForm", new BookForm());
 		model.addAttribute("user", userService.getCurrentUser());
+		
+		List<String> topGenreDTOs = genreService.getTopGenres();
+		model.addAttribute("genres", topGenreDTOs);
+
 		return "book/add-book";
 	}
 
 	@PostMapping("/add")
 	public String addBook(@ModelAttribute BookForm addBookForm, Model model) {
+		// Check if addBookForm is valid
+		if (!addBookForm.validate()) {
+			logger.error("Invalid book form: {}", addBookForm.toString());
+			return getBookAddForm(model);
+		}
 
-		logger.info(addBookForm.toString());
+		logger.info("Adding book: {}", addBookForm.toString());
 
-		Book bookToSave = new Book(addBookForm);
-
-		bookService.addBook(bookToSave);
+		bookService.addBook(addBookForm);
 
 		return "redirect:/book/add?success";
 	}

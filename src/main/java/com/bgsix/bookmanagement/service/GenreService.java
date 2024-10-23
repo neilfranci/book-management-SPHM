@@ -20,7 +20,7 @@ public class GenreService {
 	public List<String> getTopGenres() {
 		List<Genre> genres = genreRepository.findTopGenres();
 
-		int numberOfGenres = Math.min(50, genres.size());
+		int numberOfGenres = Math.min(200, genres.size());
 
 		// Convert List<Genre> to List<String>
 		List<String> genreNames = new ArrayList<>();
@@ -29,6 +29,15 @@ public class GenreService {
 		}
 
 		return genreNames;
+	}
+
+	public List<Genre> getGenresByName(List<String> genres) {
+		List<Genre> genreList = new ArrayList<>();
+		for (String genreName : genres) {
+			Genre genre = genreRepository.findByName(genreName);
+			genreList.add(genre);
+		}
+		return genreList;
 	}
 
 }

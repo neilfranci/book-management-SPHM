@@ -29,6 +29,19 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.min.js"
+      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+      crossorigin="anonymous"
+    ></script>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <link rel="stylesheet" th:href="@{/css/global.css}" />
   </head>
   <body>
@@ -161,6 +174,27 @@
                   placeholder="Enter quantity"
                 />
               </div>
+              <div class="col-md-4">
+                <label for="genreSelectBtn" class="form-label">Genres:</label>
+                <input
+                  type="hidden"
+                  id="genreSelect"
+                  name="genres"
+                  th:value="*{genres}"
+                />
+                <select
+                  id="genreSelectBtn"
+                  multiple="multiple"
+                  class="form-control"
+                >
+                  <option
+                    th:each="genre : ${genres}"
+                    th:value="${genre}"
+                    th:text="${genre}"
+                    th:selected="${selectedGenres != null and selectedGenres.contains(genre)}"
+                  ></option>
+                </select>
+              </div>
             </div>
             <div class="col-12 text-center mt-4">
               <button type="submit" class="btn btn-primary">Add Book</button>
@@ -169,5 +203,42 @@
         </div>
       </div>
     </div>
+    <script>
+      // Set the global scroll behavior for HTMX
+      htmx.config.scrollBehavior = "smooth";
+
+      // HTMX onLoad event
+      htmx.onLoad(function () {
+        $("#genreSelectBtn").select2({
+          selectionCssClass: "genreSelectBtn",
+          tags: true, // Enable tagging
+          tokenSeparators: [",", " "], // Optional: allows space and comma to separate tags
+          createTag: function (params) {
+            var term = $.trim(params.term);
+            // Prevent empty tag creation
+            if (term === "") {
+              return null;
+            }
+            return {
+              id: term,
+              text: term,
+              newTag: true, // Mark as a new tag
+            };
+          },
+          insertTag: function (data, tag) {
+            // Insert the tag at the end of the results
+            data.push(tag);
+          },
+        });
+
+        // Synchronize the selected values with the hidden input
+        $("#genreSelectBtn").on("change", function () {
+          // Get the selected values as an array
+          const selectedGenres = $(this).val();
+          // Update the hidden input value as a comma-separated string
+          $("#genreSelect").val(selectedGenres.join(","));
+        });
+      });
+    </script>
   </body>
 </html>

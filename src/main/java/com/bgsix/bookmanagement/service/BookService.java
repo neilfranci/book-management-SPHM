@@ -12,12 +12,23 @@ import org.springframework.stereotype.Service;
 import com.bgsix.bookmanagement.dto.BookForm;
 import com.bgsix.bookmanagement.interfaces.IBookService;
 import com.bgsix.bookmanagement.model.Book;
+import com.bgsix.bookmanagement.model.Genre;
 import com.bgsix.bookmanagement.repository.BookRepository;
 
 @Service
 public class BookService implements IBookService {
+
+	@Autowired
+	private GenreService genreService;
+
 	@Override
-	public Book addBook(Book book) {
+	public Book addBook(BookForm addBookForm) {
+		Book book = new Book(addBookForm);
+
+		List<Genre> genres = genreService.getGenresByName(addBookForm.getGenres());
+
+		book.setGenres(genres);
+
 		return bookRepository.save(book);
 	}
 

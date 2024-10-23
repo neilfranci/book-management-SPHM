@@ -63,6 +63,13 @@ p {
 	margin: 0;
 }
 
+dl,
+ol,
+ul {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
 /* Table */
 
 .table {
@@ -349,18 +356,12 @@ th {
 	box-shadow: 0 0 0 0.25rem rgba(88, 140, 195, 0.25);
 }
 
-/* 
-.page-item .page-link {
-	font-family: "Space Mono", system-ui;
-	font-weight: 400;
-} */
 
 .page-link.user-select-none {
 	background-color: transparent;
 	color: #ddffff;
 	border: none;
 }
-
 
 #extra-search {
 	display: flex;
@@ -418,8 +419,16 @@ th {
 	vertical-align: middle;
 }
 
-#add-book #genreSelectBtn {
-	height: 45px;
-	padding: 5px 10px;
-	border-radius: 5px;
+#add-book .genreSelectBtn {
+	height: 38px;
+}
+
+#add-book .select2-search {
+	display: inline-flex;
+	justify-content: center;
+}
+
+#add-book #select2-genreSelectBtn-container {
+	display: inline-flex;
+	justify-content: center;
 }

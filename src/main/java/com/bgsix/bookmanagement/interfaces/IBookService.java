@@ -10,7 +10,7 @@ import com.bgsix.bookmanagement.model.Book;
 
 public interface IBookService {
 
-	Book addBook(Book book);
+	Book addBook(BookForm addBookForm);
 
 	Book saveBook(Book book);
 
