@@ -30,6 +30,8 @@
       referrerpolicy="no-referrer"
     />
 
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}" />
+
     <script
       src="https://code.jquery.com/jquery-3.7.1.min.js"
       integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
@@ -313,69 +315,70 @@
         <div class="modal-content"></div>
       </div>
     </div>
+
+    <script>
+      // Set the global scroll behavior for HTMX
+      htmx.config.scrollBehavior = "smooth";
+
+      // HTMX onLoad event
+      htmx.onLoad(function () {
+        $("#genreSelectBtn").select2({
+          selectionCssClass: "genreSelectBtn",
+          tags: true, // Enable tagging
+          tokenSeparators: [",", " "], // Optional: allows space and comma to separate tags
+          createTag: function (params) {
+            var term = $.trim(params.term);
+            // Prevent empty tag creation
+            if (term === "") {
+              return null;
+            }
+            return {
+              id: term,
+              text: term,
+              newTag: true, // Mark as a new tag
+            };
+          },
+          insertTag: function (data, tag) {
+            // Insert the tag at the end of the results
+            data.push(tag);
+          },
+        });
+
+        // Synchronize the selected values with the hidden input
+        $("#genreSelectBtn").on("change", function () {
+          // Get the selected values as an array
+          const selectedGenres = $(this).val();
+          // Update the hidden input value as a comma-separated string
+          $("#genreSelect").val(selectedGenres.join(","));
+        });
+
+        // Initialize Select2 for the Sort By dropdown
+        $("#sortBySelectBtn").select2({
+          dropdownCssClass: "sortBySelectBtn",
+          minimumResultsForSearch: Infinity, // Hide the search box inside dropdown
+        });
+
+        // Trigger form submission on change of the sortBy dropdown
+        $("#sortBySelectBtn").on("change", function () {
+          $("#sortBy").val(this.value);
+          // const searchInput = document.getElementById("searchInput").value.trim();
+          // console.log("searchInput: " + searchInput);
+          $("#searchForm").submit();
+
+          if (searchInput !== "") {
+          }
+        });
+
+        // Prevent request same page in pagination
+        document.addEventListener("click", function (event) {
+          // If the clicked element has the 'disabled' class, prevent the default action.
+          if (event.target.matches(".disabled")) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+        });
+      });
+    </script>
   </body>
   <!-- <script th:src="@{/js/searchPage.js}"></script> -->
-  <script>
-    // Set the global scroll behavior for HTMX
-    htmx.config.scrollBehavior = "smooth";
-
-    // HTMX onLoad event
-    htmx.onLoad(function () {
-      $("#genreSelectBtn").select2({
-        selectionCssClass: "genreSelectBtn",
-        tags: true, // Enable tagging
-        tokenSeparators: [",", " "], // Optional: allows space and comma to separate tags
-        createTag: function (params) {
-          var term = $.trim(params.term);
-          // Prevent empty tag creation
-          if (term === "") {
-            return null;
-          }
-          return {
-            id: term,
-            text: term,
-            newTag: true, // Mark as a new tag
-          };
-        },
-        insertTag: function (data, tag) {
-          // Insert the tag at the end of the results
-          data.push(tag);
-        },
-      });
-
-      // Synchronize the selected values with the hidden input
-      $("#genreSelectBtn").on("change", function () {
-        // Get the selected values as an array
-        const selectedGenres = $(this).val();
-        // Update the hidden input value as a comma-separated string
-        $("#genreSelect").val(selectedGenres.join(","));
-      });
-
-      // Initialize Select2 for the Sort By dropdown
-      $("#sortBySelectBtn").select2({
-        dropdownCssClass: "sortBySelectBtn",
-        minimumResultsForSearch: Infinity, // Hide the search box inside dropdown
-      });
-
-      // Trigger form submission on change of the sortBy dropdown
-      $("#sortBySelectBtn").on("change", function () {
-        $("#sortBy").val(this.value);
-        // const searchInput = document.getElementById("searchInput").value.trim();
-        // console.log("searchInput: " + searchInput);
-        $("#searchForm").submit();
-
-        if (searchInput !== "") {
-        }
-      });
-
-      // Prevent request same page in pagination
-      document.addEventListener("click", function (event) {
-        // If the clicked element has the 'disabled' class, prevent the default action.
-        if (event.target.matches(".disabled")) {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-      });
-    });
-  </script>
 </html>

@@ -34,7 +34,7 @@
 
 
 body {
-	background-image: url("../img/search_bg.png");
+	background-image: url("../img/search_bg.webp");
 	background-size: cover;
 	background-repeat: no-repeat;
 	background-position: center;
@@ -306,6 +306,7 @@ th {
 	color: white;
 }
 
+
 .pagination {
 	padding: 10px;
 	background-color: #202d3c;
@@ -379,7 +380,7 @@ th {
 	min-width: 100%;
 }
 
-#genreSelectBtn {
+#extra-search #genreSelectBtn {
 	background-color: #202d3c;
 	color: #ddffff;
 	border: 1px solid #568dc3;
@@ -415,4 +416,10 @@ th {
 	margin: 0;
 	position: relative;
 	vertical-align: middle;
+}
+
+#add-book #genreSelectBtn {
+	height: 45px;
+	padding: 5px 10px;
+	border-radius: 5px;
 }
