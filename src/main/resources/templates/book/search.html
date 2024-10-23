@@ -58,7 +58,7 @@
           hx-target="#bookTable"
           hx-swap="innerHTML transition:true"
           hx-trigger="submit"
-          hx-include="#searchInput, #sortBy, #genreSelect"
+          hx-include="#searchInput, #sortBy, #genreSelect, #searchBySelect"
           hx-push-url="true"
         >
           <input
@@ -73,6 +73,29 @@
                 this.setCustomValidity('Vui lòng nhập từ khóa tìm kiếm') // set the validation error
                 htmx.find('#searchForm').reportValidity()                // report the issue
               }"
+          />
+
+          <!-- Search By: title, author, ISBN -->
+          <div class="searchByGroup">
+            <label for="searchBySelectBtn" class="text-white">Search By:</label>
+            <select id="searchBySelectBtn" class="form-control">
+              <option value="title" th:selected="${searchBy == 'title'}">
+                Title
+              </option>
+              <option value="author" th:selected="${searchBy == 'author'}">
+                Author
+              </option>
+              <option value="isbn" th:selected="${searchBy == 'isbn'}">
+                ISBN
+              </option>
+            </select>
+          </div>
+
+          <input
+            type="hidden"
+            id="searchBySelect"
+            name="b"
+            th:value="${searchBy}"
           />
 
           <input
@@ -135,26 +158,6 @@
             </select>
           </div>
         </div>
-        <!--/* <div class="btn-group" role="group">
-          <button class="bg6-btn me-2">Recently Added</button>
-          <button class="bg6-btn me-2">Trending Now</button>
-          <button class="bg6-btn me-2">Top Rated</button>
-
-
-          <div class="dropdown">
-            <button class="bg6-btn dropdown-toggle" data-bs-toggle="dropdown">
-              View As
-            </button>
-            <ul class="dropdown-menu text-center">
-              <li>
-                <label>List</label>
-              </li>
-              <li>
-                <label>Grid</label>
-              </li>
-            </ul>
-          </div>
-        </div> */-->
       </div>
       <!-- List Book Section -->
       <div id="content" style="transition: all ease-in 1s">
@@ -235,7 +238,7 @@
                 class="page-item"
                 th:if="${currentPage > 1}"
                 th:hx-get="@{'/book/' + ${searchInput != null ? 'search' : 'search'} + '?page=' + ${currentPage - 1}}"
-                hx-include="#searchInput, #sortBy, #genreSelect"
+                hx-include="#searchInput, #sortBy, #genreSelect, #searchBySelect"
                 hx-target="#bookTable"
                 hx-swap="inderHTML show:window:top transition:true"
                 hx-push-url="true"
@@ -264,7 +267,7 @@
                   th:id="'page-' + ${i}"
                   th:classappend="${i == currentPage} ? 'disabled' : ''"
                   th:hx-get="@{'/book/' + ${searchInput != null ? 'search' : 'search'} + '?page=' + ${i}}"
-                  hx-include="#searchInput, #sortBy, #genreSelect"
+                  hx-include="#searchInput, #sortBy, #genreSelect, #searchBySelect"
                   hx-target="#bookTable"
                   hx-swap="inderHTML show:window:top transition:true"
                   th:hx-push-url="true"
@@ -283,7 +286,7 @@
                 class="page-item"
                 th:if="${currentPage < totalPages - 1}"
                 th:hx-get="@{'/book/' + ${searchInput != null ? 'search' : 'search'} + '?page=' + ${currentPage + 1}}"
-                hx-include="#searchInput, #sortBy, #genreSelect"
+                hx-include="#searchInput, #sortBy, #genreSelect, #searchBySelect"
                 hx-target="#bookTable"
                 hx-swap="inderHTML show:window:top transition:true"
                 th:hx-push-url="true"
@@ -367,6 +370,17 @@
 
           if (searchInput !== "") {
           }
+        });
+
+        // Initialize Select2 for the Search By dropdown
+        $("#searchBySelectBtn").select2({
+          dropdownCssClass: "searchBySelectBtn",
+          minimumResultsForSearch: Infinity, // Hide the search box inside dropdown
+        });
+
+        // Set the selected value of the Search By dropdown to the hidden input
+        $("#searchBySelectBtn").on("change", function () {
+          $("#searchBySelect").val(this.value);
         });
 
         // Prevent request same page in pagination

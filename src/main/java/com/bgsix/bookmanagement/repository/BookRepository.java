@@ -30,10 +30,21 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 	Page<Book> findByTitleAndGenres(@Param("title") String title, @Param("genres") List<String> genres,
 			@Param("genreCount") long genreCount, Pageable pageable);
 
-
 	Page<Book> findByAuthorContainingIgnoreCase(String author, Pageable pageable);
 
 	Page<Book> findByIsbnContainingIgnoreCase(String isbn, Pageable pageable);
 
 	Page<Book> findByRatingGreaterThanEqual(Float rating, Pageable pageable);
+
+	@Query("""
+			SELECT b
+			FROM Book b
+			JOIN b.genres g
+			WHERE LOWER(b.author) LIKE LOWER(CONCAT('%', :author, '%'))
+			AND g.name IN :genres
+			GROUP BY b
+			HAVING COUNT(DISTINCT g.name) = :genreCount
+			""")
+	Page<Book> findByAuthorAndGenres(@Param("author") String author, @Param("genres") List<String> selectedGenres,
+			@Param("genreCount") long genreCount, Pageable pageable);
 }

@@ -40,8 +40,9 @@ public class BookController {
 
 	@GetMapping("/search")
 	public String searcPage(@RequestParam(required = false, name = "q", defaultValue = "") String searchInput,
+			@RequestParam(required = false, name = "b", defaultValue = "title") String searchBy,
 			@RequestParam(required = false, name = "s", defaultValue = "rating_desc") String sortBy,
-			@RequestParam(required = false, name = "g", defaultValue = "") String selectedGenresStr, 
+			@RequestParam(required = false, name = "g", defaultValue = "") String selectedGenresStr,
 			@RequestParam(defaultValue = "1") int page,
 			@RequestParam(defaultValue = "20") int size,
 			HttpServletRequest request, Model model) {
@@ -53,19 +54,22 @@ public class BookController {
 		
 		// Convert comma-separated genres string to a List<String>
 		List<String> selectedGenres = !selectedGenresStr.equals("") ? Arrays.asList(selectedGenresStr.split(",")) : Collections.emptyList();
+
 		
-		Page<Book> booksPage = bookService.searchBooks(searchInput, selectedGenres, sortBy, page - 1, size);
-
+		Page<Book> booksPage = bookService.searchBooks(searchInput, searchBy, selectedGenres, sortBy, page - 1, size);
+		
 		int totalPages = booksPage.getTotalPages();
-
+		
 		logger.info("Search Input: " + searchInput);
-		logger.info("Selected Genres: " + selectedGenresStr);
+		logger.info("Search By: " + searchBy);
 		logger.info("Sort By: " + sortBy);
+		logger.info("Selected Genres: " + selectedGenresStr);
 		logger.info("Page: " + page + ", Size: " + size);
 		logger.info("Total Pages: " + totalPages);
 		logger.info("Total Books: " + booksPage.getTotalElements());
 
 		model.addAttribute("searchInput", searchInput);
+		model.addAttribute("searchBy", searchBy);
 		model.addAttribute("sortBy", sortBy);
 		model.addAttribute("books", booksPage.getContent());
 		model.addAttribute("currentPage", page);

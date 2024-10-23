@@ -75,7 +75,8 @@ public class BookService implements IBookService {
 	}
 
 	@Override
-	public Page<Book> searchBooks(String searchInput, List<String> selectedGenres, String sortBy, int page, int size) {
+	public Page<Book> searchBooks(String searchInput, String searchBy, List<String> selectedGenres, String sortBy,
+			int page, int size) {
 		Sort sort = Sort.by(Sort.Direction.ASC, "title"); // Default sort
 
 		// Set sort based on sortBy parameter
@@ -93,40 +94,59 @@ public class BookService implements IBookService {
 			case "rating_desc":
 				sort = Sort.by(Sort.Direction.DESC, "rating");
 				break;
+			default:
+				logger.info("Invalid sort option, using default sorting by title.");
 			}
 		}
 
 		Pageable pageable = PageRequest.of(page, size, sort);
 
-		// If both searchInput and selectedGenres are provided, search by title and
-		// genres
-		if (!searchInput.isEmpty() && !selectedGenres.isEmpty()) {
-			logger.info("Searching by title and genres");
-			return findByTitleAndGenres(searchInput, selectedGenres, pageable);
+		// Handle search conditions based on searchBy parameter
+		if (searchInput != null && !searchInput.trim().isEmpty()) {
+			switch (searchBy) {
+			case "title":
+				// Search by title with optional genre filtering
+				if (selectedGenres != null && !selectedGenres.isEmpty()) {
+					logger.info("Searching by title and genres");
+					return findByTitleAndGenres(searchInput, selectedGenres, pageable);
+				}
+				logger.info("Searching by title");
+				return bookRepository.findByTitleContainingIgnoreCase(searchInput, pageable);
+
+			case "author":
+				// Search by author with optional genre filtering
+				if (selectedGenres != null && !selectedGenres.isEmpty()) {
+					logger.info("Searching by author and genres");
+					return findByAuthorAndGenres(searchInput, selectedGenres, pageable);
+				}
+				logger.info("Searching by author");
+				return bookRepository.findByAuthorContainingIgnoreCase(searchInput, pageable);
+
+			case "isbn":
+				// Search by ISBN
+				logger.info("Searching by ISBN");
+				return bookRepository.findByIsbnContainingIgnoreCase(searchInput, pageable);
+
+			default:
+				logger.warn("Unknown searchBy parameter, defaulting to title search.");
+				return bookRepository.findByTitleContainingIgnoreCase(searchInput, pageable);
+			}
 		}
 
-		// If only searchInput is provided, search by title
-		if (searchInput != null && !searchInput.isEmpty()) {
-			logger.info("Searching by title");
-
-			return bookRepository.findByTitleContainingIgnoreCase(searchInput, pageable);
-		}
-
-		// If no searchInput is provided, genre is provided, search by genres
-		if (!selectedGenres.isEmpty()) {
+		// If only genres are provided, filter by genres
+		if (selectedGenres != null && !selectedGenres.isEmpty()) {
 			logger.info("Searching by genres");
 			return bookRepository.findByGenres(selectedGenres, pageable);
 		}
 
-		// If only sortBy is provided, sort by property based on sort
-		if (sortBy != null) {
-			for (Sort.Order order : sort) {
-				logger.info("Sort by: " + order.getProperty() + " " + order.getDirection());
-			}
-			return bookRepository.findAll(pageable);
-		}
-
-		// If no criteria are provided, return all books or a default sorted list
+		// If no searchInput or genres are provided, return all books sorted by the
+		// specified sort order
+		logger.info("No search criteria provided, returning all books with sort: " + sort);
 		return bookRepository.findAll(pageable);
 	}
+
+	private Page<Book> findByAuthorAndGenres(String searchInput, List<String> selectedGenres, Pageable pageable) {
+		return bookRepository.findByAuthorAndGenres(searchInput, selectedGenres, selectedGenres.size(), pageable);
+	}
+
 }

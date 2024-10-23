@@ -22,5 +22,5 @@ public interface IBookService {
 
 	BookForm updateBook(Long bookId, BookForm bookForm);
 
-	Page<Book> searchBooks(String searchInput, List<String> selectedGenres, String sortBy, int page, int size);
+	Page<Book> searchBooks(String searchInput, String searchBy, List<String> selectedGenres, String sortBy, int page, int size);
 }

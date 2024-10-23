@@ -376,11 +376,6 @@ th {
 }
 
 
-.select2 {
-	width: auto !important;
-	min-width: 100%;
-}
-
 #extra-search #genreSelectBtn {
 	background-color: #202d3c;
 	color: #ddffff;
@@ -431,4 +426,22 @@ th {
 #add-book #select2-genreSelectBtn-container {
 	display: inline-flex;
 	justify-content: center;
+}
+
+
+
+#searchBySelect {
+	width: auto;
+	padding: 4px 8px;
+}
+
+.searchByGroup {
+	display: flex;
+	gap: 10px;
+	justify-content: center;
+	align-items: center;
+	background-color: #202d3c;
+	border-radius: 5px;
+	height: 44px;
+	padding: 0 10px;
 }
