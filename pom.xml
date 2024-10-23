@@ -15,7 +15,7 @@
 
 	<artifactId>bookmanagement</artifactId>
 
-	<version>v0.2.0</version>
+	<version>v0.3.0</version>
 
 	<packaging>jar</packaging>
 
@@ -109,6 +109,14 @@
 	</dependencies>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<excludes>
+					<exclude>.env</exclude>
+				</excludes>
+			</resource>
+		</resources>
 		<plugins>
 			<!-- This for building a native executable -->
 			<!-- <plugin>
